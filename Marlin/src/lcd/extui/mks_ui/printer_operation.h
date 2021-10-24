@@ -30,6 +30,7 @@
 void printer_state_polling();
 void filament_pin_setup();
 void filament_check();
+bool get_filemant_pins();
 
 #ifdef __cplusplus
   } /* C-declarations for C++ */

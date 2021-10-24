@@ -216,7 +216,7 @@ static void btn_cancel_event_cb(lv_obj_t *btn, lv_event_t event) {
   }
   else if(DIALOG_IS(TYPE_PRINT_FILE)) {
 
-    // lv_clear_cur_ui();
+    clear_cur_ui();
     lv_draw_print_file();
   }
   else {

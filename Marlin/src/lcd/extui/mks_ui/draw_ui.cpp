@@ -291,6 +291,9 @@ lv_style_t lv_bar_style_text;
 lv_style_t style_btn_pr;
 lv_style_t style_btn_rel;
 
+lv_style_t style_check_box_selected;
+lv_style_t style_check_box_unselected;
+
 void tft_style_init() {
   lv_style_copy(&tft_style_scr, &lv_style_scr);
   tft_style_scr.body.main_color   = LV_COLOR_BACKGROUND;
@@ -1002,6 +1005,8 @@ void clear_cur_ui() {
   }
 }
 
+
+
 void draw_return_ui() {
   if (disp_state_stack._disp_index > 0) {
     disp_state_stack._disp_index--;
@@ -1410,7 +1415,7 @@ void lv_print_finished() {
 
     flash_preview_begin = false;
     default_preview_flg = false;
-    lv_clear_cur_ui();
+    clear_cur_ui();
     lv_draw_dialog(DIALOG_TYPE_FINISH_PRINT);
 
     once_flag = true;

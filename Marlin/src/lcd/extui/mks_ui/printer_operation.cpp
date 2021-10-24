@@ -211,4 +211,27 @@ void filament_check() {
   }
 }
 
+bool get_filemant_pins(void) {
+
+  #if PIN_EXISTS(MT_DET_1)
+    if(READ(MT_DET_1_PIN) == MT_DET_PIN_STATE) {
+      return false;
+    }
+  #endif
+
+  #if PIN_EXISTS(MT_DET_2)
+    if(READ(MT_DET_2_PIN) == MT_DET_PIN_STATE) {
+       return false;
+    }
+  #endif
+
+  #if PIN_EXISTS(MT_DET_3)
+    if(READ(MT_DET_3_PIN) == MT_DET_PIN_STATE) {
+       return false;
+    }
+  #endif
+
+  return true;
+}
+
 #endif // HAS_TFT_LVGL_UI

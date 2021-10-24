@@ -113,7 +113,7 @@ void disp_Limit_ok() {
   lv_label_set_text(limit_info, "Limit:ok");
 }
 void disp_Limit_error() {
-  limit_style.text.color.full = lv_color_make(0xFB, 0x33, 0x14);
+  limit_style.text.color  = lv_color_make(0xFB, 0x33, 0x14);
   lv_obj_set_style(limit_info, &limit_style);
   lv_label_set_text(limit_info, "Limit:error");
 }
@@ -125,7 +125,7 @@ void disp_det_ok() {
 }
 
 void disp_det_error() {
-  det_style.text.color.full = lv_color_make(0xFB, 0x33, 0x14);
+  det_style.text.color = lv_color_make(0xFB, 0x33, 0x14);
   lv_obj_set_style(det_info, &det_style);
   lv_label_set_text(det_info, "det:error");
 }
