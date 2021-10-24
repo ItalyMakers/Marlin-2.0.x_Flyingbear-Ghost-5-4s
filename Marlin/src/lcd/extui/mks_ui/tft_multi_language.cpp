@@ -775,6 +775,7 @@ void disp_language_init() {
 
   home_menu.home_x   = HOME_X_TEXT;
   home_menu.home_y   = HOME_Y_TEXT;
+  home_menu.home_xy   = HOME_XY_TEXT;
   home_menu.home_z   = HOME_Z_TEXT;
   home_menu.home_all = HOME_ALL_TEXT;
 
@@ -1948,6 +1949,7 @@ void disp_language_init() {
             home_menu.title    = TITLE_HOME_SP;
             home_menu.home_x   = HOME_X_TEXT_SP;
             home_menu.home_y   = HOME_Y_TEXT_SP;
+            home_menu.home_xy   = HOME_XY_TEXT_SP;
             home_menu.home_z   = HOME_Z_TEXT_SP;
             home_menu.home_all = HOME_ALL_TEXT_SP;
             home_menu.stopmove = HOME_STOPMOVE_SP;

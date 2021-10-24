@@ -369,6 +369,7 @@ typedef struct home_menu_disp {
   const char *home_all;
   const char *home_x;
   const char *home_y;
+  const char *home_xy;
   const char *home_z;
   const char *stopmove;
   const char *back;
@@ -805,6 +806,7 @@ extern eeprom_def eeprom_menu;
 
 #define HOME_X_TEXT         "X"
 #define HOME_Y_TEXT         "Y"
+#define HOME_XY_TEXT        "X-Y"
 #define HOME_Z_TEXT         "Z"
 #define HOME_ALL_TEXT       "All"
 
