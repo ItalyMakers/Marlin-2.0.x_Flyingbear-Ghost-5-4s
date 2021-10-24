@@ -545,14 +545,7 @@ void filament_dialog_handle() {
     lv_draw_dialog(DIALOG_TYPE_FILAMENT_LOAD_COMPLETED);
   }
 
-<<<<<<< HEAD:Marlin/src/lcd/extui/lib/mks_ui/draw_dialog.cpp
-  #if HAS_HOTEND
-    #if ENABLED(SINGLENOZZLE)
->>>>>>> mks/master:Marlin/src/lcd/extui/mks_ui/draw_dialog.cpp
-      uiCfg.filament_unload_heat_flg = false;
-      lv_clear_dialog();
-    }
-  }
+
 
   if (uiCfg.filament_unloading_completed) {
     uiCfg.filament_rate = 0;
