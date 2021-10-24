@@ -19,22 +19,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-#include "../../../../inc/MarlinConfigPre.h"
+#include "../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
 
-#include "../../../../MarlinCore.h"
+#include "../../../MarlinCore.h"
 #include "draw_ui.h"
 
-#include "../../../../module/temperature.h"
-#include "../../../../gcode/queue.h"
-#include "../../../../gcode/gcode.h"
-#include "../../../../module/probe.h"
+#include "../../../module/temperature.h"
+#include "../../../gcode/queue.h"
+#include "../../../gcode/gcode.h"
+#include "../../../module/probe.h"
 #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
   #include "../../../../feature/bedlevel/bedlevel.h"
 #endif
 #if ENABLED(EEPROM_SETTINGS)
-  #include "../../../../module/settings.h"
+  #include "../../../module/settings.h"
 #endif
 
 #if ENABLED(AUTO_BED_LEVELING_BILINEAR)

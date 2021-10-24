@@ -52,7 +52,8 @@ extern lv_group_t*  g;
   static lv_obj_t *scr;
 #endif
 static lv_obj_t *buttonExt1, *labelExt1, *buttonFanstate, *labelFan;
-
+static lv_obj_t *label_abs;
+static lv_obj_t *label_pla;
 #if HAS_MULTI_HOTEND
   static lv_obj_t *labelExt2;
   static lv_obj_t *buttonExt2;
@@ -67,11 +68,24 @@ static lv_obj_t *buttonExt1, *labelExt1, *buttonFanstate, *labelFan;
   uint8_t current_disp_ui = 0;
 #endif
 
-enum { ID_TOOL = 1, ID_SET, ID_PRINT, ID_INFO_EXT, ID_INFO_BED, ID_INFO_FAN };
+enum {
+  ID_TOOL = 1,
+  ID_SET,
+  ID_PRINT,
+  ID_INFO_EXT,
+  ID_INFO_FAN,
+  ID_INFO_BED,
+  ID_P_ABS,
+  ID_P_PLA,
+};
 
 static void event_handler(lv_obj_t *obj, lv_event_t event) {
   if (event != LV_EVENT_RELEASED) return;
-  lv_clear_ready_print();
+
+  if(obj->mks_obj_id != ID_P_ABS && obj->mks_obj_id != ID_P_PLA ){
+    lv_clear_ready_print();
+  }
+
   switch (obj->mks_obj_id) {
     case ID_TOOL:   lv_draw_tool(); break;
     case ID_SET:    lv_draw_set(); break;
@@ -79,6 +93,15 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
     case ID_INFO_BED:  uiCfg.curTempType = 1; lv_draw_preHeat(); break;
     case ID_INFO_FAN:  lv_draw_fan(); break;
     case ID_PRINT: TERN(MULTI_VOLUME, lv_draw_media_select(), lv_draw_print_file()); break;
+    case ID_P_ABS:
+      thermalManager.setTargetHotend(PREHEAT_2_TEMP_HOTEND, 0);
+        thermalManager.setTargetBed(PREHEAT_2_TEMP_BED);
+      break;
+    case ID_P_PLA:
+
+      thermalManager.setTargetHotend(PREHEAT_1_TEMP_HOTEND, 0);
+        thermalManager.setTargetBed(PREHEAT_1_TEMP_BED);
+      break;
   }
 }
 
@@ -90,7 +113,7 @@ void disp_Limit_ok() {
   lv_label_set_text(limit_info, "Limit:ok");
 }
 void disp_Limit_error() {
-  limit_style.text.color.full = 0xF800;
+  limit_style.text.color.full = lv_color_make(0xFB, 0x33, 0x14);
   lv_obj_set_style(limit_info, &limit_style);
   lv_label_set_text(limit_info, "Limit:error");
 }
@@ -102,7 +125,7 @@ void disp_det_ok() {
 }
 
 void disp_det_error() {
-  det_style.text.color.full = 0xF800;
+  det_style.text.color.full = lv_color_make(0xFB, 0x33, 0x14);
   lv_obj_set_style(det_info, &det_style);
   lv_label_set_text(det_info, "det:error");
 }
@@ -138,10 +161,10 @@ void lv_draw_ready_print() {
 
   disp_state_stack._disp_index = 0;
   ZERO(disp_state_stack._disp_state);
-  
+
 #ifdef USE_NEW_LVGL_CONF
   mks_ui.src_main = lv_set_scr_id_title(mks_ui.src_main, PRINT_READY_UI, "");
-#else 
+#else
   scr = lv_screen_create(PRINT_READY_UI, "");
 #endif
 
@@ -203,7 +226,7 @@ void lv_draw_ready_print() {
 
 #ifdef USE_NEW_LVGL_CONF
     det_info = lv_label_create_empty(mks_ui.src_main);
-#else 
+#else
     det_info = lv_label_create_empty(scr);
 #endif
     lv_style_copy(&det_style, &lv_style_scr);
@@ -255,6 +278,7 @@ void lv_draw_ready_print() {
     TERN_(HAS_HEATED_BED, labelBed = lv_label_create_empty(scr));
     TERN_(HAS_FAN, labelFan = lv_label_create_empty(scr));
 #endif
+disp_ext_heart_ready_print();
     lv_temp_refr();
   }
 
@@ -265,6 +289,33 @@ void lv_draw_ready_print() {
       lv_draw_touch_calibration_screen();
     }
   #endif
+}
+
+void lv_temp_info() {
+  // Malderin
+  // Create image buttons
+
+  #if HAS_HEATED_BED
+    lv_big_button_create(scr, "F:/bmp_bed_state.bin", " ", ( 20), 210, event_handler, ID_INFO_BED);
+  #endif
+
+  lv_big_button_create(scr, "F:/bmp_ext1_state.bin", " ", ( 20), 260, event_handler, ID_INFO_EXT);
+
+  #if HAS_MULTI_EXTRUDER && DISABLED(SINGLENOZZLE)
+    lv_big_button_create(scr, "F:/bmp_ext2_state.bin", " ", 325, 260, event_handler, ID_INFO_EXT);
+  #endif
+
+  #if HAS_HEATED_BED
+    labelBed = lv_label_create(scr, ( 20 + 50), 220, nullptr);
+    #endif
+
+    labelExt1 = lv_label_create(scr, ( 20 + 50), 270, nullptr);
+
+    #if HAS_MULTI_EXTRUDER && DISABLED(SINGLENOZZLE)
+      labelExt2 = lv_label_create(scr, 375, 270, nullptr);
+    #endif
+
+    lv_temp_refr();
 }
 
 void lv_temp_refr() {
@@ -299,6 +350,34 @@ void lv_clear_ready_print() {
 #else
   lv_obj_del(scr);
 #endif
+}
+
+void disp_ext_heart_ready_print() {
+    lv_big_button_create(scr, "F:/bmp_temp_mini.bin"," ", ( 180), 210, event_handler, ID_P_PLA);
+    lv_big_button_create(scr, "F:/bmp_temp_mini.bin"," ", ( 180), 260, event_handler, ID_P_ABS);
+
+    label_pla = lv_label_create(scr, (180+50), (210 + 10), PREHEAT_1_LABEL);
+    label_abs = lv_label_create(scr, (180+50), (260 + 10), PREHEAT_2_LABEL);
+    // label_pla = lv_btn_create(scr, ( 180+45), (210), 80, 40, event_handler, ID_P_PLA);
+    // label_abs = lv_btn_create(scr, ( 180+45), (260), 80, 40, event_handler, ID_P_ABS);
+
+    // lv_label_create(label_pla,PREHEAT_1_LABEL);
+    // lv_label_create(label_abs,PREHEAT_2_LABEL);
+
+    // lv_btn_set_style(label_pla, LV_BTN_STYLE_PR, &btn_style_pre);
+    // lv_btn_set_style(label_pla, LV_BTN_STYLE_REL, &btn_style_rel);
+    // lv_label_set_long_mode(label_pla, LV_LABEL_LONG_EXPAND);
+    // lv_label_set_align(label_pla,LV_LABEL_ALIGN_LEFT);
+
+
+    // lv_btn_set_layout(label_abs,LV_LABEL_ALIGN_LEFT);
+
+    // lv_btn_set_style(label_abs, LV_BTN_STYLE_PR, &btn_style_pre);
+    // lv_btn_set_style(label_abs, LV_BTN_STYLE_REL, &btn_style_rel);
+    // lv_label_set_long_mode(label_abs, LV_LABEL_LONG_EXPAND);
+    // lv_label_set_align(label_abs,LV_LABEL_ALIGN_LEFT);
+
+
 }
 
 #endif // HAS_TFT_LVGL_UI

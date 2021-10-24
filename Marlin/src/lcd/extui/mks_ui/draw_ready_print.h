@@ -33,6 +33,7 @@ void disp_det_error();
 void disp_det_ok();
 void lv_clear_ready_print();
 void lv_temp_refr();
+extern void disp_ext_heart_ready_print();
 
 void set_main_screen(void);
 
