@@ -273,8 +273,8 @@
  * THERMAL_PROTECTION_HYSTERESIS and/or THERMAL_PROTECTION_PERIOD
  */
 #if ENABLED(THERMAL_PROTECTION_HOTENDS)
-  #define  THERMAL_PROTECTION_PERIOD 30   // Seconds
-  #define  THERMAL_PROTECTION_HYSTERESIS 6   // Degrees Celsius
+  #define THERMAL_PROTECTION_PERIOD 40        // Seconds
+  #define THERMAL_PROTECTION_HYSTERESIS 4     // Degrees Celsius
 
   //#define ADAPTIVE_FAN_SLOWING              // Slow part cooling fan if temperature drops
   #if BOTH(ADAPTIVE_FAN_SLOWING, PIDTEMP)
@@ -789,7 +789,7 @@
 #define HOMING_BUMP_MM      { 5, 5, 2 }       // (mm) Backoff from endstops after first bump
 #define HOMING_BUMP_DIVISOR { 2, 2, 4 }       // Re-Bump Speed Divisor (Divides the Homing Feedrate)
 
-#define HOMING_BACKOFF_POST_MM { 0, 0, 0 }  // (mm) Backoff from endstops after homing
+//#define HOMING_BACKOFF_POST_MM { 2, 2, 2 }  // (mm) Backoff from endstops after homing
 
 #define QUICK_HOME                          // If G28 contains XY do a diagonal move first
 //#define HOME_Y_BEFORE_X                     // If G28 contains XY home Y before X
@@ -943,7 +943,7 @@
   #define RESTORE_LEVELING_AFTER_G35    // Enable to restore leveling setup after operation
   //#define REPORT_TRAMMING_MM          // Report Z deviation (mm) for each point relative to the first
 
-  #define ASSISTED_TRAMMING_WIZARD    // Add a Tramming Wizard to the LCD menu
+  //#define ASSISTED_TRAMMING_WIZARD    // Add a Tramming Wizard to the LCD menu
 
   //#define ASSISTED_TRAMMING_WAIT_POSITION { X_CENTER, Y_CENTER, 30 } // Move the nozzle out of the way for adjustment
 
@@ -1363,7 +1363,7 @@
   #define SD_MENU_CONFIRM_START             // Confirm the selected SD file before printing
 
   //#define NO_SD_AUTOSTART                 // Remove auto#.g file support completely to save some Flash, SRAM
-  // #define MENU_ADDAUTOSTART               // Add a menu option to run auto#.g files
+  //#define MENU_ADDAUTOSTART               // Add a menu option to run auto#.g files
 
   //#define BROWSE_MEDIA_ON_INSERT          // Open the file browser when media is inserted
 
@@ -1474,7 +1474,7 @@
   /**
    * Auto-report SdCard status with M27 S<seconds>
    */
-  // #define AUTO_REPORT_SD_STATUS
+  //#define AUTO_REPORT_SD_STATUS
 
   /**
    * Support for USB thumb drives using an Arduino USB Host Shield or
@@ -1490,7 +1490,7 @@
    *
    * [1] On AVR an interrupt-capable pin is best for UHS3 compatibility.
    */
-  //#define USB_FLASH_DRIVE_SUPPORT
+  // #define USB_FLASH_DRIVE_SUPPORT
   #if ENABLED(USB_FLASH_DRIVE_SUPPORT)
     /**
      * USB Host Shield Library
@@ -2053,7 +2053,7 @@
 //
 // G2/G3 Arc Support
 //
-// #define ARC_SUPPORT                   // Requires ~3226 bytes
+#define ARC_SUPPORT                   // Requires ~3226 bytes
 #if ENABLED(ARC_SUPPORT)
   #define MIN_ARC_SEGMENT_MM      0.1 // (mm) Minimum length of each arc segment
   #define MAX_ARC_SEGMENT_MM      1.0 // (mm) Maximum length of each arc segment
@@ -3993,7 +3993,7 @@
  * Specified pin has pullup and connecting to ground will instantly pause motion.
  * Potentially useful for emergency stop that allows being resumed.
  */
-// #define FREEZE_FEATURE
+//#define FREEZE_FEATURE
 #if ENABLED(FREEZE_FEATURE)
   //#define FREEZE_PIN 41   // Override the default (KILL) pin here
 #endif
