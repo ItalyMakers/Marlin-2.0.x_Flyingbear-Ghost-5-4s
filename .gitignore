@@ -167,7 +167,3 @@ __pycache__
 # Simulation / Native
 eeprom.dat
 imgui.ini
-
-custom_graphics/_img_conv_core.php
-custom_graphics/images/
-
