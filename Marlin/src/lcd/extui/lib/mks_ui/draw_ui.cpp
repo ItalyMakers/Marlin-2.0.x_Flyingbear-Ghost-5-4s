@@ -125,9 +125,9 @@ void gCfgItems_init() {
   gCfgItems.curFilesize       = 0;
   gCfgItems.finish_power_off  = false;
   gCfgItems.pause_reprint     = false;
-  gCfgItems.pausePosX         = -1;
-  gCfgItems.pausePosY         = -1;
-  gCfgItems.pausePosZ         = 5;
+  gCfgItems.pausePosX         = X_PAUSE_POS;
+  gCfgItems.pausePosY         = Y_PAUSE_POS;
+  gCfgItems.pausePosZ         = Z_PAUSE_POS;
   gCfgItems.levelingPos[0][0] = X_MIN_POS + 30;
   gCfgItems.levelingPos[0][1] = Y_MIN_POS + 30;
   gCfgItems.levelingPos[1][0] = X_MAX_POS - 30;

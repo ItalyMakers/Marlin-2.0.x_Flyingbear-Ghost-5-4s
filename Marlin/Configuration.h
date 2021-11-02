@@ -1229,6 +1229,11 @@
 #define  Y_MAX_POS Y_BED_SIZE   // Y_BED_SIZE
 #define  Z_MAX_POS 210   // 200
 
+// Pause Position
+#define  X_PAUSE_POS 0
+#define  Y_PAUSE_POS 0
+#define  Z_PAUSE_POS 10
+
 /**
  * Software Endstops
  *
