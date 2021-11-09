@@ -89,20 +89,20 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
         #endif
         lv_imgbtn_set_src_both(buttonPause, "F:/bmp_resume.bin");
         lv_label_set_text(labelPause, printing_menu.resume);
-        lv_obj_align(labelPause, buttonPause, LV_ALIGN_CENTER, 30, 0);
+        lv_obj_align(labelPause, buttonPause, LV_ALIGN_IN_LEFT_MID, 75, 0);
       }
       else if (uiCfg.print_state == PAUSED) {
         uiCfg.print_state = RESUMING;
         lv_imgbtn_set_src_both(obj, "F:/bmp_pause.bin");
         lv_label_set_text(labelPause, printing_menu.pause);
-        lv_obj_align(labelPause, buttonPause, LV_ALIGN_CENTER, 30, 0);
+        lv_obj_align(labelPause, buttonPause, LV_ALIGN_IN_LEFT_MID, 75, 0);
       }
       #if ENABLED(POWER_LOSS_RECOVERY)
         else if (uiCfg.print_state == REPRINTING) {
           uiCfg.print_state = REPRINTED;
           lv_imgbtn_set_src_both(obj, "F:/bmp_pause.bin");
           lv_label_set_text(labelPause, printing_menu.pause);
-          lv_obj_align(labelPause, buttonPause, LV_ALIGN_CENTER, 30, 0);
+          lv_obj_align(labelPause, buttonPause, LV_ALIGN_IN_LEFT_MID, 75, 0);
           print_time.minutes = recovery.info.print_job_elapsed / 60;
           print_time.seconds = recovery.info.print_job_elapsed % 60;
           print_time.hours   = print_time.minutes / 60;
@@ -197,13 +197,13 @@ void lv_draw_printing() {
 
   if (gCfgItems.multiple_language) {
     lv_label_set_text(labelPause, uiCfg.print_state == WORKING ? printing_menu.pause : printing_menu.resume);
-    lv_obj_align(labelPause, buttonPause, LV_ALIGN_CENTER, 20, 0);
+    lv_obj_align(labelPause, buttonPause, LV_ALIGN_IN_LEFT_MID, 75, 0);
 
     lv_label_set_text(labelStop, printing_menu.stop);
-    lv_obj_align(labelStop, buttonStop, LV_ALIGN_CENTER, 20, 0);
+    lv_obj_align(labelStop, buttonStop, LV_ALIGN_IN_LEFT_MID, 75, 0);
 
     lv_label_set_text(labelOperat, printing_menu.option);
-    lv_obj_align(labelOperat, buttonOperat, LV_ALIGN_CENTER, 20, 0);
+    lv_obj_align(labelOperat, buttonOperat, LV_ALIGN_IN_LEFT_MID, 75, 0);
   }
 
   lv_style_copy(&lv_bar_style_text, &lv_style_plain);
@@ -317,6 +317,8 @@ void setProBarRate() {
         flash_preview_begin = false;
         default_preview_flg = false;
         lv_clear_printing();
+
+
         lv_draw_dialog(DIALOG_TYPE_FINISH_PRINT);
 
         once_flag = true;

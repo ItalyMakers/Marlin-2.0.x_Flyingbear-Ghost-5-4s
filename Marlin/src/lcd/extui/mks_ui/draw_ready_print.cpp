@@ -54,6 +54,7 @@ extern lv_group_t*  g;
 static lv_obj_t *buttonExt1, *labelExt1, *buttonFanstate, *labelFan;
 static lv_obj_t *label_abs;
 static lv_obj_t *label_pla;
+
 #if HAS_MULTI_HOTEND
   static lv_obj_t *labelExt2;
   static lv_obj_t *buttonExt2;
