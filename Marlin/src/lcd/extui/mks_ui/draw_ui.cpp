@@ -1145,28 +1145,28 @@ void lv_btn_set_style_both(lv_obj_t *btn, lv_style_t *style) {
 
 // set scr id and title
 #ifdef USE_NEW_LVGL_CONF
-  lv_obj_t* lv_set_scr_id_title(lv_obj_t *scr ,DISP_STATE newScreenType, const char *title) {
-  
-    // breadcrumbs
-    if (disp_state_stack._disp_state[disp_state_stack._disp_index] != newScreenType) {
-      disp_state_stack._disp_index++;
-      disp_state_stack._disp_state[disp_state_stack._disp_index] = newScreenType;
-    }
-    disp_state = newScreenType;
-  
-    // title
-    lv_obj_t *titleLabel = nullptr;
-    if (!title)
-      titleLabel = lv_label_create(scr, TITLE_XPOS, TITLE_YPOS, creat_title_text());
-    else if (title[0] != '\0')
-      titleLabel = lv_label_create(scr, TITLE_XPOS, TITLE_YPOS, title);
-    if (titleLabel)
-      lv_obj_set_style(titleLabel, &tft_style_label_rel);
-  
-    lv_refr_now(lv_refr_get_disp_refreshing());
-  
-    return scr;
+lv_obj_t* lv_set_scr_id_title(lv_obj_t *scr ,DISP_STATE newScreenType, const char *title) {
+
+  // breadcrumbs
+  if (disp_state_stack._disp_state[disp_state_stack._disp_index] != newScreenType) {
+    disp_state_stack._disp_index++;
+    disp_state_stack._disp_state[disp_state_stack._disp_index] = newScreenType;
   }
+  disp_state = newScreenType;
+
+  // title
+  lv_obj_t *titleLabel = nullptr;
+  if (!title)
+    titleLabel = lv_label_create(scr, TITLE_XPOS, TITLE_YPOS, creat_title_text());
+  else if (title[0] != '\0')
+    titleLabel = lv_label_create(scr, TITLE_XPOS, TITLE_YPOS, title);
+  if (titleLabel)
+    lv_obj_set_style(titleLabel, &tft_style_label_rel);
+
+  lv_refr_now(lv_refr_get_disp_refreshing());
+
+  return scr;
+}
 #endif
 
 // Create a screen
