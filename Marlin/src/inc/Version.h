@@ -28,7 +28,7 @@
   #define SHORT_BUILD_VERSION "2.0.9.2"
 #endif
 
-#define IM_VERSION "2.2.1"
+#define IM_VERSION "2.3.0"
 
 /**
  * Verbose version identifier containing a unique identifier, such as the

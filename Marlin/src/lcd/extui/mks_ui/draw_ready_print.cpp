@@ -241,31 +241,31 @@ void lv_draw_ready_print() {
   }
   else {
 #ifdef USE_NEW_LVGL_CONF
-    lv_big_button_create(mks_ui.src_main, "F:/bmp_tool.bin", main_menu.tool, 20, 90, event_handler, ID_TOOL);
-    lv_big_button_create(mks_ui.src_main, "F:/bmp_set.bin", main_menu.set, 180, 90, event_handler, ID_SET);
-    lv_big_button_create(mks_ui.src_main, "F:/bmp_printing.bin", main_menu.print, 340, 90, event_handler, ID_PRINT);
+    lv_big_button_create(mks_ui.src_main, "F:/bmp_tool.bin", main_menu.tool, 20, 60, event_handler, ID_TOOL);
+    lv_big_button_create(mks_ui.src_main, "F:/bmp_set.bin", main_menu.set, 180, 60, event_handler, ID_SET);
+    lv_big_button_create(mks_ui.src_main, "F:/bmp_printing.bin", main_menu.print, 340, 60, event_handler, ID_PRINT);
 #else
-    lv_big_button_create(scr, "F:/bmp_tool.bin", main_menu.tool, 20, 90, event_handler, ID_TOOL);
-    lv_big_button_create(scr, "F:/bmp_set.bin", main_menu.set, 180, 90, event_handler, ID_SET);
-    lv_big_button_create(scr, "F:/bmp_printing.bin", main_menu.print, 340, 90, event_handler, ID_PRINT);
+    lv_big_button_create(scr, "F:/bmp_tool.bin", main_menu.tool, 20, 60, event_handler, ID_TOOL);
+    lv_big_button_create(scr, "F:/bmp_set.bin", main_menu.set, 180, 60, event_handler, ID_SET);
+    lv_big_button_create(scr, "F:/bmp_printing.bin", main_menu.print, 340, 60, event_handler, ID_PRINT);
 #endif
     // Monitoring
     #if HAS_HOTEND
 #ifdef USE_NEW_LVGL_CONF
-      buttonExt1 = lv_big_button_create(mks_ui.src_main, "F:/bmp_ext1_state.bin", " ", 20, ICON_POS_Y, event_handler, ID_INFO_EXT);
+      buttonExt1 = lv_big_button_create(mks_ui.src_main, "F:/bmp_ext1_state.bin", " ",( 20), 260, event_handler, ID_INFO_EXT);
 #else
-      buttonExt1 = lv_big_button_create(scr, "F:/bmp_ext1_state.bin", " ", 20, ICON_POS_Y, event_handler, ID_INFO_EXT);
+      buttonExt1 = lv_big_button_create(scr, "F:/bmp_ext1_state.bin", " ",( 20), 260, event_handler, ID_INFO_EXT);
 #endif
     #endif
     #if HAS_MULTI_HOTEND
       buttonExt2 = lv_big_button_create(scr, "F:/bmp_ext2_state.bin", " ", 180, ICON_POS_Y, event_handler, ID_INFO_EXT);
     #endif
     #if HAS_HEATED_BED
-#ifdef USE_NEW_LVGL_CONF
-      buttonBedstate = lv_big_button_create(mks_ui.src_main, "F:/bmp_bed_state.bin", " ", TERN(HAS_MULTI_HOTEND, 271, 210), ICON_POS_Y, event_handler, ID_INFO_BED);
-#else
-      buttonBedstate = lv_big_button_create(scr, "F:/bmp_bed_state.bin", " ", TERN(HAS_MULTI_HOTEND, 340, 210), ICON_POS_Y, event_handler, ID_INFO_BED);
-#endif
+      #ifdef USE_NEW_LVGL_CONF
+            buttonBedstate = lv_big_button_create(mks_ui.src_main, "F:/bmp_bed_state.bin", " ", ( 20), 210, event_handler, ID_INFO_BED);
+      #else
+            buttonBedstate = lv_big_button_create(scr, "F:/bmp_bed_state.bin", " ", ( 20), 210, event_handler, ID_INFO_BED);
+      #endif
     #endif
 
 #ifdef USE_NEW_LVGL_CONF
@@ -279,7 +279,7 @@ void lv_draw_ready_print() {
     TERN_(HAS_HEATED_BED, labelBed = lv_label_create_empty(scr));
     TERN_(HAS_FAN, labelFan = lv_label_create_empty(scr));
 #endif
-disp_ext_heart_ready_print();
+    disp_ext_heart_ready_print();
     lv_temp_refr();
   }
 
@@ -292,32 +292,7 @@ disp_ext_heart_ready_print();
   #endif
 }
 
-void lv_temp_info() {
-  // Malderin
-  // Create image buttons
 
-  #if HAS_HEATED_BED
-    lv_big_button_create(scr, "F:/bmp_bed_state.bin", " ", ( 20), 210, event_handler, ID_INFO_BED);
-  #endif
-
-  lv_big_button_create(scr, "F:/bmp_ext1_state.bin", " ", ( 20), 260, event_handler, ID_INFO_EXT);
-
-  #if HAS_MULTI_EXTRUDER && DISABLED(SINGLENOZZLE)
-    lv_big_button_create(scr, "F:/bmp_ext2_state.bin", " ", 325, 260, event_handler, ID_INFO_EXT);
-  #endif
-
-  #if HAS_HEATED_BED
-    labelBed = lv_label_create(scr, ( 20 + 50), 220, nullptr);
-    #endif
-
-    labelExt1 = lv_label_create(scr, ( 20 + 50), 270, nullptr);
-
-    #if HAS_MULTI_EXTRUDER && DISABLED(SINGLENOZZLE)
-      labelExt2 = lv_label_create(scr, 375, 270, nullptr);
-    #endif
-
-    lv_temp_refr();
-}
 
 void lv_temp_refr() {
   #if HAS_HOTEND
@@ -354,11 +329,20 @@ void lv_clear_ready_print() {
 }
 
 void disp_ext_heart_ready_print() {
+  #ifdef USE_NEW_LVGL_CONF
+    lv_big_button_create(mks_ui.src_main, "F:/bmp_temp_mini.bin"," ", ( 180), 210, event_handler, ID_P_PLA);
+    lv_big_button_create(mks_ui.src_main, "F:/bmp_temp_mini.bin"," ", ( 180), 260, event_handler, ID_P_ABS);
+
+    label_pla = lv_label_create(mks_ui.src_main, (180+50), (210 + 10), PREHEAT_1_LABEL);
+    label_abs = lv_label_create(mks_ui.src_main, (180+50), (260 + 10), PREHEAT_2_LABEL);
+  #else
     lv_big_button_create(scr, "F:/bmp_temp_mini.bin"," ", ( 180), 210, event_handler, ID_P_PLA);
     lv_big_button_create(scr, "F:/bmp_temp_mini.bin"," ", ( 180), 260, event_handler, ID_P_ABS);
 
     label_pla = lv_label_create(scr, (180+50), (210 + 10), PREHEAT_1_LABEL);
     label_abs = lv_label_create(scr, (180+50), (260 + 10), PREHEAT_2_LABEL);
+
+  #endif
     // label_pla = lv_btn_create(scr, ( 180+45), (210), 80, 40, event_handler, ID_P_PLA);
     // label_abs = lv_btn_create(scr, ( 180+45), (260), 80, 40, event_handler, ID_P_ABS);
 
