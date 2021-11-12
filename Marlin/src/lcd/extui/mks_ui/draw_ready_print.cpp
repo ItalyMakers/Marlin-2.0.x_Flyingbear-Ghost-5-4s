@@ -42,6 +42,7 @@
 
 #include "mks_hardware.h"
 #include <stdio.h>
+#include "../../../gcode/queue.h"
 
 #define ICON_POS_Y          260
 #define TARGET_LABEL_MOD_Y -36
@@ -54,6 +55,9 @@ extern lv_group_t*  g;
 static lv_obj_t *buttonExt1, *labelExt1, *buttonFanstate, *labelFan;
 static lv_obj_t *label_abs;
 static lv_obj_t *label_pla;
+
+static lv_obj_t *label_cooldown;
+static lv_obj_t *label_emStop;
 
 #if HAS_MULTI_HOTEND
   static lv_obj_t *labelExt2;
@@ -78,13 +82,25 @@ enum {
   ID_INFO_BED,
   ID_P_ABS,
   ID_P_PLA,
+  ID_COOLDOWN,
+  ID_EMSTOP,
 };
 
 static void event_handler(lv_obj_t *obj, lv_event_t event) {
   if (event != LV_EVENT_RELEASED) return;
 
-  if(obj->mks_obj_id != ID_P_ABS && obj->mks_obj_id != ID_P_PLA ){
+  // if(obj->mks_obj_id != ID_P_ABS && obj->mks_obj_id != ID_P_PLA ){
+  //   lv_clear_ready_print();
+  // }
+  switch (obj->mks_obj_id){
+    case ID_P_ABS:
+    case ID_P_PLA:
+    case ID_COOLDOWN:
+    case ID_EMSTOP:
+    break;
+    default:
     lv_clear_ready_print();
+    break;
   }
 
   switch (obj->mks_obj_id) {
@@ -98,11 +114,19 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
       thermalManager.setTargetHotend(PREHEAT_2_TEMP_HOTEND, 0);
         thermalManager.setTargetBed(PREHEAT_2_TEMP_BED);
       break;
+
     case ID_P_PLA:
 
       thermalManager.setTargetHotend(PREHEAT_1_TEMP_HOTEND, 0);
         thermalManager.setTargetBed(PREHEAT_1_TEMP_BED);
       break;
+
+    case ID_COOLDOWN:
+    queue.inject(PSTR("M106 S0\nM104 S0\nM140 S0"));
+    break;
+    case ID_EMSTOP:
+    queue.inject(PSTR("M112"));
+    break;
   }
 }
 
@@ -335,12 +359,24 @@ void disp_ext_heart_ready_print() {
 
     label_pla = lv_label_create(mks_ui.src_main, (180+50), (210 + 10), PREHEAT_1_LABEL);
     label_abs = lv_label_create(mks_ui.src_main, (180+50), (260 + 10), PREHEAT_2_LABEL);
+
+    lv_big_button_create(mks_ui.src_main, "F:/bmp_mini_temp0.bin"," ", ( 320), 210, event_handler, ID_EMSTOP);
+    lv_big_button_create(mks_ui.src_main, "F:/bmp_mini_emergency_stop.bin"," ", ( 320), 260, event_handler, ID_COOLDOWN);
+
+    label_cooldown = lv_label_create(mks_ui.src_main, (320+50), (210 + 10), "Cool Down");
+    label_emStop = lv_label_create(mks_ui.src_main, (320+50), (260 + 10), "Emergency Stop");
   #else
     lv_big_button_create(scr, "F:/bmp_temp_mini.bin"," ", ( 180), 210, event_handler, ID_P_PLA);
     lv_big_button_create(scr, "F:/bmp_temp_mini.bin"," ", ( 180), 260, event_handler, ID_P_ABS);
 
     label_pla = lv_label_create(scr, (180+50), (210 + 10), PREHEAT_1_LABEL);
     label_abs = lv_label_create(scr, (180+50), (260 + 10), PREHEAT_2_LABEL);
+
+    lv_big_button_create(scr, "F:/bmp_mini_temp0.bin"," ", ( 320), 210, event_handler, ID_COOLDOWN);
+    lv_big_button_create(scr, "F:/bmp_mini_emergency_stop.bin"," ", ( 320), 260, event_handler, ID_EMSTOP);
+
+    label_cooldown = lv_label_create(scr, (320+50), (210 + 10), "Cool Down");
+    label_emStop = lv_label_create(scr, (320+50), (260 + 10), "Emerg. Stop");
 
   #endif
     // label_pla = lv_btn_create(scr, ( 180+45), (210), 80, 40, event_handler, ID_P_PLA);
