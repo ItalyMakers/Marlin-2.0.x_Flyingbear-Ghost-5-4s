@@ -546,6 +546,9 @@ lv_obj_t* lv_screen_menu_item_2_edit(lv_obj_t *par, const char *text, lv_coord_t
 lv_obj_t* lv_screen_menu_item_onoff(lv_obj_t *par, const char *text, lv_coord_t x, lv_coord_t y, lv_event_cb_t cb, const int id, const int index, const bool curValue);
 void lv_screen_menu_item_onoff_update(lv_obj_t *btn, const bool curValue);
 
+void lv_screen_menu_item_turn_page(lv_obj_t *par, const char *text, lv_event_cb_t cb, const int id);
+void lv_screen_menu_item_return(lv_obj_t *par, lv_event_cb_t cb, const int id);
+
 // set scr id and title
 #ifdef USE_NEW_LVGL_CONF
 lv_obj_t* lv_set_scr_id_title(lv_obj_t *scr ,DISP_STATE newScreenType, const char *title);

@@ -123,7 +123,8 @@ void lv_draw_acceleration_settings() {
     itoa(planner.settings.max_acceleration_mm_per_s2[X_AXIS], public_buf_l, 10);
     lv_screen_menu_item_1_edit(scr, machine_menu.X_Acceleration, PARA_UI_POS_X, PARA_UI_POS_Y * 4, event_handler, ID_ACCE_X, 3, public_buf_l);
 
-    lv_big_button_create(scr, "F:/bmp_back70x40.bin", machine_menu.next, PARA_UI_TURN_PAGE_POS_X, PARA_UI_TURN_PAGE_POS_Y, event_handler, ID_ACCE_DOWN, true);
+    // lv_big_button_create(scr, "F:/bmp_back70x40.bin", machine_menu.next, PARA_UI_TURN_PAGE_POS_X, PARA_UI_TURN_PAGE_POS_Y, event_handler, ID_ACCE_DOWN, true);
+    lv_screen_menu_item_turn_page(scr, machine_menu.next, event_handler, ID_ACCE_DOWN);
   }
   else {
     itoa(planner.settings.max_acceleration_mm_per_s2[Y_AXIS], public_buf_l, 10);
@@ -138,10 +139,13 @@ void lv_draw_acceleration_settings() {
     itoa(planner.settings.max_acceleration_mm_per_s2[E_AXIS_N(1)], public_buf_l, 10);
     lv_screen_menu_item_1_edit(scr, machine_menu.E1_Acceleration, PARA_UI_POS_X, PARA_UI_POS_Y * 4, event_handler, ID_ACCE_E1, 3, public_buf_l);
 
-    lv_big_button_create(scr, "F:/bmp_back70x40.bin", machine_menu.previous, PARA_UI_TURN_PAGE_POS_X, PARA_UI_TURN_PAGE_POS_Y, event_handler, ID_ACCE_UP, true);
+    // lv_big_button_create(scr, "F:/bmp_back70x40.bin", machine_menu.previous, PARA_UI_TURN_PAGE_POS_X, PARA_UI_TURN_PAGE_POS_Y, event_handler, ID_ACCE_UP, true);
+    lv_screen_menu_item_turn_page(scr, machine_menu.previous, event_handler, ID_ACCE_UP);
   }
 
-  lv_big_button_create(scr, "F:/bmp_back70x40.bin", common_menu.text_back, PARA_UI_BACL_POS_X, PARA_UI_BACL_POS_Y, event_handler, ID_ACCE_RETURN, true);
+  // lv_big_button_create(scr, "F:/bmp_back70x40.bin", common_menu.text_back, PARA_UI_BACL_POS_X, PARA_UI_BACL_POS_Y, event_handler, ID_ACCE_RETURN, true);
+    lv_screen_menu_item_return(scr, event_handler, ID_ACCE_RETURN);
+
 }
 
 void lv_clear_acceleration_settings() {

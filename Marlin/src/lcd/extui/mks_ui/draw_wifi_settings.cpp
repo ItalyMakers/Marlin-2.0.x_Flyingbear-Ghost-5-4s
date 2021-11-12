@@ -127,11 +127,11 @@ void lv_draw_wifi_settings() {
   lv_obj_t *line4 = lv_line_create(scr, nullptr);
   lv_ex_line(line4, line_points[3]);
 
-  lv_obj_t *buttonConfig = lv_imgbtn_create(scr, "F:/bmp_back70x40.bin", PARA_UI_TURN_PAGE_POS_X, PARA_UI_TURN_PAGE_POS_Y, event_handler, ID_WIFI_CONFIG);
-  lv_obj_t *labelConfig = lv_label_create_empty(buttonConfig);
+  // lv_obj_t *buttonConfig = lv_imgbtn_create(scr, "F:/bmp_back70x40.bin", PARA_UI_TURN_PAGE_POS_X, PARA_UI_TURN_PAGE_POS_Y, event_handler, ID_WIFI_CONFIG);
+  // lv_obj_t *labelConfig = lv_label_create_empty(buttonConfig);
 
-  lv_obj_t *buttonBack = lv_imgbtn_create(scr, "F:/bmp_back70x40.bin", PARA_UI_BACL_POS_X, PARA_UI_BACL_POS_Y, event_handler, ID_WIFI_RETURN);
-  lv_obj_t *label_Back = lv_label_create_empty(buttonBack);
+  // lv_obj_t *buttonBack = lv_imgbtn_create(scr, "F:/bmp_back70x40.bin", PARA_UI_BACL_POS_X, PARA_UI_BACL_POS_Y, event_handler, ID_WIFI_RETURN);
+  // lv_obj_t *label_Back = lv_label_create_empty(buttonBack);
 
   if (gCfgItems.multiple_language) {
     if (gCfgItems.wifi_mode_sel == AP_MODEL) {
@@ -159,11 +159,14 @@ void lv_draw_wifi_settings() {
     lv_label_set_text(labelCloudValue, gCfgItems.cloud_enable ? machine_menu.enable : machine_menu.disable);
     lv_obj_align(labelCloudValue, buttonCloudValue, LV_ALIGN_CENTER, 0, 0);
 
-    lv_label_set_text(labelConfig, machine_menu.wifiConfig);
-    lv_obj_align(labelConfig, buttonConfig, LV_ALIGN_CENTER, 0, 0);
+    // lv_label_set_text(labelConfig, machine_menu.wifiConfig);
+    // lv_obj_align(labelConfig, buttonConfig, LV_ALIGN_CENTER, 0, 0);
+    lv_screen_menu_item_turn_page(scr, machine_menu.wifiConfig, event_handler, ID_WIFI_CONFIG);
 
-    lv_label_set_text(label_Back, common_menu.text_back);
-    lv_obj_align(label_Back, buttonBack, LV_ALIGN_CENTER, 0, 0);
+
+    // lv_label_set_text(label_Back, common_menu.text_back);
+    // lv_obj_align(label_Back, buttonBack, LV_ALIGN_CENTER, 0, 0);
+    lv_screen_menu_item_return(scr, event_handler, ID_WIFI_RETURN);
   }
 
   #if HAS_ROTARY_ENCODER

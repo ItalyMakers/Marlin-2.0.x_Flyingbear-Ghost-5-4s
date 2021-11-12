@@ -1455,4 +1455,24 @@ void LV_TASK_HANDLER() {
   if (marlin_state == MF_SD_COMPLETE) lv_print_finished();
 }
 
+void lv_screen_menu_item_turn_page(lv_obj_t *par, const char *text, lv_event_cb_t cb, const int id) {
+  lv_obj_t* btnTurnPage = lv_btn_create(par, PARA_UI_TURN_PAGE_POS_X, PARA_UI_TURN_PAGE_POS_Y, PARA_UI_TURN_BTN_X_SIZE, PARA_UI_TURN_BTN_Y_SIZE, cb, id);
+  lv_obj_t* labelTurnPage = lv_label_create_empty(btnTurnPage);
+  lv_btn_set_style_both(btnTurnPage, &style_para_back);
+  lv_label_set_text(labelTurnPage, text);
+  lv_obj_align(labelTurnPage, btnTurnPage, LV_ALIGN_CENTER, 0, 0);
+  if (TERN0(HAS_ROTARY_ENCODER, gCfgItems.encoder_enable))
+    lv_group_add_obj(g, btnTurnPage);
+}
+
+void lv_screen_menu_item_return(lv_obj_t *par, lv_event_cb_t cb, const int id) {
+  lv_obj_t* btnReturn = lv_btn_create(par, PARA_UI_BACL_POS_X, PARA_UI_BACL_POS_Y, PARA_UI_BACK_BTN_X_SIZE, PARA_UI_BACK_BTN_Y_SIZE, cb, id);
+  lv_obj_t* labelReturn = lv_label_create_empty(btnReturn);
+  lv_btn_set_style_both(btnReturn, &style_para_back);
+  lv_label_set_text(labelReturn, common_menu.text_back);
+  lv_obj_align(labelReturn, btnReturn, LV_ALIGN_CENTER, 0, 0);
+  if (TERN0(HAS_ROTARY_ENCODER, gCfgItems.encoder_enable))
+    lv_group_add_obj(g, btnReturn);
+}
+
 #endif // HAS_TFT_LVGL_UI
