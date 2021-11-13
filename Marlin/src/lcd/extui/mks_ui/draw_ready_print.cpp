@@ -44,6 +44,7 @@
 #include <stdio.h>
 #include "../../../gcode/queue.h"
 
+
 #define ICON_POS_Y          260
 #define TARGET_LABEL_MOD_Y -36
 #define LABEL_MOD_Y         30
@@ -93,39 +94,34 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
   //   lv_clear_ready_print();
   // }
   switch (obj->mks_obj_id){
-    case ID_P_ABS:
-    case ID_P_PLA:
-    case ID_COOLDOWN:
-    case ID_EMSTOP:
-    break;
-    default:
-    lv_clear_ready_print();
+    case ID_TOOL ... ID_INFO_BED:
+      lv_clear_ready_print();
     break;
   }
 
   switch (obj->mks_obj_id) {
     case ID_TOOL:   lv_draw_tool(); break;
     case ID_SET:    lv_draw_set(); break;
-    case ID_INFO_EXT:  uiCfg.curTempType = 0; lv_draw_preHeat(); break;
-    case ID_INFO_BED:  uiCfg.curTempType = 1; lv_draw_preHeat(); break;
-    case ID_INFO_FAN:  lv_draw_fan(); break;
     case ID_PRINT: TERN(MULTI_VOLUME, lv_draw_media_select(), lv_draw_print_file()); break;
+    case ID_INFO_EXT:  uiCfg.curTempType = 0; lv_draw_preHeat(); break;
+    case ID_INFO_FAN:  lv_draw_fan(); break;
+    case ID_INFO_BED:  uiCfg.curTempType = 1; lv_draw_preHeat(); break;
     case ID_P_ABS:
       thermalManager.setTargetHotend(PREHEAT_2_TEMP_HOTEND, 0);
-        thermalManager.setTargetBed(PREHEAT_2_TEMP_BED);
-      break;
+      thermalManager.setTargetBed(PREHEAT_2_TEMP_BED);
+    break;
 
     case ID_P_PLA:
 
       thermalManager.setTargetHotend(PREHEAT_1_TEMP_HOTEND, 0);
-        thermalManager.setTargetBed(PREHEAT_1_TEMP_BED);
-      break;
+      thermalManager.setTargetBed(PREHEAT_1_TEMP_BED);
+    break;
 
     case ID_COOLDOWN:
-    queue.inject(PSTR("M106 S0\nM104 S0\nM140 S0"));
+    queue.inject_P(PSTR("M106 S0\nM104 S0\nM140 S0\n"));
     break;
     case ID_EMSTOP:
-    queue.inject(PSTR("M112"));
+    queue.inject_P(PSTR("M112\n"));
     break;
   }
 }

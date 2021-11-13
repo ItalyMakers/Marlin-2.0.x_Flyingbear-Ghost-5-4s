@@ -282,6 +282,8 @@ void machine_setting_disp() {
     machine_menu.Yoffset         = OFFSET_Y_CN;
     machine_menu.Zoffset         = OFFSET_Z_CN;
 
+
+
     machine_menu.HomingSensitivityConfTitle = HOMING_SENSITIVITY_CONF_TITLE_CN;
     machine_menu.X_Sensitivity              = X_SENSITIVITY_CN;
     machine_menu.Y_Sensitivity              = Y_SENSITIVITY_CN;
@@ -510,6 +512,7 @@ void machine_setting_disp() {
     machine_menu.Xoffset         = OFFSET_X_T_CN;
     machine_menu.Yoffset         = OFFSET_Y_T_CN;
     machine_menu.Zoffset         = OFFSET_Z_T_CN;
+
 
     machine_menu.HomingSensitivityConfTitle = HOMING_SENSITIVITY_CONF_TITLE_T_CN;
     machine_menu.X_Sensitivity              = X_SENSITIVITY_T_CN;
@@ -742,6 +745,14 @@ void machine_setting_disp() {
     machine_menu.Xoffset         = OFFSET_X_EN;
     machine_menu.Yoffset         = OFFSET_Y_EN;
     machine_menu.Zoffset         = OFFSET_Z_EN;
+
+    machine_menu.BLTouchLevelingConfTitle = BLTOUCH_LEVELING_TITTLE_EN;
+    machine_menu.BLTouchLevelingConf      = BLTOUCH_LEVELING_EN;
+    machine_menu.BLTouchInit              = BLTOUCH_INIT_EN;
+    machine_menu.BLTouchOffsetpos         = BLTOUCH_ZOFFSETPOS_EN;
+    machine_menu.BLTouchOffsetneg         = BLTOUCH_ZOFFSETNEG_EN;
+    machine_menu.BLTouchSave              = BLTOUCH_SAVE_EN;
+    machine_menu.BLTouchTest              = BLTOUCH_TEST_EN;
 
     machine_menu.HomingSensitivityConfTitle = HOMING_SENSITIVITY_CONF_TITLE_EN;
     machine_menu.X_Sensitivity              = X_SENSITIVITY_EN;
@@ -2557,6 +2568,8 @@ void disp_language_init() {
           pause_menu.filament = FILAMENT_TEXT_IT;
           pause_menu.more     = PRINTING_MORE_IT;
 
+
+
           //
           speed_menu.title         = PRINTING_CHANGESPEED_IT;
           speed_menu.add           = ADD_TEXT_IT;
@@ -2653,6 +2666,7 @@ void disp_language_init() {
       preheat_menu.off          = CLOSE_TEXT_EN;
       //
       move_menu.title = TITLE_MOVE_EN;
+      move_menu.zoffset = TEXT_ZOFFSET_EN;
       //
       home_menu.title    = TITLE_HOME_EN;
       home_menu.stopmove = HOME_STOPMOVE_EN;

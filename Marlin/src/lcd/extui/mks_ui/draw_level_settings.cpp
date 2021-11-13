@@ -36,7 +36,8 @@ enum {
   ID_LEVEL_RETURN = 1,
   ID_LEVEL_POSITION,
   ID_LEVEL_COMMAND,
-  ID_LEVEL_ZOFFSET
+  ID_LEVEL_ZOFFSET,
+  ID_LEVEL_BLTOUCH
 };
 
 static void event_handler(lv_obj_t *obj, lv_event_t event) {
@@ -56,6 +57,14 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
     #if HAS_BED_PROBE
       case ID_LEVEL_ZOFFSET:
         lv_draw_auto_level_offset_settings();
+        break;
+    #endif
+    #if ENABLED(BLTOUCH)
+      case ID_LEVEL_BLTOUCH:
+        last_disp_state = LEVELING_PARA_UI;
+        lv_clear_level_settings();
+        bltouch_do_init(false);
+        lv_draw_bltouch_settings();
         break;
     #endif
   }

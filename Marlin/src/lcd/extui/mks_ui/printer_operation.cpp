@@ -144,6 +144,20 @@ void printer_state_polling() {
     filament_check();
 
   TERN_(MKS_WIFI_MODULE, wifi_looping());
+
+  #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
+    if (uiCfg.autoLeveling) {
+      get_gcode_command(AUTO_LEVELING_COMMAND_ADDR, (uint8_t *)public_buf_m);
+      public_buf_m[sizeof(public_buf_m) - 1] = 0;
+      gcode.process_subcommands_now_P(PSTR(public_buf_m));
+      clear_cur_ui();
+      #ifdef BLTOUCH
+      bltouch_do_init(false);
+      lv_draw_bltouch_settings();
+      #endif
+      uiCfg.autoLeveling = false;
+    }
+  #endif
 }
 
 void filament_pin_setup() {

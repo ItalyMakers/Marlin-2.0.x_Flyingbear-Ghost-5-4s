@@ -258,6 +258,8 @@
 #define EEPROM_READ_TIPS_IT               "Leggi le impostazioni dalla EEPROM?"
 #define EEPROM_REVERT_TIPS_IT             "Ripristinare le impostazioni predefinite?"
 
+
+
 #define MORE_CUSTOM1_TEXT_IT  MAIN_MENU_ITEM_1_DESC
 #define MORE_CUSTOM2_TEXT_IT  MAIN_MENU_ITEM_2_DESC
 #define MORE_CUSTOM3_TEXT_IT  MAIN_MENU_ITEM_3_DESC

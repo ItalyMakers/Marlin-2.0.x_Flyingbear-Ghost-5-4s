@@ -1,42 +1,27 @@
 #pragma once
 
+
 //default motherboard
 #define FBGHOST_MOTHERBOARD     BOARD_MKS_ROBIN_NANO
-#define FBGHOST_MACHINE_NAME    "Flying Bear Ghost 5"
+
+// #define FBGHOST_IS_5
+#define FBGHOST_IS_4S
+
+
+#if (COUNT_ENABLED(FBGHOST_IS_5, FBGHOST_IS_4S) == 1)
+  #if ENABLED(FBGHOST_IS_5)
+    #define FBGHOST_MACHINE_NAME    "Flying Bear Ghost 5"
+    #define FBGHOST_FIL_RUNOUT_STATE  LOW
+  #else
+    #define FBGHOST_MACHINE_NAME    "Flying Bear Ghost 4S"
+    #define FBGHOST_FIL_RUNOUT_STATE  HIGH
+  #endif
+#else
+  #error "Select only one between FBGHOST_IS_5 and FBGHOST_IS_4S"
+#endif
 
 
 
-// #define ALL_DRV_2208
-// //#define FB_4S_STOCK
-// //#define FB_5_STOCK
-
-// #ifdef ALL_DRV_2208
-// #define USR_E0_DIR true
-// #define USR_X_DIR false
-// #define USR_Y_DIR false
-// #define USR_Z_DIR true
-// #endif
-
-// #ifdef FB_4S_STOCK
-// #define USR_E0_DIR false
-// #define USR_X_DIR true
-// #define USR_Y_DIR true
-// #define USR_Z_DIR false
-// #endif
-
-// #ifdef FB_5_STOCK
-// #if MOTHERBOARD == BOARD_MKS_ROBIN_NANO_V1_3_F4
-// #define USR_E0_DIR false
-// #define USR_X_DIR true
-// #define USR_Y_DIR true
-// #define USR_Z_DIR false
-// #else
-// #define USR_E0_DIR false
-// #define USR_X_DIR false
-// #define USR_Y_DIR false
-// #define USR_Z_DIR false
-// #endif
-// #endif
 
 /**
  *  * Use TMC2208/TMC2208_STANDALONE for TMC2225 drivers and TMC2209/TMC2209_STANDALONE for TMC2226 drivers.
@@ -83,12 +68,33 @@
 
 #if ENABLED(FBGHOST_BLTOUCH)
   #define FBGHOST_AUTO_BED_LEVELING_BILINEAR
+  #define FBGHOST_G29_RETRY_AND_RECOVER
+  #define FBGHOST_Z_MIN_ENDSTOP_INVERTING false
+  #define FBGHOST_GRID_MAX_POINTS_X   5
+  #define FBGHOST_GRID_MAX_POINTS_Y   FBGHOST_GRID_MAX_POINTS_X
+  #define FBGHOST_BABYSTEP_INVERT_Z false           // Change if Z babysteps should go the other way
+  #define FBGHOST_Z_SAFE_HOMING_X_POINT0 X_CENTER  // X point for Z homing
+  #define FBGHOST_Z_SAFE_HOMING_Y_POINT0 Y_CENTER  // Y point for Z homing
 #else
-  #define FBGHOST_MESH_BED_LEVELING
-  #define FBGHOST_MIN_SOFTWARE_ENDSTOP_Z
+  #define FBGHOST_MESH_BED_LEVELING              //TODO - WIP non ancora pronto
+
+  // #define FBGHOST_FIX_MOUNTED_PROBE
+  #ifndef FBGHOST_MESH_BED_LEVELING
+    #define FBGHOST_BABYSTEP_ZPROBE_OFFSET          // Combine M851 Z and Babystepping
+  #endif
+
+  #define FBGHOST_PROBE_MANUALLY
+  #define FBGHOST_Z_MIN_PROBE_ENDSTOP_INVERTING 1
+  #define FBGHOST_MIN_SOFTWARE_ENDSTOP_Z false
   #define FBGHOST_MESH_INSET          10          // Set Mesh bounds as an inset region of the bed
   #define FBGHOST_GRID_MAX_POINTS_X   3           // Don't use more than 7 points per axis, implementation limited.
-  #define FBGHOST_GRID_MAX_POINTS_Y   GRID_MAX_POINTS_X
+  #define FBGHOST_GRID_MAX_POINTS_Y   FBGHOST_GRID_MAX_POINTS_X
+  #define FBGHOST_Z_MIN_ENDSTOP_INVERTING true
+  #define FBGHOST_BABYSTEP_INVERT_Z false           // Change if Z babysteps should go the other way
+
+  #define FBGHOST_Z_SAFE_HOMING_X_POINT0 0  // X point for Z homing
+  #define FBGHOST_Z_SAFE_HOMING_Y_POINT0 0  // Y point for Z homing
+
 #endif
 
 
@@ -138,8 +144,39 @@
 
 
 
+/**
+ * Probing Margins
+ *
+ * Override PROBING_MARGIN for each side of the build plate
+ * Useful to get probe points to exact positions on targets or
+ * to allow leveling to avoid plate clamps on only specific
+ * sides of the bed. With NOZZLE_AS_PROBE negative values are
+ * allowed, to permit probing outside the bed.
+ *
+ * If you are replacing the prior *_PROBE_BED_POSITION options,
+ * LEFT and FRONT values in most cases will map directly over
+ * RIGHT and REAR would be the inverse such as
+ * (X/Y_BED_SIZE - RIGHT/BACK_PROBE_BED_POSITION)
+ *
+ * This will allow all positions to match at compilation, however
+ * should the probe position be modified with M851XY then the
+ * probe points will follow. This prevents any change from causing
+ * the probe to be unable to reach any points.
+ */
 
-#define FBGHOST_FIL_RUNOUT_STATE     HIGH        // Pin state indicating that filament is NOT present.
+#define FBGHOST_PROBING_MARGIN        10
+#define FBGHOST_PROBING_MARGIN_LEFT   20
+#define FBGHOST_PROBING_MARGIN_RIGHT  FBGHOST_PROBING_MARGIN
+#define FBGHOST_PROBING_MARGIN_FRONT  FBGHOST_PROBING_MARGIN
+#define FBGHOST_PROBING_MARGIN_BACK   FBGHOST_PROBING_MARGIN
+
+
+
+
+
+
+
+
 // After a runout is detected, continue printing this length of filament
 // before executing the runout script. Useful for a sensor at the end of
 // a feed tube.
@@ -172,9 +209,6 @@
 
 
 //PID
-#define FBGHOST_BANG_MAX        255
-#define FBGHOST_PID_MAX         BANG_MAX
-#define FBGHOST_PID_K1          0.95
 
 //HOTEND
 #define FBGHOST_DEFAULT_Kp 11.14
@@ -204,11 +238,11 @@
 
 #define FBGHOST_CLASSIC_JERK
 
-#define FBGHOST_DEFAULT_XJERK 10.0
-#define FBGHOST_DEFAULT_YJERK 10.0
-#define FBGHOST_DEFAULT_ZJERK  0.3
+#define FBGHOST_DEFAULT_XJERK         10.0
+#define FBGHOST_DEFAULT_YJERK         10.0
+#define FBGHOST_DEFAULT_ZJERK          0.3
 
-#define FBGHOST_DEFAULT_EJERK    10.0  // May be used by Linear Advance
+#define FBGHOST_DEFAULT_EJERK         10.0  // May be used by Linear Advance
 
 
 
@@ -217,14 +251,14 @@
  * Prevent a single extrusion longer than EXTRUDE_MAXLENGTH.
  * Note: For Bowden Extruders make this large enough to allow load/unload.
  */
-#define FBGHOST_EXTRUDE_MAXLENGTH 1200
+#define FBGHOST_EXTRUDE_MAXLENGTH     1200
 
 /**
  * Default Max Feed Rate (mm/s)
  * Override with M203
  *                                      X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
  */
-#define FBGHOST_DEFAULT_MAX_FEEDRATE          { 2000, 2000, 5, 70 }
+#define FBGHOST_DEFAULT_MAX_FEEDRATE  { 2000, 2000, 5, 70 }
 
 /**
  * Default Max Acceleration (change/s) change = mm/s
@@ -235,3 +269,42 @@
 #define FBGHOST_DEFAULT_MAX_ACCELERATION {1000,1000,200,80000}   //      { 3000, 3000, 100, 10000 }
 
 
+
+
+
+
+// //===========================================================================
+// //================================= Buffers =================================
+// //===========================================================================
+
+// // @section motion
+
+// // The number of linear moves that can be in the planner at once.
+// // The value of BLOCK_BUFFER_SIZE must be a power of 2 (e.g., 8, 16, 32)
+// #define FBGHOST_BLOCK_BUFFER_SIZE 32
+
+// // @section serial
+
+// // The ASCII buffer for serial input
+// #define FBGHOST_MAX_CMD_SIZE    96
+// #define FBGHOST_BUFSIZE         32
+
+// // Transmission to Host Buffer Size
+// // To save 386 bytes of PROGMEM (and TX_BUFFER_SIZE+3 bytes of RAM) set to 0.
+// // To buffer a simple "ok" you need 4 bytes.
+// // For ADVANCED_OK (M105) you need 32 bytes.
+// // For debug-echo: 128 bytes for the optimal speed.
+// // Other output doesn't need to be that speedy.
+// // :[0, 2, 4, 8, 16, 32, 64, 128, 256]
+// #define FBGHOST_TX_BUFFER_SIZE  _INIT(256)
+
+// // Host Receive Buffer Size
+// // Without XON/XOFF flow control (see SERIAL_XON_XOFF below) 32 bytes should be enough.
+// // To use flow control, set this buffer size to at least 1024 bytes.
+// // :[0, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048]
+// #define FBGHOST_RX_BUFFER_SIZE  _INIT(512)
+
+// // Enable to have the controller send XON/XOFF control characters to
+// // the host to signal the RX buffer is becoming full.
+// // it needs FBGHOST_RX_BUFFER_SIZE >= 1024 to be enabled
+// #define FBGHOST_SERIAL_XON_XOFF

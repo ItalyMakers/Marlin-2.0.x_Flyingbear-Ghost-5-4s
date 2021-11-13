@@ -107,6 +107,15 @@ typedef struct machine_common_disp {
   const char *LevelingAutoCommandConf;
   const char *LevelingAutoZoffsetConf;
 
+  const char *BLTouchLevelingConfTitle;
+  const char *BLTouchLevelingConf;
+  const char *BLTouchInit;
+  const char *BLTouchOffsetpos;
+  const char *BLTouchOffsetneg;
+  const char *BLTouchSave;
+  const char *BLTouchTest;
+
+
   const char *LevelingSubConfTitle;
   const char *AutoLevelEnable;
   const char *BLtouchEnable;
@@ -359,6 +368,7 @@ typedef struct move_menu_disp {
   const char *step_01mm;
   const char *step_1mm;
   const char *step_10mm;
+  const char *zoffset;
   const char *back;
 } move_menu_def;
 
