@@ -229,7 +229,8 @@ static const char assets[][LONG_FILENAME_LENGTH] = {
   "bmp_gcode.bin",
   "bmp_temp_mini.bin",
   "bmp_mini_emergency_stop.bin",
-  "bmp_mini_temp0.bin"
+  "bmp_mini_temp0.bin",
+  "bmp_mbl_next.bin"
 };
 
 #if HAS_SPI_FLASH_FONT

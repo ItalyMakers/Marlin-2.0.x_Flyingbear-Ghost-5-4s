@@ -754,6 +754,11 @@ void machine_setting_disp() {
     machine_menu.BLTouchSave              = BLTOUCH_SAVE_EN;
     machine_menu.BLTouchTest              = BLTOUCH_TEST_EN;
 
+    machine_menu.MeshBedLevelingConfTitle = MESHBED_LEVELING_TITTLE_EN;
+    machine_menu.MeshblSaved              = MESHBED_LEVELING_SAVED_EN;
+    machine_menu.MeshblLeveling           = MESHBED_LEVELING_LEVELING_EN;
+    machine_menu.MeshblNext               = MESHBED_LEVELING_NEXT_EN;
+
     machine_menu.HomingSensitivityConfTitle = HOMING_SENSITIVITY_CONF_TITLE_EN;
     machine_menu.X_Sensitivity              = X_SENSITIVITY_EN;
     machine_menu.Y_Sensitivity              = Y_SENSITIVITY_EN;
@@ -783,6 +788,8 @@ void disp_language_init() {
   move_menu.step_01mm  = TEXT_01MM;
   move_menu.step_1mm   = TEXT_1MM;
   move_menu.step_10mm  = TEXT_10MM;
+  move_menu.zoffset    = TEXT_ZOFFSET;
+  move_menu.currPoint  = TEXT_CURRENT_POINT;
 
   home_menu.home_x   = HOME_X_TEXT;
   home_menu.home_y   = HOME_Y_TEXT;

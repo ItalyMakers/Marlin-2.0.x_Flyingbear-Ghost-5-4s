@@ -111,6 +111,11 @@
 #define BLTOUCH_SAVE_EN                 "Save"
 #define BLTOUCH_TEST_EN                 "Test"
 
+#define MESHBED_LEVELING_TITTLE_EN      "Machine Settings>Mesh Bed Leveling"
+#define MESHBED_LEVELING_SAVED_EN       "Mesh Saved"
+#define MESHBED_LEVELING_LEVELING_EN    "Mesh Leveling"
+#define MESHBED_LEVELING_NEXT_EN        "Next Pos."
+
 #define LEVELING_PARA_CONF_TITLE_EN     "leveling setting"
 #define AUTO_LEVELING_ENABLE_EN         "Enable auto leveling"
 #define BLTOUCH_LEVELING_ENABLE_EN      "Enable BLTouch"

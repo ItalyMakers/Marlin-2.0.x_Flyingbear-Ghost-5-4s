@@ -21,7 +21,7 @@
  */
 #include "../../../inc/MarlinConfigPre.h"
 
-#if HAS_TFT_LVGL_UI && ENABLED(BLTOUCH)
+#if HAS_TFT_LVGL_UI && ENABLED(MESH_BED_LEVELING)
 
 #include "../../../MarlinCore.h"
 #include "draw_ui.h"
@@ -30,9 +30,9 @@
 #include "../../../gcode/queue.h"
 #include "../../../gcode/gcode.h"
 #include "../../../module/probe.h"
-#if ENABLED(AUTO_BED_LEVELING_BILINEAR)
-  #include "../../../feature/bedlevel/bedlevel.h"
-#endif
+
+#include "../../../feature/bedlevel/bedlevel.h"
+
 #if ENABLED(EEPROM_SETTINGS)
   #include "../../../module/settings.h"
 #endif
@@ -44,19 +44,24 @@
 extern lv_group_t *g;
 static lv_obj_t *scr, *labelV, *buttonV, *zOffsetText;
 static lv_obj_t *labelExt1, *labelBed;
-static lv_obj_t *buttonExt1, *buttonBed;
+static lv_obj_t *buttonExt1, *buttonBed, *buttonNext, *buttonSave;
 
 static float step_dist = 0.01;
 static float zoffset_diff = 0;
 
+static bool saved = false;
+
+static uint8_t manual_probe_index=0;
+constexpr uint8_t total_probe_points = TERN(AUTO_BED_LEVELING_3POINT, 3, GRID_MAX_POINTS);
+
 enum {
-  ID_BLTOUCH_INIT = 1,
-  ID_BLTOUCH_ZOFFSETPOS,
-  ID_BLTOUCH_ZOFFSETNEG,
-  ID_BLTOUCH_SAVE,
-  ID_BLTOUCH_TEST,
-  ID_BLTOUCH_STEPS,
-  ID_BLTOUCH_RETURN
+  ID_MESHBL_INIT = 1,
+  ID_MESHBL_ZOFFSETPOS,
+  ID_MESHBL_ZOFFSETNEG,
+  ID_MESHBL_SAVE,
+  ID_MESHBL_NEXT,
+  ID_MESHBL_STEPS,
+  ID_MESHBL_RETURN
  };
 
 static void event_handler(lv_obj_t * obj, lv_event_t event) {
@@ -64,38 +69,50 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
   char baby_buf[30] = { 0 };
   char str_1[40];
   switch (obj->mks_obj_id) {
-    case ID_BLTOUCH_INIT:
-      bltouch_do_init(true);
+    case ID_MESHBL_INIT:
+      lv_obj_set_hidden( buttonNext, false );
+      lv_obj_set_hidden( buttonSave, true );
+      meshbl_do_init(true);
       break;
-    case ID_BLTOUCH_ZOFFSETPOS:
-      sprintf_P(baby_buf, PSTR("M290 Z%s"), dtostrf(step_dist, 1, 3, str_1));
+    case ID_MESHBL_ZOFFSETPOS:
+      sprintf_P(baby_buf, PSTR("G1 Z%s"), dtostrf(current_position.z + step_dist, 1, 3, str_1));
       gcode.process_subcommands_now_P(PSTR(baby_buf));
+
       zoffset_diff += step_dist;
       break;
-    case ID_BLTOUCH_ZOFFSETNEG:
-      sprintf_P(baby_buf, PSTR("M290 Z%s"), dtostrf(-step_dist, 1, 3, str_1));
+    case ID_MESHBL_ZOFFSETNEG:
+      sprintf_P(baby_buf, PSTR("G1 Z%s"), dtostrf(current_position.z - step_dist, 1, 3, str_1));
       gcode.process_subcommands_now_P(PSTR(baby_buf));
       zoffset_diff -= step_dist;
       break;
-    case ID_BLTOUCH_SAVE:
+    case ID_MESHBL_SAVE:
       if (!queue.ring_buffer.full(2)) {
         #if ENABLED(AUTO_BED_LEVELING_BILINEAR) && DISABLED(Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN)
           for (uint8_t x = 0; x < GRID_MAX_POINTS_X; x++)
             for (uint8_t y = 0; y < GRID_MAX_POINTS_Y; y++)
               z_values[x][y] = z_values[x][y] + zoffset_diff;
         #endif
-        queue.enqueue_now_P(PSTR("M500\nG28 X Y"));
+        TERN_(EEPROM_SETTINGS, (void)settings.save());
+        saved= true;
+        manual_probe_index=0;
         zoffset_diff = 0;
       }
       break;
-    case ID_BLTOUCH_TEST:
-      sprintf_P(str_1, PSTR("G28\nG1 Z10 F2400\nG1 X%d Y%d\nG0 Z0.3"), X_MAX_POS / 2, Y_MAX_POS / 2);
+    case ID_MESHBL_NEXT:
+      // sprintf_P(str_1, PSTR("G28\nG1 Z10 F2400\nG1 X%d Y%d\nG0 Z0.3"), X_MAX_POS / 2, Y_MAX_POS / 2);
       if (!queue.ring_buffer.length) {
-        queue.enqueue_now_P(PSTR(str_1));
+       // mesh_bed_leveling::set_zigzag_z(manual_probe_index, current_position.z + zoffset_diff);
+        queue.clear();
+
+        queue.enqueue_now_P("G29 S2");
         zoffset_diff = 0;
+        if (++manual_probe_index >= total_probe_points){
+          lv_obj_set_hidden( buttonNext, true );
+          lv_obj_set_hidden( buttonSave, false );
+        }
       }
       break;
-    case ID_BLTOUCH_STEPS:
+    case ID_MESHBL_STEPS:
       if (abs((int)(100 * step_dist)) == 1)
         step_dist = 0.05;
       else if (abs((int)(100 * step_dist)) == 5)
@@ -104,9 +121,9 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
         step_dist = 0.01;
       disp_step_dist();
       break;
-    case ID_BLTOUCH_RETURN:
+    case ID_MESHBL_RETURN:
       TERN_(HAS_SOFTWARE_ENDSTOPS, soft_endstop._enabled = true);
-      lv_clear_bltouch_settings();
+      lv_clear_meshbl_settings();
       if ENABLED(MESH_BED_LEVELING) lv_draw_manualLevel();
       else{
         if (last_disp_state == DIALOG_UI) lv_draw_ready_print();
@@ -119,14 +136,14 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
   }
 }
 
-void lv_draw_bltouch_settings(void) {
-  scr = lv_screen_create(BLTOUCH_UI, machine_menu.BLTouchLevelingConfTitle);
+void lv_draw_meshbl_settings(void) {
+  scr = lv_screen_create(MESH_UI, machine_menu.MeshBedLevelingConfTitle);
   // Create image buttons
-  lv_big_button_create(scr, "F:/bmp_Add.bin", machine_menu.BLTouchOffsetpos, INTERVAL_V, titleHeight, event_handler, ID_BLTOUCH_ZOFFSETPOS);
+  lv_big_button_create(scr, "F:/bmp_Add.bin", machine_menu.BLTouchOffsetpos, INTERVAL_V, titleHeight, event_handler, ID_MESHBL_ZOFFSETPOS);
 
-  //  buttonInitstate = lv_img_create(scr, NULL);
+
   lv_obj_t *buttonInitstate = lv_imgbtn_create(scr, NULL);
-  lv_obj_set_event_cb_mks(buttonInitstate, event_handler, ID_BLTOUCH_INIT, NULL, 0);
+  lv_obj_set_event_cb_mks(buttonInitstate, event_handler, ID_MESHBL_INIT, NULL, 0);
   lv_imgbtn_set_src_both(buttonInitstate, "F:/bmp_init_state.bin");
   lv_obj_set_pos(buttonInitstate, 145, 50);
 
@@ -145,18 +162,20 @@ void lv_draw_bltouch_settings(void) {
   labelExt1 = lv_label_create(scr, 196, 115, nullptr);
   labelBed  = lv_label_create(scr, 267, 115, nullptr);
 
-  zOffsetText = lv_label_create(scr, 170, 140, nullptr);
-  lv_big_button_create(scr, "F:/bmp_Dec.bin", machine_menu.BLTouchOffsetneg, BTN_X_PIXEL * 3 + INTERVAL_V * 4, titleHeight, event_handler, ID_BLTOUCH_ZOFFSETNEG);
+  zOffsetText = lv_label_create(scr, 120, 140, nullptr);
 
-  buttonV = lv_imgbtn_create(scr, nullptr, INTERVAL_V, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_BLTOUCH_STEPS);
+  lv_big_button_create(scr, "F:/bmp_Dec.bin", machine_menu.BLTouchOffsetneg, BTN_X_PIXEL * 3 + INTERVAL_V * 4, titleHeight, event_handler, ID_MESHBL_ZOFFSETNEG);
+
+  buttonV = lv_imgbtn_create(scr, nullptr, INTERVAL_V, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_MESHBL_STEPS);
   labelV  = lv_label_create_empty(buttonV);
 
-  lv_big_button_create(scr, "F:/bmp_test.bin", machine_menu.BLTouchTest, BTN_X_PIXEL + INTERVAL_V * 2, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_BLTOUCH_TEST);
-  lv_big_button_create(scr, "F:/bmp_save.bin", machine_menu.BLTouchSave, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_BLTOUCH_SAVE);
-  lv_big_button_create(scr, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_BLTOUCH_RETURN);
+  buttonNext = lv_big_button_create(scr, "F:/bmp_mbl_next.bin", machine_menu.MeshblNext, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_MESHBL_NEXT);
+  buttonSave = lv_big_button_create(scr, "F:/bmp_save.bin", machine_menu.BLTouchSave, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_MESHBL_SAVE);
+  lv_obj_set_hidden( buttonSave, true );
+  lv_big_button_create(scr, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_MESHBL_RETURN);
 
   disp_step_dist();
-  disp_bltouch_z_offset_value();
+  disp_meshbl_z_offset_value();
 
   zoffset_diff = 0;
 }
@@ -185,11 +204,18 @@ void disp_step_dist() {
   }
 }
 
-void disp_bltouch_z_offset_value() {
+void disp_meshbl_z_offset_value() {
   char buf[20];
   char str_1[16];
-  sprintf_P(buf, PSTR("%s : %s mm"), move_menu.zoffset, dtostrf(probe.offset.z, 1, 2, str_1) );
+  if(saved){
+    sprintf_P(buf, PSTR(machine_menu.MeshblSaved));
+  }
+  else{
+    sprintf_P(buf, PSTR("%s: %d/%d - %s: %smm"),move_menu.currPoint,(manual_probe_index +1), total_probe_points, move_menu.zoffset, dtostrf(current_position.z, 1, 2, str_1) );
+  }
+
   lv_label_set_text(zOffsetText, buf);
+
   #if HAS_HOTEND
     sprintf(public_buf_l, printing_menu.temp1, (int)thermalManager.temp_hotend[0].celsius, (int)thermalManager.temp_hotend[0].target);
     lv_label_set_text(labelExt1, public_buf_l);
@@ -202,28 +228,30 @@ void disp_bltouch_z_offset_value() {
     lv_obj_align(labelBed, buttonBed, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
   #endif
 
+
+
 }
 
-void bltouch_do_init(bool resetZoffset) {
-  char str_1[50];
-  //TERN_(HAS_BED_PROBE, probe.offset.z = 0);
+void meshbl_do_init(bool resetZoffset) {
+
+  // char str_1[50];
+  TERN_(HAS_BED_PROBE, probe.offset.z = 0);
   TERN_(HAS_SOFTWARE_ENDSTOPS, soft_endstop._enabled = false);
-  //TERN_(HAS_LEVELING, reset_bed_level());
-  //TERN_(EEPROM_SETTINGS, (void)settings.save());
+  // TERN_(HAS_LEVELING, reset_bed_level());
+  // TERN_(EEPROM_SETTINGS, (void)settings.save());
   queue.clear();
-  if (resetZoffset)
-  {
-    sprintf_P(str_1, PSTR("M851 Z0\nG28\nG1 Z10 F2400\nG1 X%d Y%d\nG0 Z0.3"), X_MAX_POS / 2, Y_MAX_POS / 2);
-  }
-  else
-  {
-    sprintf_P(str_1, PSTR("G28\nG1 Z10 F2400\nG1 X%d Y%d\nG0 Z0.3"), X_MAX_POS / 2, Y_MAX_POS / 2);
-  }
-  queue.enqueue_now_P(PSTR(str_1));  // fix-wang
-  // queue.inject_P(PSTR(str_1));
+  manual_probe_index= 0;
+  saved = false;
+  // str_1= "G28 S0";
+  queue.inject_P(PSTR("G28\nG29 S1"));
+  // else
+  // {
+    // sprintf_P(str_1, PSTR("G28\nG1 Z10 F2400\nG1 X%d Y%d\nG0 Z0.3"), X_MAX_POS / 2, Y_MAX_POS / 2);
+  // }
+  // queue.enqueue_now_P(PSTR(str_1));  // fix-wang
 }
 
-void lv_clear_bltouch_settings() {
+void lv_clear_meshbl_settings() {
   #if HAS_ROTARY_ENCODER
     if (gCfgItems.encoder_enable) lv_group_remove_all_objs(g);
   #endif
