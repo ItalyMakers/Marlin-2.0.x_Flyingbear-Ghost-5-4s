@@ -115,6 +115,11 @@ typedef struct machine_common_disp {
   const char *BLTouchSave;
   const char *BLTouchTest;
 
+  const char *MeshBedLevelingConfTitle;
+  const char *MeshblSaved;
+  const char *MeshblLeveling;
+  const char *MeshblNext;
+
 
   const char *LevelingSubConfTitle;
   const char *AutoLevelEnable;
@@ -369,6 +374,7 @@ typedef struct move_menu_disp {
   const char *step_1mm;
   const char *step_10mm;
   const char *zoffset;
+  const char *currPoint;
   const char *back;
 } move_menu_def;
 
@@ -792,6 +798,8 @@ extern eeprom_def eeprom_menu;
 #define TEXT_01MM           "0.1 mm"
 #define TEXT_1MM            "1 mm"
 #define TEXT_10MM           "10 mm"
+#define TEXT_ZOFFSET        "Z Offset"
+#define TEXT_CURRENT_POINT  "Pos"
 
 #define EXTRUDE_1MM_TEXT    "1 mm"
 #define EXTRUDE_5MM_TEXT    "5 mm"

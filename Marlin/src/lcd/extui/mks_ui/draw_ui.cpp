@@ -889,6 +889,7 @@ void GUI_RefreshPage() {
           default: break;
         }
         break;
+
     #endif
 
     case BABY_STEP_UI:
@@ -897,6 +898,24 @@ void GUI_RefreshPage() {
         disp_z_offset_value();
       }
       break;
+
+    #if ENABLED(BLTOUCH)
+      case BLTOUCH_UI:
+        if (temps_update_flag) {
+          temps_update_flag = false;
+          disp_bltouch_z_offset_value();
+        }
+        break;
+    #endif
+
+    #if ENABLED(MESH_BED_LEVELING)
+      case MESH_UI:
+        if (temps_update_flag) {
+          temps_update_flag = false;
+          disp_meshbl_z_offset_value();
+        }
+        break;
+    #endif
 
     default: break;
   }

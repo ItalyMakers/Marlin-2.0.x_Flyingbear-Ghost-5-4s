@@ -63,8 +63,8 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
     #if ENABLED(MESH_BED_LEVELING)
       case ID_M_MESH:
         lv_clear_manualLevel();
-        bltouch_do_init(true);
-        lv_draw_bltouch_settings();
+        meshbl_do_init(true);
+        lv_draw_meshbl_settings();
       break;
     #endif
     case ID_MANUAL_RETURN:
@@ -83,8 +83,8 @@ void lv_draw_manualLevel() {
   lv_big_button_create(scr, "F:/bmp_leveling3.bin", leveling_menu.position3, BTN_X_PIXEL * 2 + INTERVAL_V * 3, titleHeight, event_handler, ID_M_POINT3);
   lv_big_button_create(scr, "F:/bmp_leveling4.bin", leveling_menu.position4, BTN_X_PIXEL * 3 + INTERVAL_V * 4, titleHeight, event_handler, ID_M_POINT4);
   lv_big_button_create(scr, "F:/bmp_leveling5.bin", leveling_menu.position5, INTERVAL_V, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_POINT5);
-  #if ENABLED(MESH_BED_LEVELING) && false
-    lv_big_button_create(scr, "F:/bmp_test.bin", leveling_menu.position5, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_MESH);
+  #if ENABLED(MESH_BED_LEVELING)
+    lv_big_button_create(scr, "F:/bmp_test.bin", machine_menu.MeshblLeveling, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_MESH);
   #endif
 
   lv_big_button_create(scr, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_MANUAL_RETURN);
