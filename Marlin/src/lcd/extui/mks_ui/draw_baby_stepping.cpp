@@ -39,6 +39,9 @@
   #include "../../../module/probe.h"
 #endif
 
+#include "../../../module/motion.h"
+
+
 extern lv_group_t *g;
 static lv_obj_t *scr;
 
@@ -165,11 +168,11 @@ void disp_baby_step_dist() {
 
 void disp_z_offset_value() {
   char buf[20];
-  #if HAS_BED_PROBE
     char str_1[16];
+  #if HAS_BED_PROBE
     sprintf_P(buf, PSTR("Offset Z: %s mm"), dtostrf(probe.offset.z, 1, 3, str_1));
   #else
-    strcpy_P(buf, PSTR("Offset Z: 0 mm"));
+    sprintf_P(buf, PSTR("Offset Z: %s mm"), dtostrf(current_position.z, 1, 2, str_1));
   #endif
   lv_label_set_text(zOffsetText, buf);
 }

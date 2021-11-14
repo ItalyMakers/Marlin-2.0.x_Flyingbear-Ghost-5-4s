@@ -102,13 +102,16 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
       // sprintf_P(str_1, PSTR("G28\nG1 Z10 F2400\nG1 X%d Y%d\nG0 Z0.3"), X_MAX_POS / 2, Y_MAX_POS / 2);
       if (!queue.ring_buffer.length) {
        // mesh_bed_leveling::set_zigzag_z(manual_probe_index, current_position.z + zoffset_diff);
-        queue.clear();
+        queue.ring_buffer.clear();
 
-        queue.enqueue_now_P("G29 S2");
-        zoffset_diff = 0;
-        if (++manual_probe_index >= total_probe_points){
-          lv_obj_set_hidden( buttonNext, true );
-          lv_obj_set_hidden( buttonSave, false );
+
+        bool queued = queue.enqueue_one_P("G29S2");
+        if (queued){
+          if(++manual_probe_index  >= total_probe_points){
+            zoffset_diff = 0;
+            lv_obj_set_hidden( buttonNext, true );
+            lv_obj_set_hidden( buttonSave, false );
+          }
         }
       }
       break;

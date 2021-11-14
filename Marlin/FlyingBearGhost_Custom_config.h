@@ -4,8 +4,8 @@
 //default motherboard
 #define FBGHOST_MOTHERBOARD     BOARD_MKS_ROBIN_NANO
 
-#define FBGHOST_IS_5
-// #define FBGHOST_IS_4S
+// #define FBGHOST_IS_5
+#define FBGHOST_IS_4S
 
 
 #if (COUNT_ENABLED(FBGHOST_IS_5, FBGHOST_IS_4S) == 1)
@@ -76,7 +76,7 @@
   #define FBGHOST_Z_SAFE_HOMING_X_POINT0 X_CENTER  // X point for Z homing
   #define FBGHOST_Z_SAFE_HOMING_Y_POINT0 Y_CENTER  // Y point for Z homing
 #else
-  #define FBGHOST_MESH_BED_LEVELING              //TODO - WIP non ancora pronto
+  #define FBGHOST_MESH_BED_LEVELING
 
   #ifndef FBGHOST_MESH_BED_LEVELING
     #define FBGHOST_BABYSTEP_ZPROBE_OFFSET          // Combine M851 Z and Babystepping
@@ -87,7 +87,7 @@
   #define FBGHOST_Z_MIN_PROBE_ENDSTOP_INVERTING   1
   #define FBGHOST_MIN_SOFTWARE_ENDSTOP_Z          false
   #define FBGHOST_MESH_INSET                      10          // Set Mesh bounds as an inset region of the bed
-  #define FBGHOST_GRID_MAX_POINTS_X               3           // Don't use more than 7 points per axis, implementation limited.
+  #define FBGHOST_GRID_MAX_POINTS_X               5           // Don't use more than 7 points per axis, implementation limited.
   #define FBGHOST_GRID_MAX_POINTS_Y               FBGHOST_GRID_MAX_POINTS_X
   #define FBGHOST_MANUAL_PROBE_START_Z            0.2
   #define FBGHOST_Z_MIN_ENDSTOP_INVERTING         true

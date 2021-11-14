@@ -267,10 +267,10 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
           else {
             sel_id = i;
             lv_clear_print_file();
-            if(get_filemant_pins() == false ) {
-              lv_draw_dialog(DIALOG_TYPE_FILAMENT_NO_PRESS);
-            }else {
+            if(get_filemant_pins()) {
               lv_draw_dialog(DIALOG_TYPE_PRINT_FILE);
+            }else {
+              lv_draw_dialog(DIALOG_TYPE_FILAMENT_NO_PRESS);
             }
           }
           break;

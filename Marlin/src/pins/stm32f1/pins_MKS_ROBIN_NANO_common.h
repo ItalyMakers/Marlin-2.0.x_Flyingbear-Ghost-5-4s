@@ -137,8 +137,8 @@
 //
 #if HAS_TFT_LVGL_UI
   #define MT_DET_1_PIN                      PA4
-  #define MT_DET_2_PIN                      PE6
-  #define MT_DET_PIN_STATE                  LOW //TERN(FBGHOST_FIL_RUNOUT_STATE == HIGH, LOW, HIGH)
+  // #define MT_DET_2_PIN                      PE6
+  #define MT_DET_PIN_STATE                  FBGHOST_FIL_RUNOUT_STATE //TERN(FBGHOST_FIL_RUNOUT_STATE == HIGH, LOW, HIGH)
 
   #define WIFI_IO0_PIN                      PC13
   #define WIFI_IO1_PIN                      PC7

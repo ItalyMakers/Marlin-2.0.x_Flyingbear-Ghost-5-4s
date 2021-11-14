@@ -233,12 +233,12 @@ void lv_draw_dialog(uint8_t type) {
   lv_obj_t *labelDialog = lv_label_create(scr, "");
 
   if (DIALOG_IS(TYPE_FINISH_PRINT, PAUSE_MESSAGE_RESUME)) {
-    btnOk = lv_button_btn_create(scr, BTN_OK_X + 90, BTN_OK_Y, 100, 50, btn_ok_event_cb);
+    btnOk = lv_button_btn_create(scr, BTN_CANCEL_X + 90, BTN_OK_Y, 100, 50, btn_ok_event_cb);
     lv_obj_t *labelOk = lv_label_create_empty(btnOk);           // Add a label to the button
     lv_label_set_text(labelOk, print_file_dialog_menu.confirm); // Set the labels text
   }
   else if (DIALOG_IS(PAUSE_MESSAGE_WAITING, PAUSE_MESSAGE_INSERT, PAUSE_MESSAGE_HEAT)) {
-    btnOk = lv_button_btn_create(scr, BTN_OK_X + 90, BTN_OK_Y, 100, 50, btn_ok_event_cb);
+    btnOk = lv_button_btn_create(scr, BTN_CANCEL_X + 90, BTN_OK_Y, 100, 50, btn_ok_event_cb);
     lv_obj_t *labelOk = lv_label_create_empty(btnOk);           // Add a label to the button
     lv_label_set_text(labelOk, print_file_dialog_menu.confirm); // Set the labels text
   }
@@ -246,24 +246,24 @@ void lv_draw_dialog(uint8_t type) {
     // nothing to do
   }
   else if (DIALOG_IS(WIFI_ENABLE_TIPS)) {
-    btnCancel = lv_button_btn_create(scr, BTN_OK_X + 90, BTN_OK_Y, 100, 50, btn_cancel_event_cb);
+    btnCancel = lv_button_btn_create(scr, BTN_CANCEL_X + 90, BTN_OK_Y, 100, 50, btn_cancel_event_cb);
     lv_obj_t *labelCancel = lv_label_create_empty(btnCancel);
     lv_label_set_text(labelCancel, print_file_dialog_menu.cancel);
   }
   else if (DIALOG_IS(TRANSFER_NO_DEVICE)) {
-    btnCancel = lv_button_btn_create(scr, BTN_OK_X + 90, BTN_OK_Y, 100, 50, btn_cancel_event_cb);
+    btnCancel = lv_button_btn_create(scr, BTN_CANCEL_X + 90, BTN_OK_Y, 100, 50, btn_cancel_event_cb);
     lv_obj_t *labelCancel = lv_label_create_empty(btnCancel);
     lv_label_set_text(labelCancel, print_file_dialog_menu.cancel);
   }
   #if ENABLED(MKS_WIFI_MODULE)
     else if (DIALOG_IS(TYPE_UPLOAD_FILE)) {
       if (upload_result == 2) {
-        btnCancel = lv_button_btn_create(scr, BTN_OK_X + 90, BTN_OK_Y, 100, 50, btn_cancel_event_cb);
+        btnCancel = lv_button_btn_create(scr, BTN_CANCEL_X + 90, BTN_OK_Y, 100, 50, btn_cancel_event_cb);
         lv_obj_t *labelCancel = lv_label_create_empty(btnCancel);
         lv_label_set_text(labelCancel, print_file_dialog_menu.cancel);
       }
       else if (upload_result == 3) {
-        btnOk = lv_button_btn_create(scr, BTN_OK_X + 90, BTN_OK_Y, 100, 50, btn_ok_event_cb);
+        btnOk = lv_button_btn_create(scr, BTN_CANCEL_X + 90, BTN_OK_Y, 100, 50, btn_ok_event_cb);
         lv_obj_t *labelOk = lv_label_create_empty(btnOk);
         lv_label_set_text(labelOk, print_file_dialog_menu.confirm);
       }
@@ -273,7 +273,7 @@ void lv_draw_dialog(uint8_t type) {
     }
   #endif
   else if (DIALOG_IS(TYPE_FILAMENT_LOAD_HEAT, TYPE_FILAMENT_UNLOAD_HEAT)) {
-    btnCancel = lv_button_btn_create(scr, BTN_OK_X + 90, BTN_OK_Y, 100, 50, btn_cancel_event_cb);
+    btnCancel = lv_button_btn_create(scr, BTN_CANCEL_X + 90, BTN_OK_Y, 100, 50, btn_cancel_event_cb);
     lv_obj_t *labelCancel = lv_label_create_empty(btnCancel);
     lv_label_set_text(labelCancel, print_file_dialog_menu.cancel);
 
@@ -281,12 +281,12 @@ void lv_draw_dialog(uint8_t type) {
     filament_sprayer_temp();
   }
   else if (DIALOG_IS(TYPE_FILAMENT_LOAD_COMPLETED, TYPE_FILAMENT_UNLOAD_COMPLETED)) {
-    btnOk = lv_button_btn_create(scr, BTN_OK_X + 90, BTN_OK_Y, 100, 50, btn_ok_event_cb);
+    btnOk = lv_button_btn_create(scr, BTN_CANCEL_X + 90, BTN_OK_Y, 100, 50, btn_ok_event_cb);
     lv_obj_t *labelOk = lv_label_create_empty(btnOk);
     lv_label_set_text(labelOk, print_file_dialog_menu.confirm);
   }
   else if(DIALOG_IS(TYPE_FILAMENT_NO_PRESS)) {
-    btnCancel = lv_button_btn_create(scr, BTN_OK_X+90, BTN_OK_Y, 100, 50, btn_cancel_event_cb);
+    btnCancel = lv_button_btn_create(scr, BTN_CANCEL_X + 90, BTN_OK_Y, 100, 50, btn_cancel_event_cb);
     lv_obj_t *labelCancel = lv_label_create_empty(btnCancel);
     lv_label_set_text(labelCancel, print_file_dialog_menu.cancel);
 
@@ -294,7 +294,7 @@ void lv_draw_dialog(uint8_t type) {
     lv_obj_align(labelDialog, nullptr, LV_ALIGN_CENTER, 0, -20);
   }
   else if (DIALOG_IS(TYPE_FILAMENT_LOADING, TYPE_FILAMENT_UNLOADING)) {
-    btnCancel = lv_button_btn_create(scr, BTN_OK_X + 90, BTN_OK_Y, 100, 50, btn_cancel_event_cb);
+    btnCancel = lv_button_btn_create(scr, BTN_CANCEL_X + 90, BTN_OK_Y, 100, 50, btn_cancel_event_cb);
     lv_obj_t *labelCancel = lv_label_create_empty(btnCancel);
     lv_label_set_text(labelCancel, print_file_dialog_menu.cancel);
 
