@@ -31,7 +31,7 @@
 
 extern lv_group_t *g;
 static lv_obj_t *scr;
-static lv_obj_t *fw_type, *board, *edits;
+static lv_obj_t *fw_type, *board, *edits, *credits;
 
 enum { ID_A_RETURN = 1 };
 
@@ -48,6 +48,10 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
 void lv_draw_about(void) {
   scr = lv_screen_create(ABOUT_UI);
   lv_big_button_create(scr, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_A_RETURN);
+
+  credits = lv_img_create(scr, nullptr);
+  lv_img_set_src(credits, "F:/bmp_credits.bin");
+  lv_obj_set_pos(credits, INTERVAL_V, BTN_Y_PIXEL + INTERVAL_H + titleHeight);
 
 
   edits = lv_label_create(scr, "Customization by: Italy Makers v" IM_VERSION);
