@@ -4,6 +4,7 @@
 //default motherboard
 #define FBGHOST_MOTHERBOARD     BOARD_MKS_ROBIN_NANO
 
+//  Choose your printer
 // #define FBGHOST_IS_5
 #define FBGHOST_IS_4S
 
@@ -51,8 +52,9 @@
 /**
  * Default Axis Steps Per Unit (steps/mm)
  * Override with M92
-*                                         X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
- */
+ *                                               X,  Y,  Z[, I [, J [, K]]], E0 [, E1[, E2...]]
+ *
+ *///                                            X,  Y,   Z,  E0
 #define FBGHOST_DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 400}
 
 
@@ -69,12 +71,11 @@
 #if ENABLED(FBGHOST_BLTOUCH)
   #define FBGHOST_AUTO_BED_LEVELING_BILINEAR
   #define FBGHOST_G29_RETRY_AND_RECOVER
-  #define FBGHOST_Z_MIN_ENDSTOP_INVERTING false
-  #define FBGHOST_GRID_MAX_POINTS_X   5
-  #define FBGHOST_GRID_MAX_POINTS_Y   FBGHOST_GRID_MAX_POINTS_X
-  #define FBGHOST_BABYSTEP_INVERT_Z false           // Change if Z babysteps should go the other way
-  #define FBGHOST_Z_SAFE_HOMING_X_POINT0 X_CENTER  // X point for Z homing
-  #define FBGHOST_Z_SAFE_HOMING_Y_POINT0 Y_CENTER  // Y point for Z homing
+  #define FBGHOST_Z_MIN_ENDSTOP_INVERTING   false
+  #define FBGHOST_GRID_MAX_POINTS_X         5
+  #define FBGHOST_GRID_MAX_POINTS_Y         FBGHOST_GRID_MAX_POINTS_X
+  #define FBGHOST_Z_SAFE_HOMING_X_POINT0    X_CENTER  // X point for Z homing
+  #define FBGHOST_Z_SAFE_HOMING_Y_POINT0    Y_CENTER  // Y point for Z homing
 #else
   #define FBGHOST_MESH_BED_LEVELING
 
@@ -82,8 +83,7 @@
     #define FBGHOST_BABYSTEP_ZPROBE_OFFSET          // Combine M851 Z and Babystepping
   #endif
 
-  // #define FBGHOST_FIX_MOUNTED_PROBE //TODO da rimuovere
-  // #define FBGHOST_PROBE_MANUALLY //TODO ultimo test sabato forse non serve rimuoverlo
+  #define FBGHOST_PROBE_MANUALLY
   #define FBGHOST_Z_MIN_PROBE_ENDSTOP_INVERTING   1
   #define FBGHOST_MIN_SOFTWARE_ENDSTOP_Z          false
   #define FBGHOST_MESH_INSET                      10          // Set Mesh bounds as an inset region of the bed
@@ -91,7 +91,6 @@
   #define FBGHOST_GRID_MAX_POINTS_Y               FBGHOST_GRID_MAX_POINTS_X
   #define FBGHOST_MANUAL_PROBE_START_Z            0.2
   #define FBGHOST_Z_MIN_ENDSTOP_INVERTING         true
-  #define FBGHOST_BABYSTEP_INVERT_Z               false           // Change if Z babysteps should go the other way
 
   #define FBGHOST_Z_SAFE_HOMING_X_POINT0          0  // X point for Z homing
   #define FBGHOST_Z_SAFE_HOMING_Y_POINT0          0  // Y point for Z homing
@@ -187,11 +186,14 @@
 
 /**
  * Auto-leveling needs preheating
+ * it is will enabled only with BLTOUCH
  */
-#define FBGHOST_PREHEAT_BEFORE_LEVELING
 
-#define FBGHOST_LEVELING_NOZZLE_TEMP  120   // (°C) Only applies to E0 at this time
-#define FBGHOST_LEVELING_BED_TEMP      50
+#if ENABLED(FBGHOST_BLTOUCH)
+  #define FBGHOST_PREHEAT_BEFORE_LEVELING
+  #define FBGHOST_LEVELING_NOZZLE_TEMP  120   // (°C) Only applies to E0 at this time
+  #define FBGHOST_LEVELING_BED_TEMP      50
+#endif
 
 
 
@@ -271,41 +273,3 @@
 
 
 
-
-
-
-// //===========================================================================
-// //================================= Buffers =================================
-// //===========================================================================
-
-// // @section motion
-
-// // The number of linear moves that can be in the planner at once.
-// // The value of BLOCK_BUFFER_SIZE must be a power of 2 (e.g., 8, 16, 32)
-// #define FBGHOST_BLOCK_BUFFER_SIZE 32
-
-// // @section serial
-
-// // The ASCII buffer for serial input
-// #define FBGHOST_MAX_CMD_SIZE    96
-// #define FBGHOST_BUFSIZE         32
-
-// // Transmission to Host Buffer Size
-// // To save 386 bytes of PROGMEM (and TX_BUFFER_SIZE+3 bytes of RAM) set to 0.
-// // To buffer a simple "ok" you need 4 bytes.
-// // For ADVANCED_OK (M105) you need 32 bytes.
-// // For debug-echo: 128 bytes for the optimal speed.
-// // Other output doesn't need to be that speedy.
-// // :[0, 2, 4, 8, 16, 32, 64, 128, 256]
-// #define FBGHOST_TX_BUFFER_SIZE  _INIT(256)
-
-// // Host Receive Buffer Size
-// // Without XON/XOFF flow control (see SERIAL_XON_XOFF below) 32 bytes should be enough.
-// // To use flow control, set this buffer size to at least 1024 bytes.
-// // :[0, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048]
-// #define FBGHOST_RX_BUFFER_SIZE  _INIT(512)
-
-// // Enable to have the controller send XON/XOFF control characters to
-// // the host to signal the RX buffer is becoming full.
-// // it needs FBGHOST_RX_BUFFER_SIZE >= 1024 to be enabled
-// #define FBGHOST_SERIAL_XON_XOFF

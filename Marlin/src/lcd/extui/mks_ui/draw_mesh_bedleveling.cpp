@@ -44,7 +44,7 @@
 extern lv_group_t *g;
 static lv_obj_t *scr, *labelV, *buttonV, *zOffsetText;
 static lv_obj_t *labelExt1, *labelBed;
-static lv_obj_t *buttonExt1, *buttonBed, *buttonNext, *buttonSave;
+static lv_obj_t *buttonExt1, *buttonBed, *buttonNext, *buttonSave, *buttonBack;
 
 static float step_dist = 0.01;
 static float zoffset_diff = 0;
@@ -72,6 +72,7 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
     case ID_MESHBL_INIT:
       lv_obj_set_hidden( buttonNext, false );
       lv_obj_set_hidden( buttonSave, true );
+      lv_obj_set_hidden( buttonBack, true );
       meshbl_do_init(true);
       break;
     case ID_MESHBL_ZOFFSETPOS:
@@ -111,6 +112,7 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
             zoffset_diff = 0;
             lv_obj_set_hidden( buttonNext, true );
             lv_obj_set_hidden( buttonSave, false );
+            lv_obj_set_hidden( buttonBack, false );
           }
         }
       }
@@ -175,7 +177,8 @@ void lv_draw_meshbl_settings(void) {
   buttonNext = lv_big_button_create(scr, "F:/bmp_mbl_next.bin", machine_menu.MeshblNext, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_MESHBL_NEXT);
   buttonSave = lv_big_button_create(scr, "F:/bmp_save.bin", machine_menu.BLTouchSave, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_MESHBL_SAVE);
   lv_obj_set_hidden( buttonSave, true );
-  lv_big_button_create(scr, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_MESHBL_RETURN);
+  buttonBack = lv_big_button_create(scr, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_MESHBL_RETURN);
+  lv_obj_set_hidden( buttonBack, true );
 
   disp_step_dist();
   disp_meshbl_z_offset_value();

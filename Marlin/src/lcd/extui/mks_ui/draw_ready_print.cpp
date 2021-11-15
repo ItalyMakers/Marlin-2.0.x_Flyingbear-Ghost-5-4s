@@ -272,9 +272,9 @@ void lv_draw_ready_print() {
     // Monitoring
     #if HAS_HOTEND
 #ifdef USE_NEW_LVGL_CONF
-      buttonExt1 = lv_big_button_create(mks_ui.src_main, "F:/bmp_ext1_state.bin", " ",( 20), 260, event_handler, ID_INFO_EXT);
+      buttonExt1 = lv_big_button_create(mks_ui.src_main, "F:/bmp_ext1_state.bin", " ",( 20), 210, event_handler, ID_INFO_EXT);
 #else
-      buttonExt1 = lv_big_button_create(scr, "F:/bmp_ext1_state.bin", " ",( 20), 260, event_handler, ID_INFO_EXT);
+      buttonExt1 = lv_big_button_create(scr, "F:/bmp_ext1_state.bin", " ",( 20), 210, event_handler, ID_INFO_EXT);
 #endif
     #endif
     #if HAS_MULTI_HOTEND
@@ -282,9 +282,9 @@ void lv_draw_ready_print() {
     #endif
     #if HAS_HEATED_BED
       #ifdef USE_NEW_LVGL_CONF
-            buttonBedstate = lv_big_button_create(mks_ui.src_main, "F:/bmp_bed_state.bin", " ", ( 20), 210, event_handler, ID_INFO_BED);
+            buttonBedstate = lv_big_button_create(mks_ui.src_main, "F:/bmp_bed_state.bin", " ", ( 20), 260, event_handler, ID_INFO_BED);
       #else
-            buttonBedstate = lv_big_button_create(scr, "F:/bmp_bed_state.bin", " ", ( 20), 210, event_handler, ID_INFO_BED);
+            buttonBedstate = lv_big_button_create(scr, "F:/bmp_bed_state.bin", " ", ( 20), 260, event_handler, ID_INFO_BED);
       #endif
     #endif
 
