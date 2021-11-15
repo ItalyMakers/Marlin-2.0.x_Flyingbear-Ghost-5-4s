@@ -344,12 +344,12 @@ void tft_style_init() {
 
   lv_style_copy(&style_num_key_pre, &lv_style_scr);
   lv_style_copy(&style_num_key_rel, &lv_style_scr);
-  style_num_key_pre.body.main_color = LV_COLOR_KEY_BACKGROUND;
-  style_num_key_pre.body.grad_color = LV_COLOR_KEY_BACKGROUND;
+  style_num_key_pre.body.main_color = LV_COLOR_MAKE(0xFB, 0xB3, 0x51);
+  style_num_key_pre.body.grad_color = LV_COLOR_MAKE(0xFB, 0xB3, 0x51);
   style_num_key_pre.text.color      = LV_COLOR_TEXT;
   style_num_key_pre.text.sel_color  = LV_COLOR_TEXT;
-  style_num_key_rel.body.main_color = LV_COLOR_KEY_BACKGROUND;
-  style_num_key_rel.body.grad_color = LV_COLOR_KEY_BACKGROUND;
+  style_num_key_rel.body.main_color = LV_COLOR_MAKE(0xFB, 0xB3, 0x51);
+  style_num_key_rel.body.grad_color = LV_COLOR_MAKE(0xFB, 0xB3, 0x51);
   style_num_key_rel.text.color      = LV_COLOR_TEXT;
   style_num_key_rel.text.sel_color  = LV_COLOR_TEXT;
   style_num_key_pre.text.font       = TERN(HAS_SPI_FLASH_FONT, &gb2312_puhui32, LV_FONT_DEFAULT);
