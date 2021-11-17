@@ -5,8 +5,8 @@
 #define FBGHOST_MOTHERBOARD     BOARD_MKS_ROBIN_NANO
 
 //  Choose your printer
-// #define FBGHOST_IS_5
-#define FBGHOST_IS_4S
+#define FBGHOST_IS_5
+// #define FBGHOST_IS_4S
 
 
 #if (COUNT_ENABLED(FBGHOST_IS_5, FBGHOST_IS_4S) == 1)
@@ -35,17 +35,17 @@
  *          TMC5130, TMC5130_STANDALONE, TMC5160, TMC5160_STANDALONE
  * :['A4988', 'A5984', 'DRV8825', 'LV8729', 'L6470', 'L6474', 'POWERSTEP01', 'TB6560', 'TB6600', 'TMC2100', 'TMC2130', 'TMC2130_STANDALONE', 'TMC2160', 'TMC2160_STANDALONE', 'TMC2208', 'TMC2208_STANDALONE', 'TMC2209', 'TMC2209_STANDALONE', 'TMC26X', 'TMC26X_STANDALONE', 'TMC2660', 'TMC2660_STANDALONE', 'TMC5130', 'TMC5130_STANDALONE', 'TMC5160', 'TMC5160_STANDALONE']
  */
-#define FBGHOST_X_DRIVER_TYPE   A4988
-#define FBGHOST_Y_DRIVER_TYPE   A4988
+#define FBGHOST_X_DRIVER_TYPE   TMC2208_STANDALONE
+#define FBGHOST_Y_DRIVER_TYPE   TMC2208_STANDALONE
 #define FBGHOST_Z_DRIVER_TYPE   A4988
-#define FBGHOST_E0_DRIVER_TYPE  A4988
+#define FBGHOST_E0_DRIVER_TYPE  TMC2209_STANDALONE
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
 // true with TMC2208, TMC2209, TMC2225 TMC2226
-#define FBGHOST_INVERT_X_DIR    true
-#define FBGHOST_INVERT_Y_DIR    true
+#define FBGHOST_INVERT_X_DIR    false
+#define FBGHOST_INVERT_Y_DIR    false
 #define FBGHOST_INVERT_Z_DIR    false
-#define FBGHOST_INVERT_E0_DIR   false
+#define FBGHOST_INVERT_E0_DIR   true
 
 
 
@@ -67,16 +67,18 @@
  * decommentare per abilitare il BLTOUCH
  */
 
-// #define FBGHOST_BLTOUCH
+#define FBGHOST_BLTOUCH
 
 #if ENABLED(FBGHOST_BLTOUCH)
   #define FBGHOST_AUTO_BED_LEVELING_BILINEAR
   #define FBGHOST_G29_RETRY_AND_RECOVER
   #define FBGHOST_Z_MIN_ENDSTOP_INVERTING   false
+  #define FBGHOST_MIN_SOFTWARE_ENDSTOP_Z    false
   #define FBGHOST_GRID_MAX_POINTS_X         5
   #define FBGHOST_GRID_MAX_POINTS_Y         FBGHOST_GRID_MAX_POINTS_X
-  #define FBGHOST_Z_SAFE_HOMING_X_POINT0    X_CENTER  // X point for Z homing
-  #define FBGHOST_Z_SAFE_HOMING_Y_POINT0    Y_CENTER  // Y point for Z homing
+  #define FBGHOST_Z_MIN_PROBE_REPEATABILITY_TEST
+  #define FBGHOST_Z_SAFE_HOMING_X_POINT    X_CENTER  // X point for Z homing
+  #define FBGHOST_Z_SAFE_HOMING_Y_POINT    Y_CENTER  // Y point for Z homing
 #else
   #define FBGHOST_MESH_BED_LEVELING
 
@@ -85,16 +87,16 @@
   #endif
 
   #define FBGHOST_PROBE_MANUALLY
-  #define FBGHOST_Z_MIN_PROBE_ENDSTOP_INVERTING   1
-  #define FBGHOST_MIN_SOFTWARE_ENDSTOP_Z          false
+  #define FBGHOST_Z_MIN_PROBE_ENDSTOP_INVERTING   true
+  #define FBGHOST_MIN_SOFTWARE_ENDSTOP_Z          true
   #define FBGHOST_MESH_INSET                      10          // Set Mesh bounds as an inset region of the bed
   #define FBGHOST_GRID_MAX_POINTS_X               5           // Don't use more than 7 points per axis, implementation limited.
   #define FBGHOST_GRID_MAX_POINTS_Y               FBGHOST_GRID_MAX_POINTS_X
   #define FBGHOST_MANUAL_PROBE_START_Z            0.2
   #define FBGHOST_Z_MIN_ENDSTOP_INVERTING         true
 
-  #define FBGHOST_Z_SAFE_HOMING_X_POINT0          0  // X point for Z homing
-  #define FBGHOST_Z_SAFE_HOMING_Y_POINT0          0  // Y point for Z homing
+  #define FBGHOST_Z_SAFE_HOMING_X_POINT          0  // X point for Z homing
+  #define FBGHOST_Z_SAFE_HOMING_Y_POINT          0  // Y point for Z homing
 
 #endif
 
@@ -165,7 +167,7 @@
  * the probe to be unable to reach any points.
  */
 
-#define FBGHOST_PROBING_MARGIN        10
+#define FBGHOST_PROBING_MARGIN        20
 #define FBGHOST_PROBING_MARGIN_LEFT   FBGHOST_PROBING_MARGIN
 #define FBGHOST_PROBING_MARGIN_RIGHT  FBGHOST_PROBING_MARGIN
 #define FBGHOST_PROBING_MARGIN_FRONT  FBGHOST_PROBING_MARGIN
@@ -191,7 +193,7 @@
  */
 
 #if ENABLED(FBGHOST_BLTOUCH)
-  #define FBGHOST_PREHEAT_BEFORE_LEVELING
+  // #define FBGHOST_PREHEAT_BEFORE_LEVELING
   #define FBGHOST_LEVELING_NOZZLE_TEMP  120   // (°C) Only applies to E0 at this time
   #define FBGHOST_LEVELING_BED_TEMP      50
 #endif

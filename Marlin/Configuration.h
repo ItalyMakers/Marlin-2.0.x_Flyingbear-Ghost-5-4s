@@ -1262,7 +1262,7 @@
 #define Z_PROBE_OFFSET_RANGE_MAX 20
 
 // Enable the M48 repeatability test to test probe accuracy
-//#define Z_MIN_PROBE_REPEATABILITY_TEST
+#define Z_MIN_PROBE_REPEATABILITY_TEST FBGHOST_Z_MIN_PROBE_REPEATABILITY_TEST
 
 // Before deploy/stow pause for user confirmation
 //#define PAUSE_BEFORE_DEPLOY_STOW
@@ -1744,8 +1744,8 @@
 #define Z_SAFE_HOMING
 
 #if ENABLED(Z_SAFE_HOMING)
-  #define Z_SAFE_HOMING_X_POINT FBGHOST_Z_SAFE_HOMING_X_POINT0  // X point for Z homing
-  #define Z_SAFE_HOMING_Y_POINT FBGHOST_Z_SAFE_HOMING_Y_POINT0  // Y point for Z homing
+  #define Z_SAFE_HOMING_X_POINT FBGHOST_Z_SAFE_HOMING_X_POINT  // X point for Z homing
+  #define Z_SAFE_HOMING_Y_POINT FBGHOST_Z_SAFE_HOMING_Y_POINT  // Y point for Z homing
 #endif
 
 // Homing speeds (mm/min)

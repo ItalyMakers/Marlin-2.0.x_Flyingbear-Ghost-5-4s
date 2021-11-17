@@ -235,6 +235,7 @@
 #define DIALOG_PRINT_TIME_IT              "Tempo di stampa: "
 #define DIALOG_REPRINT_IT                 "Print again"
 #define DIALOG_WIFI_ENABLE_TIPS_IT        "The wifi module is being configured,\nplease wait a moment....."
+#define DIALOG_AUTO_LEVELING_TIPS_IT      "Auto-leveling in corso, attendere..."
 
 #define MESSAGE_PAUSING_IT                "Parcheggiando..."
 #define MESSAGE_CHANGING_IT               "Attendere avvio del cambio di filamento"

@@ -1574,6 +1574,7 @@ void disp_language_init() {
             print_file_dialog_menu.print_time            = DIALOG_PRINT_TIME_EN;
             print_file_dialog_menu.reprint               = DIALOG_REPRINT_EN;
             print_file_dialog_menu.wifi_enable_tips      = DIALOG_WIFI_ENABLE_TIPS_EN;
+            print_file_dialog_menu.autolevelingTips      = DIALOG_AUTO_LEVELING_TIPS_EN;
 
             pause_msg_menu.pausing       = MESSAGE_PAUSING_EN;
             pause_msg_menu.changing      = MESSAGE_CHANGING_EN;
@@ -2606,6 +2607,7 @@ void disp_language_init() {
           print_file_dialog_menu.print_time            = DIALOG_PRINT_TIME_IT;
           print_file_dialog_menu.reprint               = DIALOG_REPRINT_IT;
           print_file_dialog_menu.wifi_enable_tips      = DIALOG_WIFI_ENABLE_TIPS_IT;
+          print_file_dialog_menu.autolevelingTips      = DIALOG_AUTO_LEVELING_TIPS_IT;
 
           pause_msg_menu.pausing       = MESSAGE_PAUSING_IT;
           pause_msg_menu.changing      = MESSAGE_CHANGING_IT;
@@ -2843,6 +2845,7 @@ void disp_language_init() {
       print_file_dialog_menu.print_time            = DIALOG_PRINT_TIME_EN;
       print_file_dialog_menu.reprint               = DIALOG_REPRINT_EN;
       print_file_dialog_menu.wifi_enable_tips      = DIALOG_WIFI_ENABLE_TIPS_EN;
+      print_file_dialog_menu.autolevelingTips      = DIALOG_AUTO_LEVELING_TIPS_EN;
 
       pause_msg_menu.pausing       = MESSAGE_PAUSING_EN;
       pause_msg_menu.changing      = MESSAGE_CHANGING_EN;
@@ -2864,6 +2867,7 @@ void disp_language_init() {
       eeprom_menu.storeTips        = EEPROM_STORE_TIPS_EN;
       eeprom_menu.readTips         = EEPROM_READ_TIPS_EN;
       eeprom_menu.revertTips       = EEPROM_REVERT_TIPS_EN;
+
       break;
   }
 }

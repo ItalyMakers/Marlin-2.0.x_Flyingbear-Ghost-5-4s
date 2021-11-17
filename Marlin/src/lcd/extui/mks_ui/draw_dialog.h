@@ -71,13 +71,16 @@ enum {
   DIALOG_REVERT_EEPROM_TIPS,
 
   DIALOG_WIFI_CONFIG_TIPS,
-  DIALOG_TRANSFER_NO_DEVICE
+  DIALOG_TRANSFER_NO_DEVICE,
+
+  DIALOG_TYPE_AUTO_LEVELING_TIPS
 };
 
 void lv_draw_dialog(uint8_t type);
 void lv_clear_dialog();
 void filament_sprayer_temp();
 void filament_dialog_handle();
+// void disp_dialog_temp_offset_value();
 void lv_filament_setbar();
 
 #ifdef __cplusplus

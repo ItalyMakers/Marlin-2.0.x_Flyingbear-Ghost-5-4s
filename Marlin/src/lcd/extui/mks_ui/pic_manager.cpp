@@ -54,6 +54,7 @@ static const char assets[][LONG_FILENAME_LENGTH] = {
   "bmp_extruct.bin",
   "bmp_mov.bin",
   "bmp_leveling.bin",
+  "bmp_autoleveling.bin",
   "bmp_filamentchange.bin",
   "bmp_more.bin",
 

@@ -65,6 +65,8 @@ extern uint32_t upload_time_sec;
 extern uint32_t upload_size;
 extern bool temps_update_flag;
 
+// static lv_obj_t *buttonExt1 ,*buttonBed ,*labelExt1 ,*labelBed;
+
 //#define CANCEL_ON_RIGHT   // Put 'Cancel' on the right (as it was before)
 
 #define BTN_OK_X      TERN(CANCEL_ON_RIGHT, 100, 280)
@@ -305,6 +307,23 @@ void lv_draw_dialog(uint8_t type) {
     lv_bar_set_anim_time(filament_bar, 1000);
     lv_bar_set_value(filament_bar, 0, LV_ANIM_ON);
   }
+  #if ENABLED(BLTOUCH)
+    else if (DIALOG_IS(TYPE_AUTO_LEVELING_TIPS)) {
+      #if ENABLED(PREHEAT_BEFORE_LEVELING)
+  //      buttonExt1 = lv_img_create(scr, nullptr);
+  //     lv_img_set_src(buttonExt1, "F:/bmp_ext1_state.bin");
+  //     lv_obj_set_pos(buttonExt1, BTN_CANCEL_X + 20, BTN_CANCEL_Y);
+
+  //     buttonBed = lv_img_create(scr, nullptr);
+  //     lv_img_set_src(buttonBed, "F:/bmp_bed_state.bin");
+  //     lv_obj_set_pos(buttonBed, BTN_OK_X, BTN_OK_Y);
+
+  //     labelExt1 = lv_label_create(scr, BTN_CANCEL_X, BTN_CANCEL_Y + 65, nullptr);
+  //     labelBed  = lv_label_create(scr, BTN_OK_X - 20, BTN_OK_Y + 65, nullptr);
+  //     disp_dialog_temp_offset_value();
+      #endif
+    }
+  #endif
   else {
     btnOk = lv_button_btn_create(scr, BTN_OK_X, BTN_OK_Y, 100, 50, btn_ok_event_cb);
     lv_obj_t *labelOk = lv_label_create_empty(btnOk);             // Add a label to the button
@@ -484,6 +503,14 @@ void lv_draw_dialog(uint8_t type) {
       lv_obj_align(labelDialog, nullptr, LV_ALIGN_CENTER, 0, -70);
     }
   #endif
+
+  #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
+    else if (DIALOG_IS(TYPE_AUTO_LEVELING_TIPS)) {
+      lv_label_set_text(labelDialog, print_file_dialog_menu.autolevelingTips);
+      lv_obj_align(labelDialog, NULL, LV_ALIGN_CENTER, 0, -30);
+    }
+  #endif
+
   #if HAS_ROTARY_ENCODER
     if (gCfgItems.encoder_enable) {
       if (btnOk) lv_group_add_obj(g, btnOk);
@@ -491,6 +518,24 @@ void lv_draw_dialog(uint8_t type) {
     }
   #endif
 }
+
+// void disp_dialog_temp_offset_value(){
+//   if (temps_update_flag && (DIALOG_IS(TYPE_AUTO_LEVELING_TIPS))) {
+//     #if HAS_HOTEND
+//       sprintf(public_buf_l, printing_menu.temp1, (int)thermalManager.temp_hotend[0].celsius, (int)thermalManager.temp_hotend[0].target);
+//       lv_label_set_text(labelExt1, public_buf_l);
+//       lv_obj_align(labelExt1, buttonExt1, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+//     #endif
+
+//     #if HAS_HEATED_BED
+
+//       sprintf(public_buf_l, printing_menu.bed_temp, (int)thermalManager.temp_bed.celsius, (int)thermalManager.temp_bed.target);
+//       lv_label_set_text(labelBed, public_buf_l);
+//       lv_obj_align(labelBed, buttonBed, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+//     #endif
+//   }
+
+// }
 
 void filament_sprayer_temp() {
   char buf[20] = {0};

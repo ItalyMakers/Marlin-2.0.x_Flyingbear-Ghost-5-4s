@@ -498,6 +498,7 @@
 #define DIALOG_PRINT_TIME_EN                "Print time: "
 #define DIALOG_REPRINT_EN                   "Print again"
 #define DIALOG_WIFI_ENABLE_TIPS_EN "The wifi module is being configured\nplease wait a moment....."
+#define DIALOG_AUTO_LEVELING_TIPS_EN        "Auto-leveling, please wait..."
 
 #define HOTBED_ENABLE_EN        "Enable heatbed"
 #define MOTOR_EN_HIGH_LEVEL_EN  "High"

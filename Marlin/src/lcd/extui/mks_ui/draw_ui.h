@@ -281,7 +281,7 @@ typedef enum {
   TEMP_UI,
   SET_UI,
   ZERO_UI,
-  #if BLTOUCH
+  #if ENABLED(BLTOUCH)
     BLTOUCH_UI,
   #endif
   #if ENABLED(MESH_BED_LEVELING)

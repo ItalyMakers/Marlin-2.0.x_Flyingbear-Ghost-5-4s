@@ -54,7 +54,7 @@
 //
 // Servos
 //
-#define SERVO0_PIN                          PA8   // Enable BLTOUCH
+#define SERVO0_PIN                          PB2   // Enable BLTOUCH
 
 //
 // Limit Switches

@@ -152,8 +152,8 @@ void printer_state_polling() {
       gcode.process_subcommands_now_P(PSTR(public_buf_m));
       clear_cur_ui();
       #ifdef BLTOUCH
-      bltouch_do_init(false);
-      lv_draw_bltouch_settings();
+        bltouch_do_init(false);
+        lv_draw_bltouch_settings();
       #endif
       uiCfg.autoLeveling = false;
     }
