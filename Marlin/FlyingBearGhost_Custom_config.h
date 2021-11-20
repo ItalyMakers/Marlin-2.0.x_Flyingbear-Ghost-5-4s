@@ -25,8 +25,8 @@
  */
 
 //PRESETS - usare FBGHOST_CUSTOM_CONF se si ha una configurazione particolare. A fondo documento trovi i settaggi standard.
-// #define FBGHOST_DRIVER_CUSTOM_CONF
-#define FBGHOST_DRIVER_ALL_A4988
+#define FBGHOST_DRIVER_CUSTOM_CONF
+// #define FBGHOST_DRIVER_ALL_A4988
 // #define FBGHOST_DRIVER_ALL_TMC2208
 // #define FBGHOST_DRIVER_ALL_TMC2209
 // #define FBGHOST_DRIVER_XY_TMC2208_ZE_A4988
@@ -63,7 +63,7 @@
  *
  * decommentare per abilitare il BLTOUCH
  */
-// #define FBGHOST_BLTOUCH
+#define FBGHOST_BLTOUCH
 
 #if ENABLED(FBGHOST_BLTOUCH)
   #define FBGHOST_GRID_MAX_POINTS_X               5

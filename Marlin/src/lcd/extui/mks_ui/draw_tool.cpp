@@ -55,7 +55,10 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
   if (TERN1(AUTO_BED_LEVELING_BILINEAR, obj->mks_obj_id != ID_T_LEVELING))
     lv_clear_tool();
   switch (obj->mks_obj_id) {
-    case ID_T_PRE_HEAT: lv_draw_preHeat(); break;
+    case ID_T_PRE_HEAT:
+      uiCfg.curTempType = 0;
+      lv_draw_preHeat();
+    break;
     case ID_T_EXTRUCT:  lv_draw_extrusion(); break;
     case ID_T_MOV:      lv_draw_move_motor(); break;
     case ID_T_HOME:     lv_draw_home(); break;

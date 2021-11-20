@@ -72,7 +72,7 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
     case ID_MESHBL_INIT:
       lv_obj_set_hidden( buttonNext, false );
       lv_obj_set_hidden( buttonSave, true );
-      lv_obj_set_hidden( buttonBack, true );
+      // lv_obj_set_hidden( buttonBack, true );
       meshbl_do_init(true);
       break;
     case ID_MESHBL_ZOFFSETPOS:
@@ -112,7 +112,7 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
             zoffset_diff = 0;
             lv_obj_set_hidden( buttonNext, true );
             lv_obj_set_hidden( buttonSave, false );
-            lv_obj_set_hidden( buttonBack, false );
+            // lv_obj_set_hidden( buttonBack, false );
           }
         }
       }
@@ -133,6 +133,12 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
       else{
         if (last_disp_state == DIALOG_UI) lv_draw_ready_print();
         else draw_return_ui();
+        if(manual_probe_index  >= total_probe_points){
+          queue.inject_P(PSTR("G29 S5\nG28 XY"));
+        }
+        else{
+          queue.inject_P(PSTR("G28 X Y"));
+        }
       // queue.enqueue_now_P(PSTR("G28 X Y"));  // fix-wang
         queue.inject_P(PSTR("G28 X Y"));
 
@@ -178,7 +184,7 @@ void lv_draw_meshbl_settings(void) {
   buttonSave = lv_big_button_create(scr, "F:/bmp_save.bin", machine_menu.BLTouchSave, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_MESHBL_SAVE);
   lv_obj_set_hidden( buttonSave, true );
   buttonBack = lv_big_button_create(scr, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_MESHBL_RETURN);
-  lv_obj_set_hidden( buttonBack, true );
+  // lv_obj_set_hidden( buttonBack, true );
 
   disp_step_dist();
   disp_meshbl_z_offset_value();
