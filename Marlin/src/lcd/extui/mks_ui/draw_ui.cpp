@@ -522,12 +522,17 @@ char *getDispText(int index) {
     case PRINT_MORE_UI:       strcpy(public_buf_l, more_menu.title); break;
     case FILAMENTCHANGE_UI:   strcpy(public_buf_l, filament_menu.title); break;
     case LEVELING_UI:
+    #if ENABLED(BLTOUCH)
+      case BLTOUCH_UI:
+    #endif
     case MESHLEVELING_UI:     strcpy(public_buf_l, leveling_menu.title); break;
     // case BIND_UI:             strcpy(public_buf_l, cloud_menu.title); break;
     case TOOL_UI:             strcpy(public_buf_l, tool_menu.title); break;
     case WIFI_LIST_UI:        TERN_(MKS_WIFI_MODULE, strcpy(public_buf_l, list_menu.title)); break;
     case MACHINE_PARA_UI:     strcpy(public_buf_l, MachinePara_menu.title); break;
     case BABY_STEP_UI:        strcpy(public_buf_l, operation_menu.babystep); break;
+
+
     case EEPROM_SETTINGS_UI:  strcpy(public_buf_l, eeprom_menu.title); break;
     case MEDIA_SELECT_UI:     strcpy(public_buf_l, media_select_menu.title); break;
     default: break;
@@ -832,7 +837,13 @@ void GUI_RefreshPage() {
     case DIALOG_UI:
       filament_dialog_handle();
       TERN_(MKS_WIFI_MODULE, wifi_scan_handle());
-      break;
+      // #if ENABLED(AUTO_BED_LEVELING_BILINEAR) && ENABLED(PREHEAT_BEFORE_LEVELING)
+      //   if (temps_update_flag) {
+      //     temps_update_flag = false;
+      //     disp_dialog_temp_offset_value();
+      //   }
+      // #endif
+    break;
     case MESHLEVELING_UI: break;
     case HARDWARE_TEST_UI: break;
     case WIFI_LIST_UI:
@@ -906,6 +917,7 @@ void GUI_RefreshPage() {
           disp_bltouch_z_offset_value();
         }
         break;
+
     #endif
 
     #if ENABLED(MESH_BED_LEVELING)
@@ -997,6 +1009,9 @@ void clear_cur_ui() {
     case ENABLE_INVERT_UI:            break;
     case NUMBER_KEY_UI:               lv_clear_number_key(); break;
     case BABY_STEP_UI:                lv_clear_baby_stepping(); break;
+    #if ENABLED(BLTOUCH)
+      case BLTOUCH_UI:                lv_clear_bltouch_settings(); break;
+    #endif
     case PAUSE_POS_UI:                lv_clear_pause_position(); break;
     #if HAS_TRINAMIC_CONFIG
       case TMC_CURRENT_UI:            lv_clear_tmc_current_settings(); break;
@@ -1110,6 +1125,10 @@ void draw_return_ui() {
       case NUMBER_KEY_UI:               lv_draw_number_key(); break;
       case DIALOG_UI:                   break;
       case BABY_STEP_UI:                lv_draw_baby_stepping(); break;
+      #if(ENABLED(BLTOUCH))
+        case BLTOUCH_UI:                lv_draw_level_settings(); break;
+      #endif
+
       case PAUSE_POS_UI:                lv_draw_pause_position(); break;
       #if HAS_TRINAMIC_CONFIG
         case TMC_CURRENT_UI:            lv_draw_tmc_current_settings(); break;
