@@ -9,20 +9,6 @@
 // #define FBGHOST_IS_4S
 
 
-#if (COUNT_ENABLED(FBGHOST_IS_5, FBGHOST_IS_4S) == 1)
-  #if ENABLED(FBGHOST_IS_5)
-    #define FBGHOST_MACHINE_NAME    "Flying Bear Ghost 5"
-    #define FBGHOST_FIL_RUNOUT_STATE  LOW
-  #else
-    #define FBGHOST_MACHINE_NAME    "Flying Bear Ghost 4S"
-    #define FBGHOST_FIL_RUNOUT_STATE  HIGH
-  #endif
-#else
-  #error "Select only one between FBGHOST_IS_5 and FBGHOST_IS_4S"
-#endif
-
-
-
 
 /**
  *  * Use TMC2208/TMC2208_STANDALONE for TMC2225 drivers and TMC2209/TMC2209_STANDALONE for TMC2226 drivers.
@@ -34,20 +20,31 @@
  *          TMC26X,  TMC26X_STANDALONE,  TMC2660, TMC2660_STANDALONE,
  *          TMC5130, TMC5130_STANDALONE, TMC5160, TMC5160_STANDALONE
  * :['A4988', 'A5984', 'DRV8825', 'LV8729', 'L6470', 'L6474', 'POWERSTEP01', 'TB6560', 'TB6600', 'TMC2100', 'TMC2130', 'TMC2130_STANDALONE', 'TMC2160', 'TMC2160_STANDALONE', 'TMC2208', 'TMC2208_STANDALONE', 'TMC2209', 'TMC2209_STANDALONE', 'TMC26X', 'TMC26X_STANDALONE', 'TMC2660', 'TMC2660_STANDALONE', 'TMC5130', 'TMC5130_STANDALONE', 'TMC5160', 'TMC5160_STANDALONE']
+ *
+ *
  */
-#define FBGHOST_X_DRIVER_TYPE   TMC2208_STANDALONE
-#define FBGHOST_Y_DRIVER_TYPE   TMC2208_STANDALONE
-#define FBGHOST_Z_DRIVER_TYPE   A4988
-#define FBGHOST_E0_DRIVER_TYPE  TMC2209_STANDALONE
 
-// Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
-// true with TMC2208, TMC2209, TMC2225 TMC2226
-#define FBGHOST_INVERT_X_DIR    false
-#define FBGHOST_INVERT_Y_DIR    false
-#define FBGHOST_INVERT_Z_DIR    false
-#define FBGHOST_INVERT_E0_DIR   true
+//PRESETS - usare FBGHOST_CUSTOM_CONF se si ha una configurazione particolare. A fondo documento trovi i settaggi standard.
+// #define FBGHOST_DRIVER_CUSTOM_CONF
+#define FBGHOST_DRIVER_ALL_A4988
+// #define FBGHOST_DRIVER_ALL_TMC2208
+// #define FBGHOST_DRIVER_ALL_TMC2209
+// #define FBGHOST_DRIVER_XY_TMC2208_ZE_A4988
+
+#ifdef FBGHOST_DRIVER_CUSTOM_CONF
+  #define FBGHOST_X_DRIVER_TYPE   TMC2208_STANDALONE
+  #define FBGHOST_Y_DRIVER_TYPE   TMC2208_STANDALONE
+  #define FBGHOST_Z_DRIVER_TYPE   A4988
+  #define FBGHOST_E0_DRIVER_TYPE  TMC2209_STANDALONE
 
 
+  // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
+  // TMC2208, TMC2209, TMC2208_STANDALONE, TMC2209_STANDALONE, TMC2225 TMC2226 needs inverted values
+  #define FBGHOST_INVERT_X_DIR    false
+  #define FBGHOST_INVERT_Y_DIR    false
+  #define FBGHOST_INVERT_Z_DIR    false
+  #define FBGHOST_INVERT_E0_DIR   true
+#endif
 
 /**
  * Default Axis Steps Per Unit (steps/mm)
@@ -55,51 +52,41 @@
  *                                               X,  Y,  Z[, I [, J [, K]]], E0 [, E1[, E2...]]
  *
  *///                                            X,  Y,   Z,  E0
-#define FBGHOST_DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 400}
+#define FBGHOST_DEFAULT_AXIS_STEPS_PER_UNIT   { 80.201, 76.263, 407.206, 825.423}
 
 
-
-
-
-/**
- * BLTOUCH
+/*****************************************
+ *****************************************
+ *       BLTOUCH       *******************
+ *****************************************
+ *****************************************
  *
  * decommentare per abilitare il BLTOUCH
  */
-
-#define FBGHOST_BLTOUCH
+// #define FBGHOST_BLTOUCH
 
 #if ENABLED(FBGHOST_BLTOUCH)
-  #define FBGHOST_AUTO_BED_LEVELING_BILINEAR
-  #define FBGHOST_G29_RETRY_AND_RECOVER
-  #define FBGHOST_Z_MIN_ENDSTOP_INVERTING   false
-  #define FBGHOST_MIN_SOFTWARE_ENDSTOP_Z    false
-  #define FBGHOST_GRID_MAX_POINTS_X         5
-  #define FBGHOST_GRID_MAX_POINTS_Y         FBGHOST_GRID_MAX_POINTS_X
-  #define FBGHOST_Z_MIN_PROBE_REPEATABILITY_TEST
-  #define FBGHOST_Z_SAFE_HOMING_X_POINT    X_CENTER  // X point for Z homing
-  #define FBGHOST_Z_SAFE_HOMING_Y_POINT    Y_CENTER  // Y point for Z homing
+  #define FBGHOST_GRID_MAX_POINTS_X               5
+  #define FBGHOST_GRID_MAX_POINTS_Y               FBGHOST_GRID_MAX_POINTS_X
+  #define FBGHOST_Z_SAFE_HOMING_X_POINT           X_CENTER  // X point for Z homing
+  #define FBGHOST_Z_SAFE_HOMING_Y_POINT           Y_CENTER  // Y point for Z homing
+
+  // #define FBGHOST_PREHEAT_BEFORE_LEVELING
+  #ifdef FBGHOST_PREHEAT_BEFORE_LEVELING
+    #define FBGHOST_LEVELING_NOZZLE_TEMP  120   // (°C) Only applies to E0 at this time
+    #define FBGHOST_LEVELING_BED_TEMP      50
+  #endif
 #else
   #define FBGHOST_MESH_BED_LEVELING
 
-  #ifndef FBGHOST_MESH_BED_LEVELING
-    #define FBGHOST_BABYSTEP_ZPROBE_OFFSET          // Combine M851 Z and Babystepping
-  #endif
-
-  #define FBGHOST_PROBE_MANUALLY
-  #define FBGHOST_Z_MIN_PROBE_ENDSTOP_INVERTING   true
-  #define FBGHOST_MIN_SOFTWARE_ENDSTOP_Z          true
   #define FBGHOST_MESH_INSET                      10          // Set Mesh bounds as an inset region of the bed
   #define FBGHOST_GRID_MAX_POINTS_X               5           // Don't use more than 7 points per axis, implementation limited.
   #define FBGHOST_GRID_MAX_POINTS_Y               FBGHOST_GRID_MAX_POINTS_X
   #define FBGHOST_MANUAL_PROBE_START_Z            0.2
-  #define FBGHOST_Z_MIN_ENDSTOP_INVERTING         true
 
   #define FBGHOST_Z_SAFE_HOMING_X_POINT          0  // X point for Z homing
   #define FBGHOST_Z_SAFE_HOMING_Y_POINT          0  // Y point for Z homing
-
 #endif
-
 
 
 /**
@@ -146,7 +133,6 @@
 
 
 
-
 /**
  * Probing Margins
  *
@@ -175,11 +161,6 @@
 
 
 
-
-
-
-
-
 // After a runout is detected, continue printing this length of filament
 // before executing the runout script. Useful for a sensor at the end of
 // a feed tube.
@@ -187,17 +168,8 @@
 
 
 
-/**
- * Auto-leveling needs preheating
- * it is will enabled only with BLTOUCH
- */
-
-#if ENABLED(FBGHOST_BLTOUCH)
-  // #define FBGHOST_PREHEAT_BEFORE_LEVELING
-  #define FBGHOST_LEVELING_NOZZLE_TEMP  120   // (°C) Only applies to E0 at this time
-  #define FBGHOST_LEVELING_BED_TEMP      50
-#endif
-
+//Prevent extrusion if the temperature is below EXTRUDE_MINTEMP
+#define FBGHOST_EXTRUDE_MINTEMP 170
 
 
 
@@ -215,7 +187,6 @@
 
 
 //PID
-
 //HOTEND
 #define FBGHOST_DEFAULT_Kp 11.14
 #define FBGHOST_DEFAULT_Ki 0.72
@@ -225,11 +196,6 @@
 #define FBGHOST_DEFAULT_bedKp 52.63
 #define FBGHOST_DEFAULT_bedKi 9.75
 #define FBGHOST_DEFAULT_bedKd 71.01
-
-//Prevent extrusion if the temperature is below EXTRUDE_MINTEMP
-#define FBGHOST_EXTRUDE_MINTEMP 170
-
-
 
 
 
@@ -273,6 +239,115 @@
  *                                      X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
  */
 #define FBGHOST_DEFAULT_MAX_ACCELERATION {1000,1000,200,80000}   //      { 3000, 3000, 100, 10000 }
+
+
+
+
+
+
+
+
+/*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************
+ *************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************
+ *************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************
+ *************************                     ***************************************************************************************************************************************************************************************************************************************************************************************************************************
+ *************************    CONFIG - AREA    ***************************************************************************************************************************************************************************************************************************************************************************************************************************
+ *************************                     ***************************************************************************************************************************************************************************************************************************************************************************************************************************
+ *************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************
+ *************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************
+ *************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************
+ *
+ *  don't edit after this comment.
+ * there are only custom configuration thats need to work with your conf
+ *
+ *
+ *
+ *
+ *
+ *
+*/
+
+#if (COUNT_ENABLED(FBGHOST_IS_5, FBGHOST_IS_4S) == 1)
+  #if ENABLED(FBGHOST_IS_5)
+    #define FBGHOST_MACHINE_NAME    "Flying Bear Ghost 5"
+    #define FBGHOST_FIL_RUNOUT_STATE  LOW
+  #else
+    #define FBGHOST_MACHINE_NAME    "Flying Bear Ghost 4S"
+    #define FBGHOST_FIL_RUNOUT_STATE  HIGH
+  #endif
+#else
+  #error "Select only one between FBGHOST_IS_5 and FBGHOST_IS_4S"
+#endif
+
+#if (COUNT_ENABLED(FBGHOST_DRIVER_ALL_A4988, FBGHOST_DRIVER_ALL_TMC2208, FBGHOST_DRIVER_ALL_TMC2209, FBGHOST_DRIVER_CUSTOM_CONF, FBGHOST_DRIVER_XY_TMC2208_ZE_A4988) != 1)
+  #error "Select only one between FBGHOST_DRIVER_ALL_A4988, FBGHOST_DRIVER_ALL_TMC2208, FBGHOST_DRIVER_ALL_TMC2209 or FBGHOST_DRIVER_CUSTOM_CONF"
+#endif
+
+#if ENABLED(FBGHOST_DRIVER_ALL_A4988)
+  #define FBGHOST_X_DRIVER_TYPE   A4988
+  #define FBGHOST_Y_DRIVER_TYPE   A4988
+  #define FBGHOST_Z_DRIVER_TYPE   A4988
+  #define FBGHOST_E0_DRIVER_TYPE  A4988
+
+  #define FBGHOST_INVERT_X_DIR    true
+  #define FBGHOST_INVERT_Y_DIR    true
+  #define FBGHOST_INVERT_Z_DIR    false
+  #define FBGHOST_INVERT_E0_DIR   false
+
+#elif ENABLED(FBGHOST_DRIVER_ALL_TMC2208)
+  #define FBGHOST_X_DRIVER_TYPE   TMC2208_STANDALONE
+  #define FBGHOST_Y_DRIVER_TYPE   TMC2208_STANDALONE
+  #define FBGHOST_Z_DRIVER_TYPE   TMC2208_STANDALONE
+  #define FBGHOST_E0_DRIVER_TYPE  TMC2208_STANDALONE
+
+  #define FBGHOST_INVERT_X_DIR    false
+  #define FBGHOST_INVERT_Y_DIR    false
+  #define FBGHOST_INVERT_Z_DIR    true
+  #define FBGHOST_INVERT_E0_DIR   true
+
+#elif ENABLED(FBGHOST_DRIVER_ALL_TMC2209)
+  #define FBGHOST_X_DRIVER_TYPE   TMC2209_STANDALONE
+  #define FBGHOST_Y_DRIVER_TYPE   TMC2209_STANDALONE
+  #define FBGHOST_Z_DRIVER_TYPE   TMC2209_STANDALONE
+  #define FBGHOST_E0_DRIVER_TYPE  TMC2209_STANDALONE
+
+  #define FBGHOST_INVERT_X_DIR    false
+  #define FBGHOST_INVERT_Y_DIR    false
+  #define FBGHOST_INVERT_Z_DIR    true
+  #define FBGHOST_INVERT_E0_DIR   true
+
+#elif ENABLED(FBGHOST_DRIVER_XY_TMC2208_ZE_A4988)
+  #define FBGHOST_X_DRIVER_TYPE   TMC2208_STANDALONE
+  #define FBGHOST_Y_DRIVER_TYPE   TMC2208_STANDALONE
+  #define FBGHOST_Z_DRIVER_TYPE   A4988
+  #define FBGHOST_E0_DRIVER_TYPE  A4988
+
+  #define FBGHOST_INVERT_X_DIR    false
+  #define FBGHOST_INVERT_Y_DIR    false
+  #define FBGHOST_INVERT_Z_DIR    false
+  #define FBGHOST_INVERT_E0_DIR   false
+#endif
+
+
+#if ENABLED(FBGHOST_BLTOUCH)
+  #define FBGHOST_Z_MIN_PROBE_REPEATABILITY_TEST
+  #define FBGHOST_AUTO_BED_LEVELING_BILINEAR
+  #define FBGHOST_G29_RETRY_AND_RECOVER
+  #define FBGHOST_Z_MIN_PROBE_ENDSTOP_INVERTING   false
+  #define FBGHOST_Z_MIN_ENDSTOP_INVERTING         false
+  #define FBGHOST_MIN_SOFTWARE_ENDSTOP_Z          false
+  #define FBGHOST_BABYSTEP_ZPROBE_OFFSET          // Combine M851 Z and Babystepping
+
+#else
+  #ifndef FBGHOST_MESH_BED_LEVELING
+    #define FBGHOST_BABYSTEP_ZPROBE_OFFSET          // Combine M851 Z and Babystepping
+  #endif
+
+  #define FBGHOST_Z_MIN_ENDSTOP_INVERTING         true
+  #define FBGHOST_Z_MIN_PROBE_ENDSTOP_INVERTING   true
+  #define FBGHOST_MIN_SOFTWARE_ENDSTOP_Z          true
+  #define HAS_BED_PROBE 1
+#endif
 
 
 
