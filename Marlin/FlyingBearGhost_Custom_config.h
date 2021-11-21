@@ -335,7 +335,7 @@
   #define FBGHOST_G29_RETRY_AND_RECOVER
   #define FBGHOST_Z_MIN_PROBE_ENDSTOP_INVERTING   false
   #define FBGHOST_Z_MIN_ENDSTOP_INVERTING         false
-  #define FBGHOST_MIN_SOFTWARE_ENDSTOP_Z          false
+
   #define FBGHOST_BABYSTEP_ZPROBE_OFFSET          // Combine M851 Z and Babystepping
 
 #else
@@ -345,7 +345,7 @@
 
   #define FBGHOST_Z_MIN_ENDSTOP_INVERTING         true
   #define FBGHOST_Z_MIN_PROBE_ENDSTOP_INVERTING   true
-  #define FBGHOST_MIN_SOFTWARE_ENDSTOP_Z          true
+  #define FBGHOST_MIN_SOFTWARE_ENDSTOP_Z
   #define HAS_BED_PROBE 1
 #endif
 

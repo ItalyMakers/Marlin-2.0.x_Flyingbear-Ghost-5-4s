@@ -133,10 +133,10 @@ static const char assets[][LONG_FILENAME_LENGTH] = {
   "bmp_time_state.bin",
   "bmp_zpos_state.bin",
   "bmp_operate.bin",
+  "bmp_leveling1.bin",
 
   // Manual Level screen (only if auto level is disabled)
   #if DISABLED(AUTO_BED_LEVELING_BILINEAR)
-    "bmp_leveling1.bin",
     "bmp_leveling2.bin",
     "bmp_leveling3.bin",
     "bmp_leveling4.bin",
