@@ -125,10 +125,15 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
       TERN_(HAS_SOFTWARE_ENDSTOPS, soft_endstop._enabled = true);
 
       lv_clear_bltouch_settings();
-      if (last_disp_state == DIALOG_UI) lv_draw_ready_print();
-      else draw_return_ui();
+      // if (last_disp_state == DIALOG_UI){
+      //    lv_draw_ready_print();
+      //    }
+      // else {
+      //   draw_return_ui();
+      //   }
+      lv_draw_tool();
+      queue.enqueue_now_P(PSTR("G28 XY"));  // fix-wang
         // queue.inject_P(PSTR("G28 X Y"));
-      // queue.enqueue_now_P(PSTR("G28 XY"));  // fix-wang
 
       break;
   }
@@ -150,32 +155,28 @@ void lv_draw_bltouch_settings(void) {
     lv_label_set_text(labelInit, machine_menu.BLTouchInit);
     lv_obj_align(labelInit, buttonInitstate, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
 
-    // #if HAS_HOTEND
-      // buttonBLExt1 = lv_img_create(scr, nullptr);
-      // lv_img_set_src(buttonBLExt1, "F:/bmp_ext1_state.bin");
-      // lv_obj_set_pos(buttonBLExt1, 216, 50);
+    /*/
+    buttonBLExt1  = lv_imgbtn_create(scr, NULL);
+    lv_imgbtn_set_src_both(buttonBLExt1, "F:/bmp_ext1_state.bin");
+    lv_obj_set_pos(buttonBLExt1, 216, 50);
 
 
-      // labelBLExt1 = lv_label_create_empty(scr);
-
-      // // labelBLExt1 = lv_label_create(scr, 196, 115, nullptr);
-      // // lv_label_set_text(labelBLExt1, "0/0");
-      // lv_obj_align(labelBLExt1, scr, LV_ALIGN_OUT_BOTTOM_MID, 0,0);
-
-    // #endif
-
-    // #if HAS_HEATED_BED
-      // buttonBLBed = lv_img_create(scr, nullptr);
-      // lv_img_set_src(buttonBLBed, "F:/bmp_bed_state.bin");
-      // lv_obj_set_pos(buttonBLBed, 287, 50);
+    labelBLExt1 = lv_label_create(scr, 196, 115, nullptr);
+    // labelBLExt1 = lv_label_create_empty(buttonBLExt1);
+    lv_label_set_text(labelBLExt1, "0/0");
+    lv_obj_align(labelBLExt1, buttonBLExt1, LV_ALIGN_OUT_BOTTOM_MID, 0,0);
 
 
-      // labelBLBed  = lv_label_create_empty(scr);
-      // // labelBLBed  = lv_label_create(scr, 267, 115, nullptr);
-      // // lv_label_set_text(labelBLBed, "0/0");
-      // lv_obj_align(labelBLBed, scr, LV_ALIGN_OUT_BOTTOM_MID, 0,0);
+    buttonBLBed = lv_imgbtn_create(scr, NULL);
+    lv_img_set_src(buttonBLBed, "F:/bmp_bed_state.bin");
+    lv_obj_set_pos(buttonBLBed, 287, 50);
 
-    // #endif
+
+    labelBLBed  = lv_label_create(scr, 267, 115, nullptr);
+    // labelBLBed  = lv_label_create_empty(buttonBLBed);
+    lv_label_set_text(labelBLBed, "0/0");
+    lv_obj_align(labelBLBed, buttonBLBed, LV_ALIGN_OUT_BOTTOM_MID, 0,0);
+    /**/
 
     zOffsetText = lv_label_create(scr, 170, 140, nullptr);
     lv_big_button_create(scr, "F:/bmp_Dec.bin", machine_menu.BLTouchOffsetneg, BTN_X_PIXEL * 3 + INTERVAL_V * 4, titleHeight, event_handler, ID_BLTOUCH_ZOFFSETNEG);
@@ -225,19 +226,22 @@ void disp_bltouch_z_offset_value() {
     char str_1[16];
     sprintf_P(buf, PSTR("%s : %smm"), move_menu.zoffset, dtostrf(probe.offset.z, 1, 2, str_1) );
     lv_label_set_text(zOffsetText, buf);
-  // if(ready){
-  //   #if HAS_HOTEND
-  //     sprintf(public_buf_l, PSTR("%d/%d"), (int)thermalManager.wholeDegHotend(0), (int)thermalManager.degTargetHotend(0));
-  //     lv_label_set_text(labelBLExt1, public_buf_l);
-  //     lv_obj_align(labelBLExt1, scr, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
-  //   #endif
 
-  //   #if HAS_HEATED_BED
-  //     sprintf(public_buf_l, PSTR("%d/%d"), (int)thermalManager.wholeDegBed(), (int)thermalManager.degTargetBed());
-  //     lv_label_set_text(labelBLBed, public_buf_l);
-  //     lv_obj_align(labelBLBed, scr, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
-  //   #endif
-  // }
+    /*/
+    char buf_hotend[20];
+    char buf_bed[20];
+    char str_2[16];
+    char str_3[16];
+    char str_4[16];
+    char str_5[16];
+    sprintf(buf_hotend, PSTR("%s/%s"), dtostrf(thermalManager.wholeDegHotend(0), 1, 0, str_2) ,dtostrf(thermalManager.degTargetHotend(0), 1, 0, str_3) );
+    lv_label_set_text(labelBLExt1, buf_hotend);
+    // lv_obj_align(labelBLExt1, scr, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+
+    sprintf(buf_bed, PSTR("%s/%s"), dtostrf(thermalManager.wholeDegBed(), 1, 0, str_4) ,dtostrf(thermalManager.degTargetBed(), 1, 0, str_5));
+    lv_label_set_text(labelBLBed, buf_bed);
+    // lv_obj_align(labelBLBed, scr, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+    /**/
 }
 
 void bltouch_do_init(bool resetZoffset) {
@@ -246,7 +250,7 @@ void bltouch_do_init(bool resetZoffset) {
   //TERN_(HAS_BED_PROBE, probe.offset.z = 0);
   TERN_(HAS_SOFTWARE_ENDSTOPS, soft_endstop._enabled = false);
   //TERN_(HAS_LEVELING, reset_bed_level());
-  //TERN_(EEPROM_SETTINGS, (void)settings.save());
+  TERN_(EEPROM_SETTINGS, (void)settings.save());
   queue.clear();
   if (resetZoffset)
   {

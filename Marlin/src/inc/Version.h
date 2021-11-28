@@ -21,6 +21,7 @@
  */
 #pragma once
 
+#include "../../FlyingBearGhost_Custom_config.h"
 /**
  * Release version. Leave the Marlin version or apply a custom scheme.
  */
@@ -28,7 +29,7 @@
   #define SHORT_BUILD_VERSION "2.0.9.2"
 #endif
 
-#define IM_VERSION "3.1.1"
+
 
 /**
  * Verbose version identifier containing a unique identifier, such as the
