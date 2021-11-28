@@ -264,6 +264,12 @@
 #define FBGHOST_DEFAULT_MAX_ACCELERATION {1000,1000,200,80000}   //      { 3000, 3000, 100, 10000 }
 
 
+/**
+ * enable print on terminal leveling data
+ *
+ */
+#define FBGHOST_DEBUG_LEVELING_FEATURE
+
 
 
 
