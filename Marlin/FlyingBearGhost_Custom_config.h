@@ -365,7 +365,7 @@
   #ifndef FBGHOST_MESH_BED_LEVELING
     #define FBGHOST_BABYSTEP_ZPROBE_OFFSET          // Combine M851 Z and Babystepping
   #endif
-
+  #define FBGHOST_PROBE_MANUALLY
   #define FBGHOST_Z_MIN_ENDSTOP_INVERTING         true
   #define FBGHOST_Z_MIN_PROBE_ENDSTOP_INVERTING   true
   #define FBGHOST_MIN_SOFTWARE_ENDSTOP_Z
