@@ -111,10 +111,12 @@
 #define BLTOUCH_SAVE_EN                 "Save"
 #define BLTOUCH_TEST_EN                 "Test"
 
+#define ZOFFSET_SETTING_TITTLE_EN      "Machine Settings>Z Offset settings"
 #define MESHBED_LEVELING_TITTLE_EN      "Machine Settings>Mesh Bed Leveling"
-#define MESHBED_LEVELING_SAVED_EN       "Mesh Saved"
-#define MESHBED_LEVELING_LEVELING_EN    "Mesh Leveling"
-#define MESHBED_LEVELING_NEXT_EN        "Next Pos."
+#define ZOFFSET_SETTING_TITTLE_EN      "Machine Settings>Z Offset settings"
+#define ZOFFSET_SETTING_SAVED_EN       "Zoffset Saved"
+#define MESH_LEVELING_EN               "Mesh Leveling"
+#define ZOFFSET_SETTING_NEXT_EN        "Next Pos."
 
 #define LEVELING_PARA_CONF_TITLE_EN     "leveling setting"
 #define AUTO_LEVELING_ENABLE_EN         "Enable auto leveling"

@@ -21,7 +21,7 @@
  */
 #include "../../../inc/MarlinConfigPre.h"
 
-#if HAS_TFT_LVGL_UI && ENABLED(MESH_BED_LEVELING)
+#if HAS_TFT_LVGL_UI && ANY(MESH_BED_LEVELING, AUTO_BED_LEVELING_BILINEAR)
 
 #include "../../../MarlinCore.h"
 #include "draw_ui.h"
@@ -55,13 +55,13 @@ static uint8_t manual_probe_index=0;
 constexpr uint8_t total_probe_points = TERN(AUTO_BED_LEVELING_3POINT, 3, GRID_MAX_POINTS);
 
 enum {
-  ID_MESHBL_INIT = 1,
-  ID_MESHBL_ZOFFSETPOS,
-  ID_MESHBL_ZOFFSETNEG,
-  ID_MESHBL_SAVE,
-  ID_MESHBL_NEXT,
-  ID_MESHBL_STEPS,
-  ID_MESHBL_RETURN
+  ID_ZOFFSET_INIT = 1,
+  ID_ZOFFSET_ZOFFSETPOS,
+  ID_ZOFFSET_ZOFFSETNEG,
+  ID_ZOFFSET_SAVE,
+  ID_ZOFFSET_NEXT,
+  ID_ZOFFSET_STEPS,
+  ID_ZOFFSET_RETURN
  };
 
 static void event_handler(lv_obj_t * obj, lv_event_t event) {
@@ -69,29 +69,33 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
   char baby_buf[30] = { 0 };
   char str_1[40];
   switch (obj->mks_obj_id) {
-    case ID_MESHBL_INIT:
+    case ID_ZOFFSET_INIT:
       lv_obj_set_hidden( buttonNext, false );
       lv_obj_set_hidden( buttonSave, true );
       // lv_obj_set_hidden( buttonBack, true );
-      meshbl_do_init(true);
+      zoffset_do_init(true);
       break;
-    case ID_MESHBL_ZOFFSETPOS:
+    case ID_ZOFFSET_ZOFFSETPOS:
       sprintf_P(baby_buf, PSTR("G1 Z%s"), dtostrf(current_position.z + step_dist, 1, 3, str_1));
       gcode.process_subcommands_now_P(PSTR(baby_buf));
 
       zoffset_diff += step_dist;
       break;
-    case ID_MESHBL_ZOFFSETNEG:
+    case ID_ZOFFSET_ZOFFSETNEG:
       sprintf_P(baby_buf, PSTR("G1 Z%s"), dtostrf(current_position.z - step_dist, 1, 3, str_1));
       gcode.process_subcommands_now_P(PSTR(baby_buf));
       zoffset_diff -= step_dist;
       break;
-    case ID_MESHBL_SAVE:
+    case ID_ZOFFSET_SAVE:
       if (!queue.ring_buffer.full(2)) {
         #if ENABLED(AUTO_BED_LEVELING_BILINEAR) && DISABLED(Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN)
           for (uint8_t x = 0; x < GRID_MAX_POINTS_X; x++)
             for (uint8_t y = 0; y < GRID_MAX_POINTS_Y; y++)
               z_values[x][y] = z_values[x][y] + zoffset_diff;
+        #endif
+        #ifdef AUTO_BED_LEVELING_BILINEAR
+          sprintf_P(baby_buf, PSTR("M851 Z%s"), dtostrf(current_position.z, 1, 3, str_1));
+          gcode.process_subcommands_now_P(PSTR(baby_buf));
         #endif
         TERN_(EEPROM_SETTINGS, (void)settings.save());
         saved= true;
@@ -99,7 +103,7 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
         zoffset_diff = 0;
       }
       break;
-    case ID_MESHBL_NEXT:
+    case ID_ZOFFSET_NEXT:
       // sprintf_P(str_1, PSTR("G28\nG1 Z10 F2400\nG1 X%d Y%d\nG0 Z0.3"), X_MAX_POS / 2, Y_MAX_POS / 2);
       if (!queue.ring_buffer.length) {
        // mesh_bed_leveling::set_zigzag_z(manual_probe_index, current_position.z + zoffset_diff);
@@ -117,7 +121,7 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
         }
       }
       break;
-    case ID_MESHBL_STEPS:
+    case ID_ZOFFSET_STEPS:
       if (abs((int)(100 * step_dist)) == 1)
         step_dist = 0.05;
       else if (abs((int)(100 * step_dist)) == 5)
@@ -126,35 +130,31 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
         step_dist = 0.01;
       disp_step_dist();
       break;
-    case ID_MESHBL_RETURN:
+    case ID_ZOFFSET_RETURN:
       TERN_(HAS_SOFTWARE_ENDSTOPS, soft_endstop._enabled = true);
-      lv_clear_meshbl_settings();
-      if ENABLED(MESH_BED_LEVELING) lv_draw_manualLevel();
-      else{
-        if (last_disp_state == DIALOG_UI) lv_draw_ready_print();
-        else draw_return_ui();
-        if(manual_probe_index  >= total_probe_points){
-          queue.inject_P(PSTR("G29 S5\nG28 XY"));
-        }
-        else{
-          queue.inject_P(PSTR("G28 X Y"));
-        }
-      // queue.enqueue_now_P(PSTR("G28 X Y"));  // fix-wang
-        queue.inject_P(PSTR("G28 X Y"));
-
-      }
+      lv_clear_zoffset_settings();
+      #ifdef MESH_BED_LEVELING
+        lv_draw_manualLevel();
+      #else
+        draw_return_ui();
+      #endif
+        queue.enqueue_now_P(PSTR("G28 X Y"));  // fix-wang
       break;
   }
 }
 
-void lv_draw_meshbl_settings(void) {
-  scr = lv_screen_create(MESH_UI, machine_menu.MeshBedLevelingConfTitle);
+void lv_draw_zoffset_settings(void) {
+  #ifdef MESH_BED_LEVELING
+    scr = lv_screen_create(ZOFFSET_UI, machine_menu.MeshBLConfTitle);
+  #else
+    scr = lv_screen_create(ZOFFSET_UI, machine_menu.ZoffsetConfTitle);
+  #endif
   // Create image buttons
-  lv_big_button_create(scr, "F:/bmp_Add.bin", machine_menu.BLTouchOffsetpos, INTERVAL_V, titleHeight, event_handler, ID_MESHBL_ZOFFSETPOS);
+  lv_big_button_create(scr, "F:/bmp_Add.bin", machine_menu.BLTouchOffsetpos, INTERVAL_V, titleHeight, event_handler, ID_ZOFFSET_ZOFFSETPOS);
 
 
   lv_obj_t *buttonInitstate = lv_imgbtn_create(scr, NULL);
-  lv_obj_set_event_cb_mks(buttonInitstate, event_handler, ID_MESHBL_INIT, NULL, 0);
+  lv_obj_set_event_cb_mks(buttonInitstate, event_handler, ID_ZOFFSET_INIT, NULL, 0);
   lv_imgbtn_set_src_both(buttonInitstate, "F:/bmp_init_state.bin");
   lv_obj_set_pos(buttonInitstate, 145, 50);
 
@@ -175,19 +175,22 @@ void lv_draw_meshbl_settings(void) {
 
   zOffsetText = lv_label_create(scr, 120, 140, nullptr);
 
-  lv_big_button_create(scr, "F:/bmp_Dec.bin", machine_menu.BLTouchOffsetneg, BTN_X_PIXEL * 3 + INTERVAL_V * 4, titleHeight, event_handler, ID_MESHBL_ZOFFSETNEG);
+  lv_big_button_create(scr, "F:/bmp_Dec.bin", machine_menu.BLTouchOffsetneg, BTN_X_PIXEL * 3 + INTERVAL_V * 4, titleHeight, event_handler, ID_ZOFFSET_ZOFFSETNEG);
 
-  buttonV = lv_imgbtn_create(scr, nullptr, INTERVAL_V, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_MESHBL_STEPS);
+  buttonV = lv_imgbtn_create(scr, nullptr, INTERVAL_V, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_ZOFFSET_STEPS);
   labelV  = lv_label_create_empty(buttonV);
 
-  buttonNext = lv_big_button_create(scr, "F:/bmp_mbl_next.bin", machine_menu.MeshblNext, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_MESHBL_NEXT);
-  buttonSave = lv_big_button_create(scr, "F:/bmp_save.bin", machine_menu.BLTouchSave, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_MESHBL_SAVE);
-  lv_obj_set_hidden( buttonSave, true );
-  buttonBack = lv_big_button_create(scr, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_MESHBL_RETURN);
+  buttonSave = lv_big_button_create(scr, "F:/bmp_save.bin", machine_menu.BLTouchSave, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_ZOFFSET_SAVE);
+  #ifdef MESH_BED_LEVELING
+    buttonNext = lv_big_button_create(scr, "F:/bmp_mbl_next.bin", machine_menu.MeshblNext, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_ZOFFSET_NEXT);
+    lv_obj_set_hidden( buttonSave, true );
+  #endif
+
+  buttonBack = lv_big_button_create(scr, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_ZOFFSET_RETURN);
   // lv_obj_set_hidden( buttonBack, true );
 
   disp_step_dist();
-  disp_meshbl_z_offset_value();
+  disp_zoffset_value();
 
   zoffset_diff = 0;
 }
@@ -216,14 +219,19 @@ void disp_step_dist() {
   }
 }
 
-void disp_meshbl_z_offset_value() {
+void disp_zoffset_value() {
   char buf[20];
   char str_1[16];
   if(saved){
     sprintf_P(buf, PSTR(machine_menu.MeshblSaved));
   }
   else{
-    sprintf_P(buf, PSTR("%s: %d/%d - %s: %smm"),move_menu.currPoint,(manual_probe_index +1), total_probe_points, move_menu.zoffset, dtostrf(current_position.z, 1, 2, str_1) );
+    #ifdef MESH_BED_LEVELING
+      sprintf_P(buf, PSTR("%s: %d/%d - %s: %smm"),move_menu.currPoint,(manual_probe_index +1), total_probe_points, move_menu.zoffset, dtostrf(current_position.z, 1, 2, str_1) );
+    #else
+      sprintf_P(buf, PSTR("%s: %smm"), move_menu.zoffset, dtostrf(current_position.z, 1, 2, str_1) );
+  #endif
+
   }
 
   lv_label_set_text(zOffsetText, buf);
@@ -233,6 +241,7 @@ void disp_meshbl_z_offset_value() {
     lv_label_set_text(labelExt1, public_buf_l);
     lv_obj_align(labelExt1, buttonExt1, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
   #endif
+
 
   #if HAS_HEATED_BED
     sprintf(public_buf_l, printing_menu.bed_temp, (int)thermalManager.temp_bed.celsius, (int)thermalManager.temp_bed.target);
@@ -244,9 +253,9 @@ void disp_meshbl_z_offset_value() {
 
 }
 
-void meshbl_do_init(bool resetZoffset) {
+void zoffset_do_init(bool resetZoffset) {
 
-  // char str_1[50];
+  char str_1[50];
   TERN_(HAS_BED_PROBE, probe.offset.z = 0);
   TERN_(HAS_SOFTWARE_ENDSTOPS, soft_endstop._enabled = false);
   // TERN_(HAS_LEVELING, reset_bed_level());
@@ -255,7 +264,19 @@ void meshbl_do_init(bool resetZoffset) {
   manual_probe_index= 0;
   saved = false;
   // str_1= "G28 S0";
-  queue.inject_P(PSTR("G28\nG29 S1"));
+  #ifdef MESH_BED_LEVELING
+    str_1= PSTR("G28\nG29 S1");
+   #else
+    if (resetZoffset)
+    {
+      sprintf_P(str_1, PSTR("M851 Z0\nG28\nG1 Z10 F2400\nG1 X%d Y%d\nG0 Z0"), X_MAX_POS / 2, Y_MAX_POS / 2);
+    }
+    else
+    {
+      sprintf_P(str_1, PSTR("G28\nG1 Z10 F2400\nG1 X%d Y%d\nG0 Z0"), X_MAX_POS / 2, Y_MAX_POS / 2);
+    }
+  #endif
+    queue.inject_P(str_1);
   // else
   // {
     // sprintf_P(str_1, PSTR("G28\nG1 Z10 F2400\nG1 X%d Y%d\nG0 Z0.3"), X_MAX_POS / 2, Y_MAX_POS / 2);
@@ -263,7 +284,7 @@ void meshbl_do_init(bool resetZoffset) {
   // queue.enqueue_now_P(PSTR(str_1));  // fix-wang
 }
 
-void lv_clear_meshbl_settings() {
+void lv_clear_zoffset_settings() {
   #if HAS_ROTARY_ENCODER
     if (gCfgItems.encoder_enable) lv_group_remove_all_objs(g);
   #endif

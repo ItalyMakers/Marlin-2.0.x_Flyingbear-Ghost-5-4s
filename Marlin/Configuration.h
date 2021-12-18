@@ -976,7 +976,10 @@
  * When changing speed and direction, if the difference is less than the
  * value set here, it may happen instantaneously.
  */
-#define CLASSIC_JERK FBGHOST_CLASSIC_JERK
+#ifdef FBGHOST_CLASSIC_JERK
+  #define CLASSIC_JERK
+#endif
+
 #if ENABLED(CLASSIC_JERK)
   #define DEFAULT_XJERK FBGHOST_DEFAULT_XJERK
   #define DEFAULT_YJERK FBGHOST_DEFAULT_YJERK
@@ -1066,7 +1069,9 @@
  * Use G29 repeatedly, adjusting the Z height at each point with movement commands
  * or (with LCD_BED_LEVELING) the LCD controller.
  */
-#define PROBE_MANUALLY FBGHOST_PROBE_MANUALLY
+#ifdef FBGHOST_PROBE_MANUALLY
+  #define PROBE_MANUALLY
+#endif
 
 /**
  * A Fix-Mounted Probe either doesn't deploy or needs manual deployment.
@@ -1089,7 +1094,9 @@
 /**
  * The BLTouch probe uses a Hall effect sensor and emulates a servo.
  */
-#define BLTOUCH FBGHOST_BLTOUCH
+#ifdef FBGHOST_BLTOUCH
+  #define BLTOUCH
+#endif
 
 /**
  * Touch-MI Probe by hotends.fr
@@ -1261,7 +1268,9 @@
 #define Z_PROBE_OFFSET_RANGE_MAX 20
 
 // Enable the M48 repeatability test to test probe accuracy
-#define Z_MIN_PROBE_REPEATABILITY_TEST FBGHOST_Z_MIN_PROBE_REPEATABILITY_TEST
+#ifdef FBGHOST_Z_MIN_PROBE_REPEATABILITY_TEST
+  #define Z_MIN_PROBE_REPEATABILITY_TEST
+#endif
 
 // Before deploy/stow pause for user confirmation
 //#define PAUSE_BEFORE_DEPLOY_STOW
@@ -1539,9 +1548,13 @@
  */
 //#define AUTO_BED_LEVELING_3POINT
 //#define AUTO_BED_LEVELING_LINEAR
-#define AUTO_BED_LEVELING_BILINEAR        FBGHOST_AUTO_BED_LEVELING_BILINEAR
+#ifdef FBGHOST_AUTO_BED_LEVELING_BILINEAR
+  #define AUTO_BED_LEVELING_BILINEAR
+#endif
 //#define AUTO_BED_LEVELING_UBL
-#define MESH_BED_LEVELING                 FBGHOST_MESH_BED_LEVELING
+#ifdef FBGHOST_MESH_BED_LEVELING
+  #define MESH_BED_LEVELING
+#endif
 
 /**
  * Normally G28 leaves leveling disabled on completion. Enable one of
@@ -1554,7 +1567,9 @@
 /**
  * Auto-leveling needs preheating
  */
-#define PREHEAT_BEFORE_LEVELING FBGHOST_PREHEAT_BEFORE_LEVELING
+#if ENABLED(FBGHOST_PREHEAT_BEFORE_LEVELING)
+  #define PREHEAT_BEFORE_LEVELING
+#endif
 #if ENABLED(PREHEAT_BEFORE_LEVELING)
   #define LEVELING_NOZZLE_TEMP  FBGHOST_LEVELING_NOZZLE_TEMP   // (°C) Only applies to E0 at this time
   #define LEVELING_BED_TEMP     FBGHOST_LEVELING_BED_TEMP

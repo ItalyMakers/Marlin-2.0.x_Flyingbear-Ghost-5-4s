@@ -40,7 +40,7 @@
  *****************************************
  * decommentare se usi OctoPrint
  */
-#define FBGHOST_OCTOPRINT
+// #define FBGHOST_OCTOPRINT
 
 /**
  *  * Use TMC2208/TMC2208_STANDALONE for TMC2225 drivers and TMC2209/TMC2209_STANDALONE for TMC2226 drivers.
@@ -152,7 +152,9 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define  FBGHOST_NOZZLE_TO_PROBE_OFFSET {50,0,0}   // { 10, 10, 0 }
+
+// Italy Makers Print Head Position (https://www.thingiverse.com/thing:4848085)
+#define  FBGHOST_NOZZLE_TO_PROBE_OFFSET {42.10,-15.5,0}   // { 10, 10, 0 }
 
 
 
