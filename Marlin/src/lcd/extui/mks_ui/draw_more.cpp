@@ -150,7 +150,7 @@ void lv_draw_more() {
   lv_obj_t *labelGCode = lv_label_create_empty(buttonGCode);
 
   #if HAS_USER_ITEM(1)
-    lv_obj_t *buttonCustom1 = lv_imgbtn_create(scr, "F:/bmp_custom1.bin", BTN_X_PIXEL + INTERVAL_V * 2, titleHeight, event_handler, ID_CUSTOM_1);
+    lv_obj_t *buttonCustom1 = lv_imgbtn_create(scr, "F:/bmp_custom2.bin", BTN_X_PIXEL + INTERVAL_V * 2, titleHeight, event_handler, ID_CUSTOM_1);
     if (enc_ena) lv_group_add_obj(g, buttonCustom1);
     lv_obj_t *labelCustom1 = lv_label_create_empty(buttonCustom1);
   #endif

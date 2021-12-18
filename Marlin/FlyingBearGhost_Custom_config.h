@@ -20,8 +20,8 @@
 #define FBGHOST_MOTHERBOARD     BOARD_MKS_ROBIN_NANO
 
 //  Choose your printer
-#define FBGHOST_IS_5
-// #define FBGHOST_IS_4S
+// #define FBGHOST_IS_5
+#define FBGHOST_IS_4S
 
 
 
@@ -31,7 +31,7 @@
  * decommentare per abilitare il BLTOUCH
  */
 
-#define FBGHOST_BLTOUCH
+// #define FBGHOST_BLTOUCH
 
 
 
@@ -40,7 +40,7 @@
  *****************************************
  * decommentare se usi OctoPrint
  */
-#define FBGHOST_OCTOPRINT
+// #define FBGHOST_OCTOPRINT
 
 /**
  *  * Use TMC2208/TMC2208_STANDALONE for TMC2225 drivers and TMC2209/TMC2209_STANDALONE for TMC2226 drivers.
@@ -57,8 +57,8 @@
  */
 
 //PRESETS - usare FBGHOST_CUSTOM_CONF se si ha una configurazione particolare. A fondo documento trovi i settaggi standard.
-#define FBGHOST_DRIVER_CUSTOM_CONF
-// #define FBGHOST_DRIVER_ALL_A4988
+// #define FBGHOST_DRIVER_CUSTOM_CONF
+#define FBGHOST_DRIVER_ALL_A4988
 // #define FBGHOST_DRIVER_ALL_TMC2208
 // #define FBGHOST_DRIVER_ALL_TMC2209
 // #define FBGHOST_DRIVER_XY_TMC2208_ZE_A4988
@@ -103,7 +103,7 @@
   #define FBGHOST_MESH_BED_LEVELING
 
   #define FBGHOST_MESH_INSET                      10          // Set Mesh bounds as an inset region of the bed
-  #define FBGHOST_GRID_MAX_POINTS_X               5           // Don't use more than 7 points per axis, implementation limited.
+  #define FBGHOST_GRID_MAX_POINTS_X               3           // Don't use more than 7 points per axis, implementation limited.
   #define FBGHOST_GRID_MAX_POINTS_Y               FBGHOST_GRID_MAX_POINTS_X
   #define FBGHOST_MANUAL_PROBE_START_Z            0.2
 
@@ -262,6 +262,30 @@
  *                                      X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
  */
 #define FBGHOST_DEFAULT_MAX_ACCELERATION {1000,1000,200,80000}   //      { 3000, 3000, 100, 10000 }
+
+
+
+/*****************************************
+ *       LED           *******************
+ *****************************************
+ * decommentare per utilizzare LED collegati alla scheda madre
+ */
+
+// #define FBGHOST_RGB_LED
+#define FBGHOST_RGBW_LED
+
+#if EITHER(FBGHOST_RGB_LED, FBGHOST_RGBW_LED)
+  #define FBGHOST_RGB_LED_R_PIN PA3
+  #define FBGHOST_RGB_LED_G_PIN PA6
+  #define FBGHOST_RGB_LED_B_PIN PA1
+  #ifdef FBGHOST_RGBW_LED
+    #define FBGHOST_RGB_LED_W_PIN PC4
+  #endif
+#endif
+
+
+
+
 
 
 /**
