@@ -34,12 +34,6 @@
 // #define FBGHOST_BLTOUCH
 
 
-/*****************************************
- *       OCTOPRINT       *****************
- *****************************************
- * decommentare se usi OctoPrint
- */
-// #define FBGHOST_OCTOPRINT
 
 /**
  *  * Use TMC2208/TMC2208_STANDALONE for TMC2225 drivers and TMC2209/TMC2209_STANDALONE for TMC2226 drivers.
