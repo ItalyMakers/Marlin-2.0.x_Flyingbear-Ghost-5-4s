@@ -370,10 +370,10 @@ void disp_ext_heart_ready_print() {
     label_abs = lv_label_create(scr, (180+50), (260 + 10), PREHEAT_2_LABEL);
 
     lv_big_button_create(scr, "F:/bmp_mini_temp0.bin"," ", ( 320), 210, event_handler, ID_COOLDOWN);
-    lv_big_button_create(scr, "F:/bmp_mini_emergency_stop.bin"," ", ( 320), 260, event_handler, ID_EMSTOP);
-
     label_cooldown = lv_label_create(scr, (320+50), (210 + 10), "Cool Down");
-    label_emStop = lv_label_create(scr, (320+50), (260 + 10), "Emerg. Stop");
+
+    // lv_big_button_create(scr, "F:/bmp_mini_emergency_stop.bin"," ", ( 320), 260, event_handler, ID_EMSTOP);
+    // label_emStop = lv_label_create(scr, (320+50), (260 + 10), "Emerg. Stop");
 
   #endif
     // label_pla = lv_btn_create(scr, ( 180+45), (210), 80, 40, event_handler, ID_P_PLA);
