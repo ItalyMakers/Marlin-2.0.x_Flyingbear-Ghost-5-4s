@@ -79,13 +79,21 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
       zoffset_do_init(true);
       break;
     case ID_ZOFFSET_ZOFFSETPOS:
-      sprintf_P(baby_buf, PSTR("G1 Z%s"), dtostrf(current_position.z + step_dist, 1, 3, str_1));
+      #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
+        sprintf_P(baby_buf, PSTR("M290 Z%s"), dtostrf(step_dist, 1, 3, str_1));
+      #else
+        sprintf_P(baby_buf, PSTR("G1 Z%s"), dtostrf(current_position.z + step_dist, 1, 3, str_1));
+      #endif
       gcode.process_subcommands_now_P(PSTR(baby_buf));
 
       zoffset_diff += step_dist;
       break;
     case ID_ZOFFSET_ZOFFSETNEG:
-      sprintf_P(baby_buf, PSTR("G1 Z%s"), dtostrf(current_position.z - step_dist, 1, 3, str_1));
+      #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
+        sprintf_P(baby_buf, PSTR("M290 Z%s"), dtostrf(-step_dist, 1, 3, str_1));
+      #else
+        sprintf_P(baby_buf, PSTR("G1 Z%s"), dtostrf(current_position.z - step_dist, 1, 3, str_1));
+      #endif
       gcode.process_subcommands_now_P(PSTR(baby_buf));
       zoffset_diff -= step_dist;
       break;
@@ -96,12 +104,12 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
             for (uint8_t y = 0; y < GRID_MAX_POINTS_Y; y++)
               z_values[x][y] = z_values[x][y] + zoffset_diff;
         #endif
-        #ifdef AUTO_BED_LEVELING_BILINEAR
-          sprintf_P(baby_buf, PSTR("M851Z%s\nM420S1"), dtostrf(current_position.z, 1, 3, str_1));
-          queue.enqueue_now_P(PSTR(baby_buf));
-        #endif
+        // #ifdef AUTO_BED_LEVELING_BILINEAR
+        //   sprintf_P(baby_buf, PSTR("M851Z%s\nM420S1"), dtostrf(current_position.z, 1, 3, str_1));
+        //   queue.enqueue_now_P(PSTR(baby_buf));
+        // #endif
         TERN_(EEPROM_SETTINGS, (void)settings.save());
-          queue.enqueue_now_P(PSTR("G28XY"));
+          // queue.enqueue_now_P(PSTR("G28XY"));
         saved= true;
         manual_probe_index=0;
         zoffset_diff = 0;
@@ -109,7 +117,7 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
       break;
     case ID_ZOFFSET_NEXT:
       // sprintf_P(str_1, PSTR("G28\nG1 Z10 F2400\nG1 X%d Y%d\nG0 Z0.3"), X_MAX_POS / 2, Y_MAX_POS / 2);
-      queue.enqueue_one_now(PSTR("G29 S2"))
+      queue.enqueue_one_now(PSTR("G29 S2"));
       if(++manual_probe_index  >= total_probe_points){
         zoffset_diff = 0;
         lv_obj_set_hidden( buttonNext, true );
@@ -139,7 +147,7 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
       // #else
       //   draw_return_ui();
       // #endif
-      queue.enqueue_now_P(PSTR("G28 X Y"));  // fix-wang
+      queue.enqueue_now_P(PSTR("G28XY"));  // fix-wang
       clear_cur_ui();
       draw_return_ui();
       break;
@@ -238,7 +246,7 @@ void disp_zoffset_value() {
     #ifdef MESH_BED_LEVELING
       sprintf_P(buf, PSTR("%s: %d/%d - %s: %smm"),move_menu.currPoint,(manual_probe_index +1), total_probe_points, move_menu.zoffset, dtostrf(current_position.z, 1, 2, str_1) );
     #else
-      sprintf_P(buf, PSTR("%s: %smm"), move_menu.zoffset, dtostrf(current_position.z, 1, 2, str_1) );
+      sprintf_P(buf, PSTR("%s: %smm"), move_menu.zoffset, dtostrf(probe.offset.z, 1, 2, str_1) );
   #endif
 
   }
