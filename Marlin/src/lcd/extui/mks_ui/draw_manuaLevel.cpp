@@ -41,7 +41,7 @@ enum {
   ID_M_POINT3,
   ID_M_POINT4,
   ID_M_POINT5,
-  ID_M_MESH,
+  ID_M_ZOFFSET,
   ID_MANUAL_RETURN
 };
 
@@ -61,10 +61,10 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
       }
       break;
     #if ENABLED(MESH_BED_LEVELING)
-      case ID_M_MESH:
-        lv_clear_manualLevel();
-        meshbl_do_init(true);
-        lv_draw_meshbl_settings();
+      case ID_M_ZOFFSET:
+        clear_cur_ui();
+        zoffset_do_init(true);
+        lv_draw_zoffset_settings();
       break;
     #endif
     case ID_MANUAL_RETURN:
@@ -84,7 +84,7 @@ void lv_draw_manualLevel() {
   lv_big_button_create(scr, "F:/bmp_leveling4.bin", leveling_menu.position4, BTN_X_PIXEL * 3 + INTERVAL_V * 4, titleHeight, event_handler, ID_M_POINT4);
   lv_big_button_create(scr, "F:/bmp_leveling5.bin", leveling_menu.position5, INTERVAL_V, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_POINT5);
   #if ENABLED(MESH_BED_LEVELING)
-    lv_big_button_create(scr, "F:/bmp_test.bin", machine_menu.MeshblLeveling, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_MESH);
+    lv_big_button_create(scr, "F:/bmp_test.bin", machine_menu.MeshBLSettings, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_ZOFFSET);
   #endif
 
   lv_big_button_create(scr, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_MANUAL_RETURN);

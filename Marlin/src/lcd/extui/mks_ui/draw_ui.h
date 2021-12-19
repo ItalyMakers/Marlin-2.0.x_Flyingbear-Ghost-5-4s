@@ -78,8 +78,8 @@
 #include "draw_keyboard.h"
 #include "draw_media_select.h"
 #include "draw_encoder_settings.h"
-#include "draw_bltouch_settings.h"
-#include "draw_mesh_bedleveling.h"
+// #include "draw_bltouch_settings.h"
+#include "draw_zoffset.h"
 
 #include "../../../inc/MarlinConfigPre.h"
 
@@ -253,7 +253,7 @@ typedef struct UI_Config_Struct {
   uint16_t moveSpeed;
   uint16_t cloud_port;
   uint16_t moveSpeed_bak;
-  uint32_t totalSend;
+  uint32_t print_progress;
   uint32_t filament_loading_time,
            filament_unloading_time,
            filament_loading_time_cnt,
@@ -281,12 +281,7 @@ typedef enum {
   TEMP_UI,
   SET_UI,
   ZERO_UI,
-  #if ENABLED(BLTOUCH)
-    BLTOUCH_UI,
-  #endif
-  #if ENABLED(MESH_BED_LEVELING)
-    MESH_UI,
-  #endif
+  ZOFFSET_UI,
   SPRAYER_UI,
   MACHINE_UI,
   LANGUAGE_UI,

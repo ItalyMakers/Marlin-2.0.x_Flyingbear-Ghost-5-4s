@@ -1,6 +1,6 @@
 #pragma once
 
-#define IM_VERSION "3.1.1"
+#define IM_VERSION "3.1.2"
 
 /*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************
  *************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************
@@ -20,8 +20,8 @@
 #define FBGHOST_MOTHERBOARD     BOARD_MKS_ROBIN_NANO
 
 //  Choose your printer
-#define FBGHOST_IS_5
-// #define FBGHOST_IS_4S
+// #define FBGHOST_IS_5
+#define FBGHOST_IS_4S
 
 
 
@@ -31,8 +31,7 @@
  * decommentare per abilitare il BLTOUCH
  */
 
-#define FBGHOST_BLTOUCH
-
+// #define FBGHOST_BLTOUCH
 
 
 /*****************************************
@@ -40,7 +39,7 @@
  *****************************************
  * decommentare se usi OctoPrint
  */
-#define FBGHOST_OCTOPRINT
+// #define FBGHOST_OCTOPRINT
 
 /**
  *  * Use TMC2208/TMC2208_STANDALONE for TMC2225 drivers and TMC2209/TMC2209_STANDALONE for TMC2226 drivers.
@@ -57,8 +56,8 @@
  */
 
 //PRESETS - usare FBGHOST_CUSTOM_CONF se si ha una configurazione particolare. A fondo documento trovi i settaggi standard.
-#define FBGHOST_DRIVER_CUSTOM_CONF
-// #define FBGHOST_DRIVER_ALL_A4988
+// #define FBGHOST_DRIVER_CUSTOM_CONF
+#define FBGHOST_DRIVER_ALL_A4988
 // #define FBGHOST_DRIVER_ALL_TMC2208
 // #define FBGHOST_DRIVER_ALL_TMC2209
 // #define FBGHOST_DRIVER_XY_TMC2208_ZE_A4988
@@ -103,7 +102,7 @@
   #define FBGHOST_MESH_BED_LEVELING
 
   #define FBGHOST_MESH_INSET                      10          // Set Mesh bounds as an inset region of the bed
-  #define FBGHOST_GRID_MAX_POINTS_X               5           // Don't use more than 7 points per axis, implementation limited.
+  #define FBGHOST_GRID_MAX_POINTS_X               3           // Don't use more than 7 points per axis, implementation limited.
   #define FBGHOST_GRID_MAX_POINTS_Y               FBGHOST_GRID_MAX_POINTS_X
   #define FBGHOST_MANUAL_PROBE_START_Z            0.2
 
@@ -152,7 +151,9 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define  FBGHOST_NOZZLE_TO_PROBE_OFFSET {50,0,0}   // { 10, 10, 0 }
+
+// Italy Makers Print Head Position (https://www.thingiverse.com/thing:4848085)
+#define  FBGHOST_NOZZLE_TO_PROBE_OFFSET {42.10,-15.5,0}   // { 10, 10, 0 }
 
 
 
@@ -265,6 +266,37 @@
 
 
 /**
+ * Default Acceleration (change/s) change = mm/s
+ * Override with M204
+ */
+#define FBGHOST_DEFAULT_ACCELERATION          500
+#define FBGHOST_DEFAULT_RETRACT_ACCELERATION  2000
+#define FBGHOST_DEFAULT_TRAVEL_ACCELERATION   1000
+
+
+
+/*****************************************
+ *  Linear Pressure Control   ************
+ *****************************************
+ * Linear Pressure Control v1.5
+ * utile per chi usa il direct drive
+ * Set K around 0.22 for 3mm PLA Direct Drive with ~6.5cm between the drive gear and heatbreak.
+ * Larger K values will be needed for flexible filament and greater distances.
+ * If this algorithm produces a higher speed offset than the extruder can handle (compared to E jerk)
+ * print acceleration will be reduced during the affected moves to keep within the limit.
+ *
+ * See https://marlinfw.org/docs/features/lin_advance.html for full instructions.
+ */
+
+//#define FBGHOST_LIN_ADVANCE
+
+#ifdef FBGHOST_LIN_ADVANCE
+  #define FBGHOST_LIN_ADVANCE_K 0.22
+#endif
+
+
+
+/**
  * enable print on terminal leveling data
  *
  */
@@ -371,7 +403,7 @@
   #ifndef FBGHOST_MESH_BED_LEVELING
     #define FBGHOST_BABYSTEP_ZPROBE_OFFSET          // Combine M851 Z and Babystepping
   #endif
-  #define FBGHOST_PROBE_MANUALLY
+  // #define FBGHOST_PROBE_MANUALLY
   #define FBGHOST_Z_MIN_ENDSTOP_INVERTING         true
   #define FBGHOST_Z_MIN_PROBE_ENDSTOP_INVERTING   true
   #define FBGHOST_MIN_SOFTWARE_ENDSTOP_Z

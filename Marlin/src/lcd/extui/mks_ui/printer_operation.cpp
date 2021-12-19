@@ -156,8 +156,8 @@ void printer_state_polling() {
       #endif
       clear_cur_ui();
       #ifdef BLTOUCH
-        bltouch_do_init(false);
-        lv_draw_bltouch_settings();
+        zoffset_do_init(false);
+        lv_draw_zoffset_settings();
       #endif
       uiCfg.autoLeveling = false;
     }

@@ -26,7 +26,7 @@
 #endif
 
 void lv_draw_level_settings();
-void lv_draw_bltouch_settings(void);
+void lv_draw_zoffset_settings(void);
 void lv_clear_level_settings();
 
 
