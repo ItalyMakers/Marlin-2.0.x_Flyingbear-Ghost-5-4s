@@ -50,7 +50,6 @@ static float step_dist = 0.01;
 static float zoffset_diff = 0;
 
 static bool saved = false;
-static bool queued= true;
 
 static uint8_t manual_probe_index=0;
 constexpr uint8_t total_probe_points = TERN(AUTO_BED_LEVELING_3POINT, 3, GRID_MAX_POINTS);
@@ -66,10 +65,7 @@ enum {
  };
 
 static void event_handler(lv_obj_t * obj, lv_event_t event) {
-
   if (event != LV_EVENT_RELEASED) return;
-  if(!queued) return;
-
   char baby_buf[30] = { 0 };
   char str_1[40];
   switch (obj->mks_obj_id) {
@@ -98,7 +94,7 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
               z_values[x][y] = z_values[x][y] + zoffset_diff;
         #endif
         #ifdef AUTO_BED_LEVELING_BILINEAR
-          sprintf_P(baby_buf, PSTR("M851 Z%s"), dtostrf(current_position.z, 1, 3, str_1));
+          sprintf_P(baby_buf, PSTR("M851 Z%s\nM420 S1"), dtostrf(current_position.z, 1, 3, str_1));
           gcode.process_subcommands_now_P(PSTR(baby_buf));
         #endif
         TERN_(EEPROM_SETTINGS, (void)settings.save());
@@ -108,15 +104,22 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
       }
       break;
     case ID_ZOFFSET_NEXT:
-        queued = queue.enqueue_one_P(PSTR("G29 S2"));
+      // sprintf_P(str_1, PSTR("G28\nG1 Z10 F2400\nG1 X%d Y%d\nG0 Z0.3"), X_MAX_POS / 2, Y_MAX_POS / 2);
+      if (!queue.ring_buffer.length) {
+       // mesh_bed_leveling::set_zigzag_z(manual_probe_index, current_position.z + zoffset_diff);
+
+
+        bool queued = queue.enqueue_one_P(PSTR("G29 S2"));
         if (queued){
           if(++manual_probe_index  >= total_probe_points){
             zoffset_diff = 0;
             lv_obj_set_hidden( buttonNext, true );
             lv_obj_set_hidden( buttonSave, false );
             // lv_obj_set_hidden( buttonBack, false );
+            queue.clear();
           }
         }
+      }
       break;
     case ID_ZOFFSET_STEPS:
       if (abs((int)(100 * step_dist)) == 1)
@@ -265,9 +268,9 @@ void zoffset_do_init(bool resetZoffset) {
   // str_1= "G28 S0";
   #ifdef MESH_BED_LEVELING
 
-    queue.enqueue_now_P(PSTR("M420 S1"));
-   #else
    queue.enqueue_now_P(PSTR("G28\nG29 S1"));
+   #else
+
     if (resetZoffset)
     {
       sprintf_P(str_1, PSTR("M851 Z0\nG28\nG1 Z10 F2400\nG1 X%d Y%d\nG0 Z0"), X_MAX_POS / 2, Y_MAX_POS / 2);
