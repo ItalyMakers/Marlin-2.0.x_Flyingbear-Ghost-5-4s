@@ -1474,6 +1474,9 @@ void lv_print_finished() {
 }
 
 void LV_TASK_HANDLER() {
+
+  GUI_RefreshPage();
+
   lv_task_handler();
 
   #if BOTH(MKS_TEST, SDSUPPORT)
@@ -1481,8 +1484,6 @@ void LV_TASK_HANDLER() {
   #endif
 
   TERN_(HAS_GCODE_PREVIEW, disp_pre_gcode(2, 36));
-
-  GUI_RefreshPage();
 
   TERN_(MKS_WIFI_MODULE, get_wifi_commands());
 
