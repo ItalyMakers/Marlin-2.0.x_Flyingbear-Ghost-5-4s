@@ -1885,7 +1885,10 @@
 
   #define BABYSTEP_DISPLAY_TOTAL          // Display total babysteps since last G28
 
-  #define BABYSTEP_ZPROBE_OFFSET FBGHOST_BABYSTEP_ZPROBE_OFFSET          // Combine M851 Z and Babystepping
+  #ifdef FBGHOST_BABYSTEP_ZPROBE_OFFSET
+    #define BABYSTEP_ZPROBE_OFFSET           // Combine M851 Z and Babystepping
+  #endif
+
   #if ENABLED(BABYSTEP_ZPROBE_OFFSET)
     //#define BABYSTEP_HOTEND_Z_OFFSET      // For multiple hotends, babystep relative Z offsets
     //#define BABYSTEP_ZPROBE_GFX_OVERLAY   // Enable graphical overlay on Z-offset editor
@@ -1909,10 +1912,12 @@
  *
  * See https://marlinfw.org/docs/features/lin_advance.html for full instructions.
  */
-#define LIN_ADVANCE
+#ifdef FBGHOST_LIN_ADVANCE
+  #define LIN_ADVANCE
+#endif
 #if ENABLED(LIN_ADVANCE)
   //#define EXTRA_LIN_ADVANCE_K // Enable for second linear advance constants
-  #define LIN_ADVANCE_K 0.22    // Unit: mm compression per 1mm/s extruder speed
+  #define LIN_ADVANCE_K FBGHOST_LIN_ADVANCE_K     // Unit: mm compression per 1mm/s extruder speed
   //#define LA_DEBUG            // If enabled, this will generate debug information output over USB.
   #define EXPERIMENTAL_SCURVE // Enable this option to permit S-Curve Acceleration
 #endif
@@ -1975,7 +1980,10 @@
  * Repeatedly attempt G29 leveling until it succeeds.
  * Stop after G29_MAX_RETRIES attempts.
  */
-#define G29_RETRY_AND_RECOVER FBGHOST_G29_RETRY_AND_RECOVER
+#ifdef FBGHOST_G29_RETRY_AND_RECOVER
+  #define G29_RETRY_AND_RECOVER
+#endif
+
 #if ENABLED(G29_RETRY_AND_RECOVER)
   #define G29_MAX_RETRIES 3
   #define G29_HALT_ON_FAILURE
@@ -3759,17 +3767,17 @@
   // #define MAIN_MENU_ITEM_3_BACK
   #define MAIN_MENU_ITEM_3_BACK_HOME
 
-  #define MAIN_MENU_ITEM_4_DESC "EMERG. STOP"
-  #define MAIN_MENU_ITEM_4_GCODE "M112"
+  #define MAIN_MENU_ITEM_4_DESC "Touch Cal."
+  #define MAIN_MENU_ITEM_4_GCODE "M995"
   // #define MAIN_MENU_ITEM_4_CONFIRM
   // #define MAIN_MENU_ITEM_4_BACK
   #define MAIN_MENU_ITEM_4_BACK_HOME
 
-  #define MAIN_MENU_ITEM_5_DESC "Touch Cal."
-  #define MAIN_MENU_ITEM_5_GCODE "M995"
+  // #define MAIN_MENU_ITEM_5_DESC "Touch Cal."
+  // #define MAIN_MENU_ITEM_5_GCODE "M995"
   //#define MAIN_MENU_ITEM_5_CONFIRM
   // #define MAIN_MENU_ITEM_5_BACK
-  #define MAIN_MENU_ITEM_5_BACK_HOME
+  // #define MAIN_MENU_ITEM_5_BACK_HOME
 
   // #define MAIN_MENU_ITEM_6_DESC "Format SD"
   // #define MAIN_MENU_ITEM_6_GCODE "M21"
@@ -3779,7 +3787,7 @@
 #endif
 
 // Custom Menu: Configuration Menu
-#define CUSTOM_MENU_CONFIG
+// #define CUSTOM_MENU_CONFIG
 #if ENABLED(CUSTOM_MENU_CONFIG)
   //#define CUSTOM_MENU_CONFIG_TITLE "Custom Commands"
   // #define CUSTOM_MENU_CONFIG_SCRIPT_DONE "M117 Wireless Script Done"
@@ -3787,9 +3795,9 @@
   #define CUSTOM_MENU_CONFIG_SCRIPT_RETURN  // Return to status screen after a script
   #define CUSTOM_MENU_CONFIG_ONLY_IDLE        // Only show custom menu when the machine is idle
 
-  #define CONFIG_MENU_ITEM_1_DESC "Format SD"
-  #define CONFIG_MENU_ITEM_1_GCODE "M21"
-  #define CONFIG_MENU_ITEM_1_CONFIRM        // Show a confirmation dialog before this action
+  // #define CONFIG_MENU_ITEM_1_DESC "Format SD"
+  // #define CONFIG_MENU_ITEM_1_GCODE "M21"
+  // #define CONFIG_MENU_ITEM_1_CONFIRM        // Show a confirmation dialog before this action
 
   // #define CONFIG_MENU_ITEM_2_DESC "Bluetooth ON"
   // #define CONFIG_MENU_ITEM_2_GCODE "M118 [ESP110] BT pwd=12345678"

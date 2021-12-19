@@ -25,11 +25,11 @@
 extern "C" { /* C-declarations for C++ */
 #endif
 
-void lv_draw_meshbl_settings(void);
-void lv_clear_meshbl_settings();
+void lv_draw_zoffset_settings(void);
+void lv_clear_zoffset_settings();
 void disp_step_dist();
-void meshbl_do_init(bool resetZoffset);
-void disp_meshbl_z_offset_value();
+void zoffset_do_init(bool resetZoffset);
+void disp_zoffset_value();
 
 //extern void disp_temp_ready_print();
 #ifdef __cplusplus

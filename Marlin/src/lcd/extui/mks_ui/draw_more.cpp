@@ -64,7 +64,7 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
     #if HAS_USER_ITEM(1)
       case ID_CUSTOM_1:
       queue.inject_P(PSTR(MAIN_MENU_ITEM_1_GCODE));
-      #if ENABLED(MAIN_MENU_ITEM_1_BACK)
+        #if ENABLED(MAIN_MENU_ITEM_1_BACK)
           lv_clear_more();
           lv_draw_tool();
         #elif ENABLED(MAIN_MENU_ITEM_1_BACK_HOME)

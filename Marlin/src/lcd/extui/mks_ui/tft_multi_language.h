@@ -115,9 +115,10 @@ typedef struct machine_common_disp {
   const char *BLTouchSave;
   const char *BLTouchTest;
 
-  const char *MeshBedLevelingConfTitle;
+  const char *MeshBLConfTitle;
+  const char *ZoffsetConfTitle;
   const char *MeshblSaved;
-  const char *MeshblLeveling;
+  const char *MeshBLSettings;
   const char *MeshblNext;
 
 
