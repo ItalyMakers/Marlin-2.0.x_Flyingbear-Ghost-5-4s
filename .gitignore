@@ -143,7 +143,11 @@ vc-fileutils.settings
 .vscode/launch.json
 .vscode/*.db
 
-# cmake
+#Simulation
+imgui.ini
+eeprom.dat
+
+#cmake
 CMakeLists.txt
 src/CMakeLists.txt
 CMakeListsPrivate.txt
@@ -167,7 +171,3 @@ __pycache__
 # Simulation / Native
 eeprom.dat
 imgui.ini
-
-custom_graphics/_img_conv_core.php
-custom_graphics/images/*
-

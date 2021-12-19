@@ -57,6 +57,15 @@ wifi_filename= "MksWifi.bin"
 
 
 def convert_assets():
+	if not os.path.exists(custom_graphics_path_bin):
+		print("*** Converting Assets *** ")
+		os.mkdir(custom_graphics_path_bin)
+		for filename in os.listdir(custom_graphics_path):
+			if ".png" in filename:
+				img_name=os.path.splitext(filename)[0]
+				command = 'php '+custom_graphics_toolpath+'/_img_conv_core.php "name='+img_name+'&img='+custom_graphics_path+"/"+filename+'&cf=true_color&format=bin_565&out='+custom_graphics_path_bin+'/"'
+				print("-> " + filename )
+				os.system(command)
 
 	print("*** Copying Assets *** ")
 	copy_tree(custom_graphics_path_bin, assets_path)
