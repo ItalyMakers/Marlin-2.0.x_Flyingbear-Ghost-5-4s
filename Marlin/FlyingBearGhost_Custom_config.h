@@ -20,8 +20,8 @@
 #define FBGHOST_MOTHERBOARD     BOARD_MKS_ROBIN_NANO
 
 //  Choose your printer
-// #define FBGHOST_IS_5
-#define FBGHOST_IS_4S
+#define FBGHOST_IS_5
+// #define FBGHOST_IS_4S
 
 
 
@@ -51,10 +51,10 @@
 
 //PRESETS - usare FBGHOST_CUSTOM_CONF se si ha una configurazione particolare. A fondo documento trovi i settaggi standard.
 // #define FBGHOST_DRIVER_CUSTOM_CONF
-#define FBGHOST_DRIVER_ALL_A4988
+// #define FBGHOST_DRIVER_ALL_A4988
 // #define FBGHOST_DRIVER_ALL_TMC2208
 // #define FBGHOST_DRIVER_ALL_TMC2209
-// #define FBGHOST_DRIVER_XY_TMC2208_ZE_A4988
+#define FBGHOST_DRIVER_XY_TMC2208_ZE_A4988
 
 #ifdef FBGHOST_DRIVER_CUSTOM_CONF
   #define FBGHOST_X_DRIVER_TYPE   TMC2208_STANDALONE
