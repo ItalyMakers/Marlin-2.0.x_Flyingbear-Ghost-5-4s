@@ -914,7 +914,7 @@ void GUI_RefreshPage() {
       case ZOFFSET_UI:
         if (temps_update_flag) {
           temps_update_flag = false;
-          disp_zoffset_value(false);
+          disp_zoffset_value();
         }
         break;
     #endif
@@ -1113,7 +1113,7 @@ void draw_return_ui() {
       case DOUBLE_Z_UI:                 break;
       case ENABLE_INVERT_UI:            break;
       case NUMBER_KEY_UI:               lv_draw_number_key(); break;
-      case DIALOG_UI:                   break;
+      case DIALOG_UI:                   draw_return_ui(); break;
       case BABY_STEP_UI:                lv_draw_baby_stepping(); break;
       #if EITHER(MESH_BED_LEVELING, AUTO_BED_LEVELING_BILINEAR)
         case ZOFFSET_UI:                lv_draw_zoffset_settings(); break;

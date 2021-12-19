@@ -43,8 +43,11 @@
 
 extern lv_group_t *g;
 static lv_obj_t *scr, *labelV, *buttonV, *zOffsetText;
-static lv_obj_t *labelExt1, *labelBed;
-static lv_obj_t *buttonExt1, *buttonBed, *buttonNext, *buttonSave, *buttonBack;
+#ifdef MESH_BED_LEVELING
+  static lv_obj_t *labelExt1, *labelBed;
+  static lv_obj_t *buttonExt1, *buttonBed,
+#endif
+static lv_obj_t *buttonNext, *buttonSave, *buttonBack;
 
 static float step_dist = 0.01;
 static float zoffset_diff = 0;
@@ -94,10 +97,11 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
               z_values[x][y] = z_values[x][y] + zoffset_diff;
         #endif
         #ifdef AUTO_BED_LEVELING_BILINEAR
-          sprintf_P(baby_buf, PSTR("M851 Z%s\nM420 S1"), dtostrf(current_position.z, 1, 3, str_1));
-          gcode.process_subcommands_now_P(PSTR(baby_buf));
+          sprintf_P(baby_buf, PSTR("M851Z%s\nM420S1"), dtostrf(current_position.z, 1, 3, str_1));
+          queue.enqueue_now_P(PSTR(baby_buf));
         #endif
         TERN_(EEPROM_SETTINGS, (void)settings.save());
+          queue.enqueue_now_P(PSTR("G28XY"));
         saved= true;
         manual_probe_index=0;
         zoffset_diff = 0;
@@ -132,13 +136,15 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
       break;
     case ID_ZOFFSET_RETURN:
       TERN_(HAS_SOFTWARE_ENDSTOPS, soft_endstop._enabled = true);
-      lv_clear_zoffset_settings();
-      #ifdef MESH_BED_LEVELING
-        lv_draw_manualLevel();
-      #else
-        draw_return_ui();
-      #endif
-        queue.enqueue_now_P(PSTR("G28 X Y"));  // fix-wang
+      // lv_clear_zoffset_settings();
+      // #ifdef MESH_BED_LEVELING
+      //   lv_draw_manualLevel();
+      // #else
+      //   draw_return_ui();
+      // #endif
+      queue.enqueue_now_P(PSTR("G28 X Y"));  // fix-wang
+      clear_cur_ui();
+      draw_return_ui();
       break;
   }
 }
@@ -162,18 +168,24 @@ void lv_draw_zoffset_settings(void) {
   lv_label_set_text(labelInit, machine_menu.BLTouchInit);
   lv_obj_align(labelInit, buttonInitstate, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
 
-  buttonExt1 = lv_img_create(scr, nullptr);
-  lv_img_set_src(buttonExt1, "F:/bmp_ext1_state.bin");
-  lv_obj_set_pos(buttonExt1, 216, 50);
+  #ifdef MESH_BED_LEVELING
+    buttonExt1 = lv_img_create(scr, nullptr);
+    lv_img_set_src(buttonExt1, "F:/bmp_ext1_state.bin");
+    lv_obj_set_pos(buttonExt1, 216, 50);
 
-  buttonBed = lv_img_create(scr, nullptr);
-  lv_img_set_src(buttonBed, "F:/bmp_bed_state.bin");
-  lv_obj_set_pos(buttonBed, 287, 50);
+    buttonBed = lv_img_create(scr, nullptr);
+    lv_img_set_src(buttonBed, "F:/bmp_bed_state.bin");
+    lv_obj_set_pos(buttonBed, 287, 50);
 
-  labelExt1 = lv_label_create(scr, 196, 115, nullptr);
-  labelBed  = lv_label_create(scr, 267, 115, nullptr);
+    labelExt1 = lv_label_create(scr, 196, 115, nullptr);
+    labelBed  = lv_label_create(scr, 267, 115, nullptr);
 
-  zOffsetText = lv_label_create(scr, 120, 140, nullptr);
+    zOffsetText = lv_label_create(scr, 120, 140, nullptr);
+  #else
+    zOffsetText = lv_label_create(scr, 170, 140, nullptr);
+  #endif
+
+
 
   lv_big_button_create(scr, "F:/bmp_Dec.bin", machine_menu.BLTouchOffsetneg, BTN_X_PIXEL * 3 + INTERVAL_V * 4, titleHeight, event_handler, ID_ZOFFSET_ZOFFSETNEG);
 
@@ -190,7 +202,7 @@ void lv_draw_zoffset_settings(void) {
   // lv_obj_set_hidden( buttonBack, true );
 
   disp_step_dist();
-  disp_zoffset_value(true);
+  disp_zoffset_value();
 
   zoffset_diff = 0;
 }
@@ -219,7 +231,7 @@ void disp_step_dist() {
   }
 }
 
-void disp_zoffset_value(bool firstCall) {
+void disp_zoffset_value() {
   char buf[20];
   char str_1[16];
   if(saved){
@@ -236,7 +248,7 @@ void disp_zoffset_value(bool firstCall) {
 
   lv_label_set_text(zOffsetText, buf);
 
-  if(!firstCall){
+  #ifdef MESH_BED_LEVELING
     #if HAS_HOTEND
       sprintf(public_buf_l, printing_menu.temp1, (int)thermalManager.temp_hotend[0].celsius, (int)thermalManager.temp_hotend[0].target);
       lv_label_set_text(labelExt1, public_buf_l);
@@ -249,10 +261,7 @@ void disp_zoffset_value(bool firstCall) {
       lv_label_set_text(labelBed, public_buf_l);
       lv_obj_align(labelBed, buttonBed, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
     #endif
-  }
-
-
-
+  #endif
 }
 
 void zoffset_do_init(bool resetZoffset) {
@@ -269,7 +278,7 @@ void zoffset_do_init(bool resetZoffset) {
   #ifdef MESH_BED_LEVELING
 
    queue.enqueue_now_P(PSTR("G28\nG29 S1"));
-   #else
+  #else
 
     if (resetZoffset)
     {
@@ -279,7 +288,7 @@ void zoffset_do_init(bool resetZoffset) {
     {
       sprintf_P(str_1, PSTR("G28\nG1 Z10 F2400\nG1 X%d Y%d\nG0 Z0"), X_MAX_POS / 2, Y_MAX_POS / 2);
     }
-    queue.inject_P(str_1);
+    queue.enqueue_now_P(str_1);
   #endif
   // else
   // {

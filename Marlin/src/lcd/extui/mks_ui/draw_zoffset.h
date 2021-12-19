@@ -29,7 +29,7 @@ void lv_draw_zoffset_settings(void);
 void lv_clear_zoffset_settings();
 void disp_step_dist();
 void zoffset_do_init(bool resetZoffset);
-void disp_zoffset_value(bool firstCall);
+void disp_zoffset_value();
 
 //extern void disp_temp_ready_print();
 #ifdef __cplusplus
