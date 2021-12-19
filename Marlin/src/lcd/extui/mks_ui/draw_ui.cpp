@@ -522,8 +522,8 @@ char *getDispText(int index) {
     case PRINT_MORE_UI:       strcpy(public_buf_l, more_menu.title); break;
     case FILAMENTCHANGE_UI:   strcpy(public_buf_l, filament_menu.title); break;
     case LEVELING_UI:
-    #if ENABLED(BLTOUCH)
-      case BLTOUCH_UI:
+    #if EITHER(MESH_BED_LEVELING, AUTO_BED_LEVELING_BILINEAR)
+      case ZOFFSET_UI:        strcpy(public_buf_l, leveling_menu.title); break;
     #endif
     case MESHLEVELING_UI:     strcpy(public_buf_l, leveling_menu.title); break;
     // case BIND_UI:             strcpy(public_buf_l, cloud_menu.title); break;
@@ -910,21 +910,11 @@ void GUI_RefreshPage() {
       }
       break;
 
-    #if ENABLED(BLTOUCH)
-      case BLTOUCH_UI:
+    #if EITHER(MESH_BED_LEVELING, AUTO_BED_LEVELING_BILINEAR)
+      case ZOFFSET_UI:
         if (temps_update_flag) {
           temps_update_flag = false;
-          disp_bltouch_z_offset_value();
-        }
-        break;
-
-    #endif
-
-    #if ENABLED(MESH_BED_LEVELING)
-      case MESH_UI:
-        if (temps_update_flag) {
-          temps_update_flag = false;
-          disp_meshbl_z_offset_value();
+          disp_zoffset_value();
         }
         break;
     #endif
@@ -1009,8 +999,8 @@ void clear_cur_ui() {
     case ENABLE_INVERT_UI:            break;
     case NUMBER_KEY_UI:               lv_clear_number_key(); break;
     case BABY_STEP_UI:                lv_clear_baby_stepping(); break;
-    #if ENABLED(BLTOUCH)
-      case BLTOUCH_UI:                lv_clear_bltouch_settings(); break;
+    #if EITHER(MESH_BED_LEVELING, AUTO_BED_LEVELING_BILINEAR)
+      case ZOFFSET_UI:                lv_clear_zoffset_settings(); break;
     #endif
     case PAUSE_POS_UI:                lv_clear_pause_position(); break;
     #if HAS_TRINAMIC_CONFIG
@@ -1123,10 +1113,10 @@ void draw_return_ui() {
       case DOUBLE_Z_UI:                 break;
       case ENABLE_INVERT_UI:            break;
       case NUMBER_KEY_UI:               lv_draw_number_key(); break;
-      case DIALOG_UI:                   break;
+      case DIALOG_UI:                   draw_return_ui(); break;
       case BABY_STEP_UI:                lv_draw_baby_stepping(); break;
-      #if(ENABLED(BLTOUCH))
-        case BLTOUCH_UI:                lv_draw_level_settings(); break;
+      #if EITHER(MESH_BED_LEVELING, AUTO_BED_LEVELING_BILINEAR)
+        case ZOFFSET_UI:                lv_draw_zoffset_settings(); break;
       #endif
 
       case PAUSE_POS_UI:                lv_draw_pause_position(); break;

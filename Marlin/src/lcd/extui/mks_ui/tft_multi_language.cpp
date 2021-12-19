@@ -754,10 +754,11 @@ void machine_setting_disp() {
     machine_menu.BLTouchSave              = BLTOUCH_SAVE_EN;
     machine_menu.BLTouchTest              = BLTOUCH_TEST_EN;
 
-    machine_menu.MeshBedLevelingConfTitle = MESHBED_LEVELING_TITTLE_EN;
-    machine_menu.MeshblSaved              = MESHBED_LEVELING_SAVED_EN;
-    machine_menu.MeshblLeveling           = MESHBED_LEVELING_LEVELING_EN;
-    machine_menu.MeshblNext               = MESHBED_LEVELING_NEXT_EN;
+    machine_menu.MeshBLConfTitle          = MESHBED_LEVELING_TITTLE_EN;
+    machine_menu.ZoffsetConfTitle         = ZOFFSET_SETTING_TITTLE_EN;
+    machine_menu.MeshblSaved              = ZOFFSET_SETTING_SAVED_EN;
+    machine_menu.MeshBLSettings           = MESH_LEVELING_EN;
+    machine_menu.MeshblNext               = ZOFFSET_SETTING_NEXT_EN;
 
     machine_menu.HomingSensitivityConfTitle = HOMING_SENSITIVITY_CONF_TITLE_EN;
     machine_menu.X_Sensitivity              = X_SENSITIVITY_EN;
