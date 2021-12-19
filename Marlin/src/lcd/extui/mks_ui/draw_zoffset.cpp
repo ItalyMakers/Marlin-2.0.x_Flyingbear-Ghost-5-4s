@@ -45,8 +45,9 @@ extern lv_group_t *g;
 static lv_obj_t *scr, *labelV, *buttonV, *zOffsetText;
 #ifdef MESH_BED_LEVELING
   static lv_obj_t *labelExt1, *labelBed;
-  static lv_obj_t *buttonExt1, *buttonBed,
+  static lv_obj_t *buttonExt1, *buttonBed;
 #endif
+
 static lv_obj_t *buttonNext, *buttonSave, *buttonBack;
 
 static float step_dist = 0.01;
