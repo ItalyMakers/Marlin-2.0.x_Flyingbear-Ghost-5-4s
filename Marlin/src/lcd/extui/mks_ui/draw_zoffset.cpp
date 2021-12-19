@@ -50,6 +50,7 @@ static float step_dist = 0.01;
 static float zoffset_diff = 0;
 
 static bool saved = false;
+static bool queued= true;
 
 static uint8_t manual_probe_index=0;
 constexpr uint8_t total_probe_points = TERN(AUTO_BED_LEVELING_3POINT, 3, GRID_MAX_POINTS);
@@ -65,7 +66,10 @@ enum {
  };
 
 static void event_handler(lv_obj_t * obj, lv_event_t event) {
+
   if (event != LV_EVENT_RELEASED) return;
+  if(!queued) return;
+
   char baby_buf[30] = { 0 };
   char str_1[40];
   switch (obj->mks_obj_id) {
@@ -104,22 +108,15 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
       }
       break;
     case ID_ZOFFSET_NEXT:
-      // sprintf_P(str_1, PSTR("G28\nG1 Z10 F2400\nG1 X%d Y%d\nG0 Z0.3"), X_MAX_POS / 2, Y_MAX_POS / 2);
-      if (!queue.ring_buffer.length) {
-       // mesh_bed_leveling::set_zigzag_z(manual_probe_index, current_position.z + zoffset_diff);
-
-
-        bool queued = queue.enqueue_one_P(PSTR("G29 S2"));
+        queued = queue.enqueue_one_P(PSTR("G29 S2"));
         if (queued){
           if(++manual_probe_index  >= total_probe_points){
             zoffset_diff = 0;
             lv_obj_set_hidden( buttonNext, true );
             lv_obj_set_hidden( buttonSave, false );
             // lv_obj_set_hidden( buttonBack, false );
-            queue.clear();
           }
         }
-      }
       break;
     case ID_ZOFFSET_STEPS:
       if (abs((int)(100 * step_dist)) == 1)
@@ -190,7 +187,7 @@ void lv_draw_zoffset_settings(void) {
   // lv_obj_set_hidden( buttonBack, true );
 
   disp_step_dist();
-  disp_zoffset_value();
+  disp_zoffset_value(true);
 
   zoffset_diff = 0;
 }
@@ -219,7 +216,7 @@ void disp_step_dist() {
   }
 }
 
-void disp_zoffset_value() {
+void disp_zoffset_value(bool firstCall) {
   char buf[20];
   char str_1[16];
   if(saved){
@@ -236,18 +233,20 @@ void disp_zoffset_value() {
 
   lv_label_set_text(zOffsetText, buf);
 
-  #if HAS_HOTEND
-    sprintf(public_buf_l, printing_menu.temp1, (int)thermalManager.temp_hotend[0].celsius, (int)thermalManager.temp_hotend[0].target);
-    lv_label_set_text(labelExt1, public_buf_l);
-    lv_obj_align(labelExt1, buttonExt1, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
-  #endif
+  if(!firstCall){
+    #if HAS_HOTEND
+      sprintf(public_buf_l, printing_menu.temp1, (int)thermalManager.temp_hotend[0].celsius, (int)thermalManager.temp_hotend[0].target);
+      lv_label_set_text(labelExt1, public_buf_l);
+      lv_obj_align(labelExt1, buttonExt1, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+    #endif
 
 
-  #if HAS_HEATED_BED
-    sprintf(public_buf_l, printing_menu.bed_temp, (int)thermalManager.temp_bed.celsius, (int)thermalManager.temp_bed.target);
-    lv_label_set_text(labelBed, public_buf_l);
-    lv_obj_align(labelBed, buttonBed, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
-  #endif
+    #if HAS_HEATED_BED
+      sprintf(public_buf_l, printing_menu.bed_temp, (int)thermalManager.temp_bed.celsius, (int)thermalManager.temp_bed.target);
+      lv_label_set_text(labelBed, public_buf_l);
+      lv_obj_align(labelBed, buttonBed, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+    #endif
+  }
 
 
 

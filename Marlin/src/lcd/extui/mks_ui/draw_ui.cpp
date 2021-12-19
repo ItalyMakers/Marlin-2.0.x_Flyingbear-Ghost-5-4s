@@ -914,7 +914,7 @@ void GUI_RefreshPage() {
       case ZOFFSET_UI:
         if (temps_update_flag) {
           temps_update_flag = false;
-          disp_zoffset_value();
+          disp_zoffset_value(false);
         }
         break;
     #endif
