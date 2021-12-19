@@ -20,8 +20,8 @@
 #define FBGHOST_MOTHERBOARD     BOARD_MKS_ROBIN_NANO
 
 //  Choose your printer
-#define FBGHOST_IS_5
-// #define FBGHOST_IS_4S
+// #define FBGHOST_IS_5
+#define FBGHOST_IS_4S
 
 
 
@@ -31,7 +31,7 @@
  * decommentare per abilitare il BLTOUCH
  */
 
-#define FBGHOST_BLTOUCH
+// #define FBGHOST_BLTOUCH
 
 
 
@@ -57,8 +57,8 @@
  */
 
 //PRESETS - usare FBGHOST_CUSTOM_CONF se si ha una configurazione particolare. A fondo documento trovi i settaggi standard.
-#define FBGHOST_DRIVER_CUSTOM_CONF
-// #define FBGHOST_DRIVER_ALL_A4988
+// #define FBGHOST_DRIVER_CUSTOM_CONF
+#define FBGHOST_DRIVER_ALL_A4988
 // #define FBGHOST_DRIVER_ALL_TMC2208
 // #define FBGHOST_DRIVER_ALL_TMC2209
 // #define FBGHOST_DRIVER_XY_TMC2208_ZE_A4988
@@ -267,6 +267,15 @@
 
 
 /**
+ * Default Acceleration (change/s) change = mm/s
+ * Override with M204
+ */
+#define FBGHOST_DEFAULT_ACCELERATION          1000
+#define FBGHOST_DEFAULT_RETRACT_ACCELERATION  2000
+#define FBGHOST_DEFAULT_TRAVEL_ACCELERATION   1000
+
+
+/**
  * enable print on terminal leveling data
  *
  */
@@ -373,7 +382,7 @@
   #ifndef FBGHOST_MESH_BED_LEVELING
     #define FBGHOST_BABYSTEP_ZPROBE_OFFSET          // Combine M851 Z and Babystepping
   #endif
-  #define FBGHOST_PROBE_MANUALLY
+  // #define FBGHOST_PROBE_MANUALLY
   #define FBGHOST_Z_MIN_ENDSTOP_INVERTING         true
   #define FBGHOST_Z_MIN_PROBE_ENDSTOP_INVERTING   true
   #define FBGHOST_MIN_SOFTWARE_ENDSTOP_Z
