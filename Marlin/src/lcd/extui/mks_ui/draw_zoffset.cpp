@@ -110,7 +110,7 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
         //   queue.enqueue_now_P(PSTR(baby_buf));
         // #endif
         TERN_(EEPROM_SETTINGS, (void)settings.save());
-          // queue.enqueue_now_P(PSTR("G28XY"));
+        queue.enqueue_now_P(PSTR("G28XY"));
         saved= true;
         manual_probe_index=0;
         zoffset_diff = 0;
@@ -148,7 +148,9 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
       // #else
       //   draw_return_ui();
       // #endif
-      queue.enqueue_now_P(PSTR("G28XY"));  // fix-wang
+      if(!saved){
+        queue.enqueue_now_P(PSTR("G28XY"));  // fix-wang
+      }
       clear_cur_ui();
       draw_return_ui();
       break;
