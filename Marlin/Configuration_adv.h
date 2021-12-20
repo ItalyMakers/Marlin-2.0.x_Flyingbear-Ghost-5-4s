@@ -994,7 +994,7 @@
 #define DEFAULT_MINTRAVELFEEDRATE     0.0     // (mm/s) Minimum travel feedrate. Set with M205 T.
 
 // Minimum time that a segment needs to take as the buffer gets emptied
-#define DEFAULT_MINSEGMENTTIME        50000   // (µs) Set with M205 B.
+#define DEFAULT_MINSEGMENTTIME        20000   // (µs) Set with M205 B.
 
 // Slow down the machine if the lookahead buffer is (by default) half full.
 // Increase the slowdown divisor for larger buffer sizes.
@@ -3749,14 +3749,26 @@
   // #define CUSTOM_MENU_MAIN_ONLY_IDLE         // Only show custom menu when the machine is idle
 
 
-  #define MAIN_MENU_ITEM_1_DESC PREHEAT_1_LABEL " (" STRINGIFY(PREHEAT_1_TEMP_HOTEND) "/" STRINGIFY(PREHEAT_1_TEMP_BED) ")"
-  #define MAIN_MENU_ITEM_1_GCODE "M140 S" STRINGIFY(PREHEAT_1_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_1_TEMP_HOTEND)
+  // #define MAIN_MENU_ITEM_1_DESC PREHEAT_1_LABEL " (" STRINGIFY(PREHEAT_1_TEMP_HOTEND) "/" STRINGIFY(PREHEAT_1_TEMP_BED) ")"
+  // #define MAIN_MENU_ITEM_1_GCODE "M140 S" STRINGIFY(PREHEAT_1_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_1_TEMP_HOTEND)
   // #define MAIN_MENU_ITEM_1_CONFIRM          // Show a confirmation dialog before this action
+  // #define MAIN_MENU_ITEM_1_BACK
+  // #define MAIN_MENU_ITEM_1_BACK_HOME
+
+  // #define MAIN_MENU_ITEM_2_DESC PREHEAT_2_LABEL   " (" STRINGIFY(PREHEAT_2_TEMP_HOTEND) "/" STRINGIFY(PREHEAT_2_TEMP_BED) ")"
+  // #define MAIN_MENU_ITEM_2_GCODE "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_2_TEMP_HOTEND)
+  // #define MAIN_MENU_ITEM_2_CONFIRM
+  // #define MAIN_MENU_ITEM_2_BACK
+  // #define MAIN_MENU_ITEM_2_BACK_HOME
+
+  #define MAIN_MENU_ITEM_1_DESC "COOL DOWN"
+  #define MAIN_MENU_ITEM_1_GCODE "M106 S0\nM104 S0\nM140 S0"
+  // #define MAIN_MENU_ITEM_1_CONFIRM
   // #define MAIN_MENU_ITEM_1_BACK
   #define MAIN_MENU_ITEM_1_BACK_HOME
 
-  #define MAIN_MENU_ITEM_2_DESC PREHEAT_2_LABEL   " (" STRINGIFY(PREHEAT_2_TEMP_HOTEND) "/" STRINGIFY(PREHEAT_2_TEMP_BED) ")"
-  #define MAIN_MENU_ITEM_2_GCODE "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_2_TEMP_HOTEND)
+  #define MAIN_MENU_ITEM_2_DESC "Touch Cal."
+  #define MAIN_MENU_ITEM_2_GCODE "M995"
   // #define MAIN_MENU_ITEM_2_CONFIRM
   // #define MAIN_MENU_ITEM_2_BACK
   #define MAIN_MENU_ITEM_2_BACK_HOME
@@ -3767,17 +3779,17 @@
   // #define MAIN_MENU_ITEM_3_BACK
   #define MAIN_MENU_ITEM_3_BACK_HOME
 
-  #define MAIN_MENU_ITEM_4_DESC "EMERG. STOP"
-  #define MAIN_MENU_ITEM_4_GCODE "M112"
+  #define MAIN_MENU_ITEM_4_DESC "Touch Cal."
+  #define MAIN_MENU_ITEM_4_GCODE "M995"
   // #define MAIN_MENU_ITEM_4_CONFIRM
   // #define MAIN_MENU_ITEM_4_BACK
   #define MAIN_MENU_ITEM_4_BACK_HOME
 
-  #define MAIN_MENU_ITEM_5_DESC "Touch Cal."
-  #define MAIN_MENU_ITEM_5_GCODE "M995"
+  // #define MAIN_MENU_ITEM_5_DESC "Touch Cal."
+  // #define MAIN_MENU_ITEM_5_GCODE "M995"
   //#define MAIN_MENU_ITEM_5_CONFIRM
   // #define MAIN_MENU_ITEM_5_BACK
-  #define MAIN_MENU_ITEM_5_BACK_HOME
+  // #define MAIN_MENU_ITEM_5_BACK_HOME
 
   // #define MAIN_MENU_ITEM_6_DESC "Format SD"
   // #define MAIN_MENU_ITEM_6_GCODE "M21"
@@ -3787,7 +3799,7 @@
 #endif
 
 // Custom Menu: Configuration Menu
-#define CUSTOM_MENU_CONFIG
+// #define CUSTOM_MENU_CONFIG
 #if ENABLED(CUSTOM_MENU_CONFIG)
   //#define CUSTOM_MENU_CONFIG_TITLE "Custom Commands"
   // #define CUSTOM_MENU_CONFIG_SCRIPT_DONE "M117 Wireless Script Done"
@@ -3795,9 +3807,9 @@
   #define CUSTOM_MENU_CONFIG_SCRIPT_RETURN  // Return to status screen after a script
   #define CUSTOM_MENU_CONFIG_ONLY_IDLE        // Only show custom menu when the machine is idle
 
-  #define CONFIG_MENU_ITEM_1_DESC "Format SD"
-  #define CONFIG_MENU_ITEM_1_GCODE "M21"
-  #define CONFIG_MENU_ITEM_1_CONFIRM        // Show a confirmation dialog before this action
+  // #define CONFIG_MENU_ITEM_1_DESC "Format SD"
+  // #define CONFIG_MENU_ITEM_1_GCODE "M21"
+  // #define CONFIG_MENU_ITEM_1_CONFIRM        // Show a confirmation dialog before this action
 
   // #define CONFIG_MENU_ITEM_2_DESC "Bluetooth ON"
   // #define CONFIG_MENU_ITEM_2_GCODE "M118 [ESP110] BT pwd=12345678"
@@ -4209,22 +4221,22 @@
 //
 // M42 - Set pin states
 //
-//#define DIRECT_PIN_CONTROL
+#define DIRECT_PIN_CONTROL
 
 //
 // M43 - display pin status, toggle pins, watch pins, watch endstops & toggle LED, test servo probe
 //
-//#define PINS_DEBUGGING
+#define PINS_DEBUGGING
 
 // Enable Marlin dev mode which adds some special commands
-//#define MARLIN_DEV_MODE
+#define MARLIN_DEV_MODE
 
 #if ENABLED(MARLIN_DEV_MODE)
   /**
    * D576 - Buffer Monitoring
    * To help diagnose print quality issues stemming from empty command buffers.
    */
-  //#define BUFFER_MONITORING
+  #define BUFFER_MONITORING
 #endif
 
 /**
@@ -4232,7 +4244,7 @@
  * When running in the debugger it will break for debugging. This is useful to help understand
  * a crash from a remote location. Requires ~400 bytes of SRAM and 5Kb of flash.
  */
-//#define POSTMORTEM_DEBUGGING
+#define POSTMORTEM_DEBUGGING
 
 /**
  * Software Reset options

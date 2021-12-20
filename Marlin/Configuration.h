@@ -2900,14 +2900,18 @@
  *
  * LED Type. Enable only one of the following two options.
  */
-//#define RGB_LED
-//#define RGBW_LED
+#ifdef FBGHOST_RGB_LED
+  #define RGB_LED
+#endif
+#ifdef FBGHOST_RGBW_LED
+  #define RGBW_LED
+#endif
 
 #if EITHER(RGB_LED, RGBW_LED)
-  //#define RGB_LED_R_PIN 34
-  //#define RGB_LED_G_PIN 43
-  //#define RGB_LED_B_PIN 35
-  //#define RGB_LED_W_PIN -1
+  #define RGB_LED_R_PIN FBGHOST_RGB_LED_R_PIN
+  #define RGB_LED_G_PIN FBGHOST_RGB_LED_G_PIN
+  #define RGB_LED_B_PIN FBGHOST_RGB_LED_B_PIN
+  #define RGB_LED_W_PIN FBGHOST_RGB_LED_W_PIN
 #endif
 
 // Support for Adafruit NeoPixel LED driver

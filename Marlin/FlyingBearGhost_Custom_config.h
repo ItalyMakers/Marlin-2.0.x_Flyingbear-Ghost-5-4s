@@ -20,8 +20,8 @@
 #define FBGHOST_MOTHERBOARD     BOARD_MKS_ROBIN_NANO
 
 //  Choose your printer
-// #define FBGHOST_IS_5
-#define FBGHOST_IS_4S
+#define FBGHOST_IS_5
+// #define FBGHOST_IS_4S
 
 
 
@@ -31,15 +31,9 @@
  * decommentare per abilitare il BLTOUCH
  */
 
-// #define FBGHOST_BLTOUCH
+ #define FBGHOST_BLTOUCH
 
 
-/*****************************************
- *       OCTOPRINT       *****************
- *****************************************
- * decommentare se usi OctoPrint
- */
-// #define FBGHOST_OCTOPRINT
 
 /**
  *  * Use TMC2208/TMC2208_STANDALONE for TMC2225 drivers and TMC2209/TMC2209_STANDALONE for TMC2226 drivers.
@@ -56,24 +50,24 @@
  */
 
 //PRESETS - usare FBGHOST_CUSTOM_CONF se si ha una configurazione particolare. A fondo documento trovi i settaggi standard.
-// #define FBGHOST_DRIVER_CUSTOM_CONF
-#define FBGHOST_DRIVER_ALL_A4988
+   #define FBGHOST_DRIVER_CUSTOM_CONF
+// #define FBGHOST_DRIVER_ALL_A4988
 // #define FBGHOST_DRIVER_ALL_TMC2208
 // #define FBGHOST_DRIVER_ALL_TMC2209
 // #define FBGHOST_DRIVER_XY_TMC2208_ZE_A4988
 
 #ifdef FBGHOST_DRIVER_CUSTOM_CONF
-  #define FBGHOST_X_DRIVER_TYPE   TMC2208_STANDALONE
-  #define FBGHOST_Y_DRIVER_TYPE   TMC2208_STANDALONE
-  #define FBGHOST_Z_DRIVER_TYPE   A4988
-  #define FBGHOST_E0_DRIVER_TYPE  TMC2209_STANDALONE
+  #define FBGHOST_X_DRIVER_TYPE   TMC2209_STANDALONE
+  #define FBGHOST_Y_DRIVER_TYPE   TMC2209_STANDALONE
+  #define FBGHOST_Z_DRIVER_TYPE   TMC2208_STANDALONE
+  #define FBGHOST_E0_DRIVER_TYPE  TMC2208_STANDALONE
 
 
   // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
   // TMC2208, TMC2209, TMC2208_STANDALONE, TMC2209_STANDALONE, TMC2225 TMC2226 needs inverted values
   #define FBGHOST_INVERT_X_DIR    false
   #define FBGHOST_INVERT_Y_DIR    false
-  #define FBGHOST_INVERT_Z_DIR    false
+  #define FBGHOST_INVERT_Z_DIR    true
   #define FBGHOST_INVERT_E0_DIR   true
 #endif
 
@@ -83,7 +77,7 @@
  *                                               X,  Y,  Z[, I [, J [, K]]], E0 [, E1[, E2...]]
  *
  *///                                            X,  Y,   Z,  E0
-#define FBGHOST_DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 409}
+#define FBGHOST_DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 405}
 
 
 
@@ -99,10 +93,10 @@
     #define FBGHOST_LEVELING_BED_TEMP      50
   #endif
 #else
-  #define FBGHOST_MESH_BED_LEVELING
+ #define FBGHOST_MESH_BED_LEVELING
 
   #define FBGHOST_MESH_INSET                      10          // Set Mesh bounds as an inset region of the bed
-  #define FBGHOST_GRID_MAX_POINTS_X               3           // Don't use more than 7 points per axis, implementation limited.
+  #define FBGHOST_GRID_MAX_POINTS_X               5           // Don't use more than 7 points per axis, implementation limited.
   #define FBGHOST_GRID_MAX_POINTS_Y               FBGHOST_GRID_MAX_POINTS_X
   #define FBGHOST_MANUAL_PROBE_START_Z            0.2
 
@@ -153,7 +147,7 @@
  */
 
 // Italy Makers Print Head Position (https://www.thingiverse.com/thing:4848085)
-#define  FBGHOST_NOZZLE_TO_PROBE_OFFSET {42.10,-15.5,0}   // { 10, 10, 0 }
+#define  FBGHOST_NOZZLE_TO_PROBE_OFFSET {-22.6,-59.4,0}   // { 10, 10, 0 }
 
 
 
@@ -199,12 +193,12 @@
 
 // Preheat Constants
 #define FBGHOST_PREHEAT_1_LABEL         "PLA"
-#define FBGHOST_PREHEAT_1_TEMP_HOTEND   200
+#define FBGHOST_PREHEAT_1_TEMP_HOTEND   205
 #define FBGHOST_PREHEAT_1_TEMP_BED      65
 #define FBGHOST_PREHEAT_1_FAN_SPEED     0 // Value from 0 to 255
 
 #define FBGHOST_PREHEAT_2_LABEL         "PETG"
-#define FBGHOST_PREHEAT_2_TEMP_HOTEND   235
+#define FBGHOST_PREHEAT_2_TEMP_HOTEND   230
 #define FBGHOST_PREHEAT_2_TEMP_BED      75
 #define FBGHOST_PREHEAT_2_FAN_SPEED     0 // Value from 0 to 255
 
@@ -234,11 +228,11 @@
 
 #define FBGHOST_CLASSIC_JERK
 
-#define FBGHOST_DEFAULT_XJERK         10.0
-#define FBGHOST_DEFAULT_YJERK         10.0
-#define FBGHOST_DEFAULT_ZJERK          0.3
+#define FBGHOST_DEFAULT_XJERK         15.0
+#define FBGHOST_DEFAULT_YJERK         15.0
+#define FBGHOST_DEFAULT_ZJERK          0.4
 
-#define FBGHOST_DEFAULT_EJERK         10.0  // May be used by Linear Advance
+#define FBGHOST_DEFAULT_EJERK          2.0  // May be used by Linear Advance
 
 
 
@@ -254,7 +248,7 @@
  * Override with M203
  *                                      X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
  */
-#define FBGHOST_DEFAULT_MAX_FEEDRATE  { 2000, 2000, 5, 70 }
+#define FBGHOST_DEFAULT_MAX_FEEDRATE  { 300, 300, 5, 100 }
 
 /**
  * Default Max Acceleration (change/s) change = mm/s
@@ -265,12 +259,34 @@
 #define FBGHOST_DEFAULT_MAX_ACCELERATION {1000,1000,200,80000}   //      { 3000, 3000, 100, 10000 }
 
 
+
+/*****************************************
+ *       LED           *******************
+ *****************************************
+ * decommentare per utilizzare LED collegati alla scheda madre
+ */
+
+// #define FBGHOST_RGB_LED
+// #define FBGHOST_RGBW_LED
+
+#if EITHER(FBGHOST_RGB_LED, FBGHOST_RGBW_LED)
+  #define FBGHOST_RGB_LED_R_PIN -1
+  #define FBGHOST_RGB_LED_G_PIN -1
+  #define FBGHOST_RGB_LED_B_PIN -1
+  #ifdef FBGHOST_RGBW_LED
+    #define FBGHOST_RGB_LED_W_PIN -1
+  #endif
+#endif
+
+
+
+
 /**
  * Default Acceleration (change/s) change = mm/s
  * Override with M204
  */
-#define FBGHOST_DEFAULT_ACCELERATION          500
-#define FBGHOST_DEFAULT_RETRACT_ACCELERATION  2000
+#define FBGHOST_DEFAULT_ACCELERATION          1000
+#define FBGHOST_DEFAULT_RETRACT_ACCELERATION  3000
 #define FBGHOST_DEFAULT_TRAVEL_ACCELERATION   1000
 
 
