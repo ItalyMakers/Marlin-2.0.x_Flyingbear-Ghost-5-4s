@@ -31,7 +31,7 @@
  * decommentare per abilitare il BLTOUCH
  */
 
-#define FBGHOST_BLTOUCH
+// #define FBGHOST_BLTOUCH
 
 
 
@@ -50,11 +50,11 @@
  */
 
 //PRESETS - usare FBGHOST_CUSTOM_CONF se si ha una configurazione particolare. A fondo documento trovi i settaggi standard.
-#define FBGHOST_DRIVER_CUSTOM_CONF
+// #define FBGHOST_DRIVER_CUSTOM_CONF
 // #define FBGHOST_DRIVER_ALL_A4988
 // #define FBGHOST_DRIVER_ALL_TMC2208
 // #define FBGHOST_DRIVER_ALL_TMC2209
-// #define FBGHOST_DRIVER_XY_TMC2208_ZE_A4988
+#define FBGHOST_DRIVER_XY_TMC2208_ZE_A4988
 
 #ifdef FBGHOST_DRIVER_CUSTOM_CONF
   #define FBGHOST_X_DRIVER_TYPE   TMC2208_STANDALONE
@@ -77,7 +77,7 @@
  *                                               X,  Y,  Z[, I [, J [, K]]], E0 [, E1[, E2...]]
  *
  *///                                            X,  Y,   Z,  E0
-#define FBGHOST_DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80.05, 402, 852.42}
+#define FBGHOST_DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 409}
 
 
 
@@ -228,11 +228,32 @@
 
 #define FBGHOST_CLASSIC_JERK
 
-#define FBGHOST_DEFAULT_XJERK         10.0
-#define FBGHOST_DEFAULT_YJERK         10.0
-#define FBGHOST_DEFAULT_ZJERK          0.3
+#define FBGHOST_DEFAULT_XJERK         15.0
+#define FBGHOST_DEFAULT_YJERK         15.0
+#define FBGHOST_DEFAULT_ZJERK          0.4
 
 #define FBGHOST_DEFAULT_EJERK         10.0  // May be used by Linear Advance
+
+
+
+/*****************************************
+ *  Linear Pressure Control   ************
+ *****************************************
+ * Linear Pressure Control v1.5
+ * utile per chi usa il direct drive
+ * Set K around 0.22 for 3mm PLA Direct Drive with ~6.5cm between the drive gear and heatbreak.
+ * Larger K values will be needed for flexible filament and greater distances.
+ * If this algorithm produces a higher speed offset than the extruder can handle (compared to E jerk)
+ * print acceleration will be reduced during the affected moves to keep within the limit.
+ *
+ * See https://marlinfw.org/docs/features/lin_advance.html for full instructions.
+ */
+
+#define FBGHOST_LIN_ADVANCE
+
+#ifdef FBGHOST_LIN_ADVANCE
+  #define FBGHOST_LIN_ADVANCE_K 0.22
+#endif
 
 
 
@@ -260,6 +281,17 @@
 
 
 
+
+/**
+ * Default Acceleration (change/s) change = mm/s
+ * Override with M204
+ */
+#define FBGHOST_DEFAULT_ACCELERATION          500
+#define FBGHOST_DEFAULT_RETRACT_ACCELERATION  2000
+#define FBGHOST_DEFAULT_TRAVEL_ACCELERATION   500
+
+
+
 /*****************************************
  *       LED           *******************
  *****************************************
@@ -276,38 +308,6 @@
   #ifdef FBGHOST_RGBW_LED
     #define FBGHOST_RGB_LED_W_PIN -1
   #endif
-#endif
-
-
-
-
-/**
- * Default Acceleration (change/s) change = mm/s
- * Override with M204
- */
-#define FBGHOST_DEFAULT_ACCELERATION          500
-#define FBGHOST_DEFAULT_RETRACT_ACCELERATION  2000
-#define FBGHOST_DEFAULT_TRAVEL_ACCELERATION   1000
-
-
-
-/*****************************************
- *  Linear Pressure Control   ************
- *****************************************
- * Linear Pressure Control v1.5
- * utile per chi usa il direct drive
- * Set K around 0.22 for 3mm PLA Direct Drive with ~6.5cm between the drive gear and heatbreak.
- * Larger K values will be needed for flexible filament and greater distances.
- * If this algorithm produces a higher speed offset than the extruder can handle (compared to E jerk)
- * print acceleration will be reduced during the affected moves to keep within the limit.
- *
- * See https://marlinfw.org/docs/features/lin_advance.html for full instructions.
- */
-
-#define FBGHOST_LIN_ADVANCE
-
-#ifdef FBGHOST_LIN_ADVANCE
-  #define FBGHOST_LIN_ADVANCE_K 0.22
 #endif
 
 
