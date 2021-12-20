@@ -152,7 +152,6 @@ void disp_det_error() {
 }
 
 lv_obj_t *e1, *e2, *e3, *bed;
-
 void mks_disp_test() {
   char buf[30] = {0};
   #if HAS_HOTEND
