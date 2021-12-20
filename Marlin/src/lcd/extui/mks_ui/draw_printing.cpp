@@ -302,14 +302,7 @@ void setProBarRate() {
     rate = (rate_tmp_r - (PREVIEW_SIZE + To_pre_view)) * 100 / (gCfgItems.curFilesize - (PREVIEW_SIZE + To_pre_view));
   }
 
-  if (rate <= 0) {
-    uiCfg.print_progress = 0;
-
-    return;
-  }
-
-  uiCfg.print_progress = rate;
-
+  if (rate <= 0) return;
 
   if (disp_state == PRINTING_UI) {
     lv_bar_set_value(bar1, rate, LV_ANIM_ON);
