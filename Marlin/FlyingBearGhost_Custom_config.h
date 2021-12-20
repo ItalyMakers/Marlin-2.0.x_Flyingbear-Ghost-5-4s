@@ -31,7 +31,7 @@
  * decommentare per abilitare il BLTOUCH
  */
 
-// #define FBGHOST_BLTOUCH
+#define FBGHOST_BLTOUCH
 
 
 
@@ -50,24 +50,24 @@
  */
 
 //PRESETS - usare FBGHOST_CUSTOM_CONF se si ha una configurazione particolare. A fondo documento trovi i settaggi standard.
-// #define FBGHOST_DRIVER_CUSTOM_CONF
+   #define FBGHOST_DRIVER_CUSTOM_CONF
 // #define FBGHOST_DRIVER_ALL_A4988
 // #define FBGHOST_DRIVER_ALL_TMC2208
 // #define FBGHOST_DRIVER_ALL_TMC2209
-#define FBGHOST_DRIVER_XY_TMC2208_ZE_A4988
+// #define FBGHOST_DRIVER_XY_TMC2208_ZE_A4988
 
 #ifdef FBGHOST_DRIVER_CUSTOM_CONF
-  #define FBGHOST_X_DRIVER_TYPE   TMC2208_STANDALONE
-  #define FBGHOST_Y_DRIVER_TYPE   TMC2208_STANDALONE
-  #define FBGHOST_Z_DRIVER_TYPE   A4988
-  #define FBGHOST_E0_DRIVER_TYPE  TMC2209_STANDALONE
+  #define FBGHOST_X_DRIVER_TYPE   TMC2209_STANDALONE
+  #define FBGHOST_Y_DRIVER_TYPE   TMC2209_STANDALONE
+  #define FBGHOST_Z_DRIVER_TYPE   TMC2208_STANDALONE
+  #define FBGHOST_E0_DRIVER_TYPE  TMC2208_STANDALONE
 
 
   // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
   // TMC2208, TMC2209, TMC2208_STANDALONE, TMC2209_STANDALONE, TMC2225 TMC2226 needs inverted values
   #define FBGHOST_INVERT_X_DIR    false
   #define FBGHOST_INVERT_Y_DIR    false
-  #define FBGHOST_INVERT_Z_DIR    false
+  #define FBGHOST_INVERT_Z_DIR    true
   #define FBGHOST_INVERT_E0_DIR   true
 #endif
 
@@ -77,7 +77,7 @@
  *                                               X,  Y,  Z[, I [, J [, K]]], E0 [, E1[, E2...]]
  *
  *///                                            X,  Y,   Z,  E0
-#define FBGHOST_DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 409}
+#define FBGHOST_DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 405}
 
 
 
@@ -96,7 +96,7 @@
   #define FBGHOST_MESH_BED_LEVELING
 
   #define FBGHOST_MESH_INSET                      10          // Set Mesh bounds as an inset region of the bed
-  #define FBGHOST_GRID_MAX_POINTS_X               3           // Don't use more than 7 points per axis, implementation limited.
+  #define FBGHOST_GRID_MAX_POINTS_X               5           // Don't use more than 7 points per axis, implementation limited.
   #define FBGHOST_GRID_MAX_POINTS_Y               FBGHOST_GRID_MAX_POINTS_X
   #define FBGHOST_MANUAL_PROBE_START_Z            0.2
 
@@ -147,7 +147,7 @@
  */
 
 // Italy Makers Print Head Position (https://www.thingiverse.com/thing:4848085)
-#define  FBGHOST_NOZZLE_TO_PROBE_OFFSET {42.10,-15.5,0}   // { 10, 10, 0 }
+#define  FBGHOST_NOZZLE_TO_PROBE_OFFSET {-22.6,-59.4,0}   // { 10, 10, 0 }
 
 
 
@@ -193,13 +193,13 @@
 
 // Preheat Constants
 #define FBGHOST_PREHEAT_1_LABEL         "PLA"
-#define FBGHOST_PREHEAT_1_TEMP_HOTEND   200
+#define FBGHOST_PREHEAT_1_TEMP_HOTEND   205
 #define FBGHOST_PREHEAT_1_TEMP_BED      65
 #define FBGHOST_PREHEAT_1_FAN_SPEED     0 // Value from 0 to 255
 
 #define FBGHOST_PREHEAT_2_LABEL         "PETG"
 #define FBGHOST_PREHEAT_2_TEMP_HOTEND   235
-#define FBGHOST_PREHEAT_2_TEMP_BED      75
+#define FBGHOST_PREHEAT_2_TEMP_BED      70
 #define FBGHOST_PREHEAT_2_FAN_SPEED     0 // Value from 0 to 255
 
 
@@ -316,7 +316,7 @@
  * enable print on terminal leveling data
  *
  */
-#define FBGHOST_DEBUG_LEVELING_FEATURE
+//#define FBGHOST_DEBUG_LEVELING_FEATURE
 
 
 
