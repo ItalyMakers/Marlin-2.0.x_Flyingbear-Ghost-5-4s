@@ -1124,7 +1124,7 @@
  * vibration and surface artifacts. The algorithm adapts to provide the best possible step smoothing at the
  * lowest stepping frequencies.
  */
-// #define ADAPTIVE_STEP_SMOOTHING
+#define ADAPTIVE_STEP_SMOOTHING
 
 /**
  * Custom Microstepping
@@ -2164,11 +2164,11 @@
 // The number of linear moves that can be in the planner at once.
 // The value of BLOCK_BUFFER_SIZE must be a power of 2 (e.g., 8, 16, 32)
 #if BOTH(SDSUPPORT, DIRECT_STEPPING)
-  #define  BLOCK_BUFFER_SIZE 16   //  8
+  #define  BLOCK_BUFFER_SIZE 32   //  8
 #elif ENABLED(SDSUPPORT)
-  #define BLOCK_BUFFER_SIZE 16
+  #define BLOCK_BUFFER_SIZE 32
 #else
-  #define BLOCK_BUFFER_SIZE 16
+  #define BLOCK_BUFFER_SIZE 32
 #endif
 
 // @section serial
@@ -3633,7 +3633,7 @@
 /**
  * Disable all Volumetric extrusion options
  */
-// #define NO_VOLUMETRICS
+#define NO_VOLUMETRICS
 
 #if DISABLED(NO_VOLUMETRICS)
   /**
@@ -3665,7 +3665,7 @@
  *  - M206 and M428 are disabled.
  *  - G92 will revert to its behavior from Marlin 1.0.
  */
-// #define NO_WORKSPACE_OFFSETS
+#define NO_WORKSPACE_OFFSETS
 
 // Extra options for the M114 "Current Position" report
 //#define M114_DETAIL         // Use 'M114` for details to check planner calculations
