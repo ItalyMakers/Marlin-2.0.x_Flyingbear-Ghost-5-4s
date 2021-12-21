@@ -240,7 +240,8 @@
  *  Linear Pressure Control   ************
  *****************************************
  * Linear Pressure Control v1.5
- * utile per chi usa il direct drive
+ * ---- utile per chi usa il direct drive ----
+ *
  * Set K around 0.22 for 3mm PLA Direct Drive with ~6.5cm between the drive gear and heatbreak.
  * Larger K values will be needed for flexible filament and greater distances.
  * If this algorithm produces a higher speed offset than the extruder can handle (compared to E jerk)

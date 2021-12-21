@@ -135,8 +135,8 @@ static void btn_ok_event_cb(lv_obj_t *btn, lv_event_t event) {
   #if ENABLED(ADVANCED_PAUSE_FEATURE)
     else if (DIALOG_IS(PAUSE_MESSAGE_WAITING, PAUSE_MESSAGE_INSERT, PAUSE_MESSAGE_HEAT))
       wait_for_user = false;
-    else if (DIALOG_IS(PAUSE_MESSAGE_OPTION))
-      pause_menu_response = PAUSE_RESPONSE_EXTRUDE_MORE;
+    // else if (DIALOG_IS(PAUSE_MESSAGE_OPTION))
+    //   pause_menu_response = PAUSE_RESPONSE_EXTRUDE_MORE;
     else if (DIALOG_IS(PAUSE_MESSAGE_RESUME)) {
       clear_cur_ui();
       draw_return_ui();
@@ -590,14 +590,7 @@ void filament_dialog_handle() {
     lv_draw_dialog(DIALOG_TYPE_FILAMENT_LOAD_COMPLETED);
   }
 
-  if (uiCfg.filament_unload_heat_flg) {
-    const celsius_t diff = thermalManager.wholeDegHotend(uiCfg.extruderIndex) - gCfgItems.filament_limit_temp;
-    if (ABS(diff) < 2 || diff > 0) {
-      uiCfg.filament_unload_heat_flg = false;
-      lv_clear_dialog();
-      lv_draw_dialog(DIALOG_TYPE_FILAMENT_HEAT_UNLOAD_COMPLETED);
-    }
-  }
+
 
   if (uiCfg.filament_unloading_completed) {
     uiCfg.filament_rate = 0;

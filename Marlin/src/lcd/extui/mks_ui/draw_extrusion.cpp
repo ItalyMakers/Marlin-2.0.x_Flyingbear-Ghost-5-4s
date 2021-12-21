@@ -82,8 +82,9 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
           queue.inject_P(PSTR("T0"));
         }
       }
-      else
+      else{
         uiCfg.extruderIndex = 0;
+      }
 
         extrudeAmount = 0;
         disp_hotend_temp();
