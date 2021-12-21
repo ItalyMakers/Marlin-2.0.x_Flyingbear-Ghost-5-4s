@@ -269,7 +269,7 @@
  * Override with M203
  *                                      X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
  */
-#define FBGHOST_DEFAULT_MAX_FEEDRATE  { 2000, 2000, 5, 70 }
+#define FBGHOST_DEFAULT_MAX_FEEDRATE  { 300, 300, 5, 70 }
 
 /**
  * Default Max Acceleration (change/s) change = mm/s
@@ -286,9 +286,9 @@
  * Default Acceleration (change/s) change = mm/s
  * Override with M204
  */
-#define FBGHOST_DEFAULT_ACCELERATION          500
-#define FBGHOST_DEFAULT_RETRACT_ACCELERATION  2000
-#define FBGHOST_DEFAULT_TRAVEL_ACCELERATION   500
+#define FBGHOST_DEFAULT_ACCELERATION          1000
+#define FBGHOST_DEFAULT_RETRACT_ACCELERATION  3000
+#define FBGHOST_DEFAULT_TRAVEL_ACCELERATION   1000
 
 
 
