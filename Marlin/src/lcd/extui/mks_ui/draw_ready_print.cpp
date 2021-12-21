@@ -58,7 +58,7 @@ static lv_obj_t *label_abs;
 static lv_obj_t *label_pla;
 
 static lv_obj_t *label_cooldown;
-static lv_obj_t *label_emStop;
+// static lv_obj_t *label_emStop;
 
 #if HAS_MULTI_HOTEND
   static lv_obj_t *labelExt2;
