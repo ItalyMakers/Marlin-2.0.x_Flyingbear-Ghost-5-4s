@@ -1,6 +1,6 @@
 #pragma once
 
-#define IM_VERSION "3.1.2"
+#define IM_VERSION "3.1.3"
 
 /*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************
  *************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************
@@ -31,7 +31,7 @@
  * decommentare per abilitare il BLTOUCH
  */
 
-#define FBGHOST_BLTOUCH
+// #define FBGHOST_BLTOUCH
 
 
 
@@ -50,11 +50,11 @@
  */
 
 //PRESETS - usare FBGHOST_CUSTOM_CONF se si ha una configurazione particolare. A fondo documento trovi i settaggi standard.
-#define FBGHOST_DRIVER_CUSTOM_CONF
+// #define FBGHOST_DRIVER_CUSTOM_CONF
 // #define FBGHOST_DRIVER_ALL_A4988
 // #define FBGHOST_DRIVER_ALL_TMC2208
 // #define FBGHOST_DRIVER_ALL_TMC2209
-// #define FBGHOST_DRIVER_XY_TMC2208_ZE_A4988
+#define FBGHOST_DRIVER_XY_TMC2208_ZE_A4988
 
 #ifdef FBGHOST_DRIVER_CUSTOM_CONF
   #define FBGHOST_X_DRIVER_TYPE   TMC2208_STANDALONE
@@ -77,7 +77,7 @@
  *                                               X,  Y,  Z[, I [, J [, K]]], E0 [, E1[, E2...]]
  *
  *///                                            X,  Y,   Z,  E0
-#define FBGHOST_DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80.05, 402, 852.42}
+#define FBGHOST_DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 409}
 
 
 
@@ -240,7 +240,8 @@
  *  Linear Pressure Control   ************
  *****************************************
  * Linear Pressure Control v1.5
- * utile per chi usa il direct drive
+ * ---- utile per chi usa il direct drive ----
+ *
  * Set K around 0.22 for 3mm PLA Direct Drive with ~6.5cm between the drive gear and heatbreak.
  * Larger K values will be needed for flexible filament and greater distances.
  * If this algorithm produces a higher speed offset than the extruder can handle (compared to E jerk)

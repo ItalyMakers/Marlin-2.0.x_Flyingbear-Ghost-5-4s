@@ -72,7 +72,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
       }
       break;
     case ID_E_TYPE:
-      #ifdef HAS_MULTI_EXTRUDER
+      if (ENABLED(HAS_MULTI_EXTRUDER)) {
         if (uiCfg.extruderIndex == 0) {
           uiCfg.extruderIndex = 1;
           queue.inject_P(PSTR("T1"));
@@ -81,12 +81,14 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
           uiCfg.extruderIndex = 0;
           queue.inject_P(PSTR("T0"));
         }
+      }
+      else
+        uiCfg.extruderIndex = 0;
 
         extrudeAmount = 0;
         disp_hotend_temp();
         disp_ext_type();
         disp_extru_amount();
-      #endif
       break;
     case ID_E_STEP:
       switch (uiCfg.extruStep) {
