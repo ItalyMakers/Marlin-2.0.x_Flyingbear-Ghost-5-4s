@@ -135,8 +135,8 @@ static void btn_ok_event_cb(lv_obj_t *btn, lv_event_t event) {
   #if ENABLED(ADVANCED_PAUSE_FEATURE)
     else if (DIALOG_IS(PAUSE_MESSAGE_WAITING, PAUSE_MESSAGE_INSERT, PAUSE_MESSAGE_HEAT))
       wait_for_user = false;
-    // else if (DIALOG_IS(PAUSE_MESSAGE_OPTION))
-    //   pause_menu_response = PAUSE_RESPONSE_EXTRUDE_MORE;
+    else if (DIALOG_IS(PAUSE_MESSAGE_OPTION))
+      pause_menu_response = PAUSE_RESPONSE_EXTRUDE_MORE;
     else if (DIALOG_IS(PAUSE_MESSAGE_RESUME)) {
       clear_cur_ui();
       draw_return_ui();
@@ -196,7 +196,7 @@ static void btn_cancel_event_cb(lv_obj_t *btn, lv_event_t event) {
   if (event != LV_EVENT_RELEASED) return;
 
   if (DIALOG_IS(PAUSE_MESSAGE_OPTION)) {
-    // TERN_(ADVANCED_PAUSE_FEATURE, pause_menu_response = PAUSE_RESPONSE_RESUME_PRINT);
+    TERN_(ADVANCED_PAUSE_FEATURE, pause_menu_response = PAUSE_RESPONSE_RESUME_PRINT);
   }
   else if (DIALOG_IS(TYPE_FILAMENT_LOAD_HEAT, TYPE_FILAMENT_UNLOAD_HEAT, TYPE_FILAMENT_HEAT_LOAD_COMPLETED, TYPE_FILAMENT_HEAT_UNLOAD_COMPLETED)) {
     thermalManager.setTargetHotend(uiCfg.hotendTargetTempBak, uiCfg.extruderIndex);
@@ -215,11 +215,6 @@ static void btn_cancel_event_cb(lv_obj_t *btn, lv_event_t event) {
     thermalManager.setTargetHotend(uiCfg.hotendTargetTempBak, uiCfg.extruderIndex);
     clear_cur_ui();
     draw_return_ui();
-  }
-  else if(DIALOG_IS(TYPE_PRINT_FILE)) {
-
-    clear_cur_ui();
-    lv_draw_print_file();
   }
   else {
     clear_cur_ui();
@@ -590,7 +585,14 @@ void filament_dialog_handle() {
     lv_draw_dialog(DIALOG_TYPE_FILAMENT_LOAD_COMPLETED);
   }
 
-
+  if (uiCfg.filament_unload_heat_flg) {
+    const celsius_t diff = thermalManager.wholeDegHotend(uiCfg.extruderIndex) - gCfgItems.filament_limit_temp;
+    if (ABS(diff) < 2 || diff > 0) {
+      uiCfg.filament_unload_heat_flg = false;
+      lv_clear_dialog();
+      lv_draw_dialog(DIALOG_TYPE_FILAMENT_HEAT_UNLOAD_COMPLETED);
+    }
+  }
 
   if (uiCfg.filament_unloading_completed) {
     uiCfg.filament_rate = 0;

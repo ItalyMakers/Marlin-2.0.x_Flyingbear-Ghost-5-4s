@@ -128,18 +128,12 @@ void unicode_2_utf8(char *des, uint16_t *source, uint8_t Len) {
 
     for (uint16_t i = 0; i < fileCnt; i++) {
       if (list_file.Sd_file_cnt == list_file.Sd_file_offset) {
-
         card.getfilename_sorted(SD_ORDER(i, fileCnt));
 
         list_file.IsFolder[valid_name_cnt] = card.flag.filenameIsDir;
-        // if()
-
         strcpy(list_file.file_name[valid_name_cnt], list_file.curDirPath);
-
         strcat_P(list_file.file_name[valid_name_cnt], PSTR("/"));
-
         strcat(list_file.file_name[valid_name_cnt], card.filename);
-
         // strcpy(list_file.long_name[valid_name_cnt], card.longest_filename());
 
         ZERO(list_file.long_name[valid_name_cnt]);
