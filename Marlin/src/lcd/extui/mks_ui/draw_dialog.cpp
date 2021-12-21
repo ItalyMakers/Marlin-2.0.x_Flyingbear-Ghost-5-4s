@@ -196,7 +196,7 @@ static void btn_cancel_event_cb(lv_obj_t *btn, lv_event_t event) {
   if (event != LV_EVENT_RELEASED) return;
 
   if (DIALOG_IS(PAUSE_MESSAGE_OPTION)) {
-    TERN_(ADVANCED_PAUSE_FEATURE, pause_menu_response = PAUSE_RESPONSE_RESUME_PRINT);
+    // TERN_(ADVANCED_PAUSE_FEATURE, pause_menu_response = PAUSE_RESPONSE_RESUME_PRINT);
   }
   else if (DIALOG_IS(TYPE_FILAMENT_LOAD_HEAT, TYPE_FILAMENT_UNLOAD_HEAT, TYPE_FILAMENT_HEAT_LOAD_COMPLETED, TYPE_FILAMENT_HEAT_UNLOAD_COMPLETED)) {
     thermalManager.setTargetHotend(uiCfg.hotendTargetTempBak, uiCfg.extruderIndex);
@@ -215,6 +215,11 @@ static void btn_cancel_event_cb(lv_obj_t *btn, lv_event_t event) {
     thermalManager.setTargetHotend(uiCfg.hotendTargetTempBak, uiCfg.extruderIndex);
     clear_cur_ui();
     draw_return_ui();
+  }
+  else if(DIALOG_IS(TYPE_PRINT_FILE)) {
+
+    clear_cur_ui();
+    lv_draw_print_file();
   }
   else {
     clear_cur_ui();
