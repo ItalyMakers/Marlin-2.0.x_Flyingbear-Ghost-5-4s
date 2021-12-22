@@ -24,6 +24,9 @@
 // #define FBGHOST_IS_4S
 
 
+#define OLD_SCHOOL_UI
+
+
 
 /*****************************************
  *       BLTOUCH       *******************
@@ -428,3 +431,8 @@
 
 
 
+#ifdef OLD_SCHOOL_UI
+  #define FBGHOST_TFT_COLOR_UI
+#else
+  #define FBGHOST_TFT_LVGL_UI
+#endif
