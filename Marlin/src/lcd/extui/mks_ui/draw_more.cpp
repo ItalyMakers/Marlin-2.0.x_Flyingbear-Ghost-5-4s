@@ -63,7 +63,7 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
     case ID_GCODE: lv_clear_more(); lv_draw_gcode(true); break;
     #if HAS_USER_ITEM(1)
       case ID_CUSTOM_1:
-      queue.inject_P(PSTR(MAIN_MENU_ITEM_1_GCODE));
+      queue.inject(F(MAIN_MENU_ITEM_1_GCODE));
         #if ENABLED(MAIN_MENU_ITEM_1_BACK)
           lv_clear_more();
           lv_draw_tool();
@@ -75,7 +75,7 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
     #endif
     #if HAS_USER_ITEM(2)
       case ID_CUSTOM_2:
-        queue.inject_P(PSTR(MAIN_MENU_ITEM_2_GCODE));
+        queue.inject(F(MAIN_MENU_ITEM_2_GCODE));
         #if ENABLED(MAIN_MENU_ITEM_2_BACK)
           lv_clear_more();
           lv_draw_tool();
@@ -87,7 +87,7 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
     #endif
     #if HAS_USER_ITEM(3)
       case ID_CUSTOM_3:
-        queue.inject_P(PSTR(MAIN_MENU_ITEM_3_GCODE));
+        queue.inject(F(MAIN_MENU_ITEM_3_GCODE));
         #if ENABLED(MAIN_MENU_ITEM_3_BACK)
           lv_clear_more();
           lv_draw_tool();
@@ -99,7 +99,7 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
     #endif
     #if HAS_USER_ITEM(4)
       case ID_CUSTOM_4:
-        queue.inject_P(PSTR(MAIN_MENU_ITEM_4_GCODE));
+        queue.inject(F(MAIN_MENU_ITEM_4_GCODE));
         #if ENABLED(MAIN_MENU_ITEM_4_BACK)
           lv_clear_more();
           lv_draw_tool();
@@ -111,7 +111,7 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
     #endif
     #if HAS_USER_ITEM(5)
       case ID_CUSTOM_5:
-        queue.inject_P(PSTR(MAIN_MENU_ITEM_5_GCODE));
+        queue.inject(F(MAIN_MENU_ITEM_5_GCODE));
         #if ENABLED(MAIN_MENU_ITEM_5_BACK)
           lv_clear_more();
           lv_draw_tool();
@@ -122,7 +122,7 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
       break;
     #endif
     #if HAS_USER_ITEM(6)
-      case ID_CUSTOM_6: queue.inject_P(PSTR(MAIN_MENU_ITEM_6_GCODE)); break;
+      case ID_CUSTOM_6: queue.inject(F(MAIN_MENU_ITEM_6_GCODE)); break;
       #if ENABLED(MAIN_MENU_ITEM_6_BACK)
           lv_clear_more();
           lv_draw_tool();
@@ -150,7 +150,7 @@ void lv_draw_more() {
   lv_obj_t *labelGCode = lv_label_create_empty(buttonGCode);
 
   #if HAS_USER_ITEM(1)
-    lv_obj_t *buttonCustom1 = lv_imgbtn_create(scr, "F:/bmp_custom2.bin", BTN_X_PIXEL + INTERVAL_V * 2, titleHeight, event_handler, ID_CUSTOM_1);
+    lv_obj_t *buttonCustom1 = lv_imgbtn_create(scr, "F:/bmp_custom1.bin", BTN_X_PIXEL + INTERVAL_V * 2, titleHeight, event_handler, ID_CUSTOM_1);
     if (enc_ena) lv_group_add_obj(g, buttonCustom1);
     lv_obj_t *labelCustom1 = lv_label_create_empty(buttonCustom1);
   #endif

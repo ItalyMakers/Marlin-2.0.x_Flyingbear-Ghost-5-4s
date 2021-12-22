@@ -1074,9 +1074,6 @@ uint8_t lfn_checksum(const uint8_t *name) {
  * readDir() called before a directory has been opened, this is not
  * a directory file or an I/O error occurred.
  */
-#if HAS_TFT_LVGL_UI // fix-wang
-  extern uint16_t lv_longFilename[FILENAME_LENGTH * MAX_VFAT_ENTRIES + 1];
-#endif
 int8_t SdBaseFile::readDir(dir_t *dir, char *longFilename) {
   int16_t n;
   // if not a directory file or miss-positioned return an error
@@ -1086,10 +1083,7 @@ int8_t SdBaseFile::readDir(dir_t *dir, char *longFilename) {
 
   // If we have a longFilename buffer, mark it as invalid.
   // If a long filename is found it will be filled automatically.
-  if (longFilename) {
-    INVALIDATE_LONGNAME();
-    TERN0(HAS_TFT_LVGL_UI, lv_longFilename[0] = '\0');
-  } 
+  if (longFilename) INVALIDATE_LONGNAME();
 
   uint8_t checksum_error = 0xFF, checksum = 0;
 
@@ -1103,10 +1097,7 @@ int8_t SdBaseFile::readDir(dir_t *dir, char *longFilename) {
 
     // Skip deleted entry and entry for . and ..
     if (dir->name[0] == DIR_NAME_DELETED || dir->name[0] == '.') {
-      if (longFilename) {
-        INVALIDATE_LONGNAME();   // Invalidate erased file long name, if any
-        TERN0(HAS_TFT_LVGL_UI, lv_longFilename[0] = '\0');
-      }
+      if (longFilename) INVALIDATE_LONGNAME();   // Invalidate erased file long name, if any
       continue;
     }
 
@@ -1138,7 +1129,6 @@ int8_t SdBaseFile::readDir(dir_t *dir, char *longFilename) {
               #else
                 // Replace all multibyte characters to '_'
                 longFilename[n + i] = (utf16_ch > 0xFF) ? '_' : (utf16_ch & 0xFF);
-                TERN0(HAS_TFT_LVGL_UI, lv_longFilename[n + i] = utf16_ch);
               #endif
             }
             // If this VFAT entry is the last one, add a NUL terminator at the end of the string

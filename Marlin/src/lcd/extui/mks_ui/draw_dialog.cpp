@@ -65,8 +65,6 @@ extern uint32_t upload_time_sec;
 extern uint32_t upload_size;
 extern bool temps_update_flag;
 
-// static lv_obj_t *buttonExt1 ,*buttonBed ,*labelExt1 ,*labelBed;
-
 //#define CANCEL_ON_RIGHT   // Put 'Cancel' on the right (as it was before)
 
 #define BTN_OK_X      TERN(CANCEL_ON_RIGHT, 100, 280)
@@ -135,22 +133,19 @@ static void btn_ok_event_cb(lv_obj_t *btn, lv_event_t event) {
   #if ENABLED(ADVANCED_PAUSE_FEATURE)
     else if (DIALOG_IS(PAUSE_MESSAGE_WAITING, PAUSE_MESSAGE_INSERT, PAUSE_MESSAGE_HEAT))
       wait_for_user = false;
-    // else if (DIALOG_IS(PAUSE_MESSAGE_OPTION))
-    //   pause_menu_response = PAUSE_RESPONSE_EXTRUDE_MORE;
+    else if (DIALOG_IS(PAUSE_MESSAGE_OPTION))
+      pause_menu_response = PAUSE_RESPONSE_EXTRUDE_MORE;
     else if (DIALOG_IS(PAUSE_MESSAGE_RESUME)) {
-      clear_cur_ui();
-      draw_return_ui();
+      goto_previous_ui();
     }
   #endif
   else if (DIALOG_IS(STORE_EEPROM_TIPS)) {
     TERN_(EEPROM_SETTINGS, (void)settings.save());
-    clear_cur_ui();
-    draw_return_ui();
+    goto_previous_ui();
   }
   else if (DIALOG_IS(READ_EEPROM_TIPS)) {
     TERN_(EEPROM_SETTINGS, (void)settings.load());
-    clear_cur_ui();
-    draw_return_ui();
+    goto_previous_ui();
   }
   else if (DIALOG_IS(REVERT_EEPROM_TIPS)) {
     TERN_(EEPROM_SETTINGS, (void)settings.reset());
@@ -168,43 +163,37 @@ static void btn_ok_event_cb(lv_obj_t *btn, lv_event_t event) {
   }
   else if (DIALOG_IS(WIFI_CONFIG_TIPS)) {
     uiCfg.configWifi = true;
-    clear_cur_ui();
-    draw_return_ui();
+    goto_previous_ui();
   }
   else if (DIALOG_IS(TYPE_FILAMENT_HEAT_LOAD_COMPLETED))
     uiCfg.filament_heat_completed_load = true;
   else if (DIALOG_IS(TYPE_FILAMENT_HEAT_UNLOAD_COMPLETED))
     uiCfg.filament_heat_completed_unload = true;
   else if (DIALOG_IS(TYPE_FILAMENT_LOAD_COMPLETED, TYPE_FILAMENT_UNLOAD_COMPLETED)) {
-    clear_cur_ui();
-    draw_return_ui();
+    goto_previous_ui();
   }
-  #if ENABLED(MKS_WIFI_MODULE)
-    // else if (DIALOG_IS(TYPE_UNBIND)) {
-    //   cloud_unbind();
-    //   lv_clear_cur_ui();
-    //   lv_draw_return_ui();
-    // }
-  #endif
+  // #if ENABLED(MKS_WIFI_MODULE)
+  //   else if (DIALOG_IS(TYPE_UNBIND)) {
+  //     cloud_unbind();
+  //     goto_previous_ui();
+  //   }
+  // #endif
   else {
-    clear_cur_ui();
-    draw_return_ui();
+    goto_previous_ui();
   }
 }
 
 static void btn_cancel_event_cb(lv_obj_t *btn, lv_event_t event) {
   if (event != LV_EVENT_RELEASED) return;
-
   if (DIALOG_IS(PAUSE_MESSAGE_OPTION)) {
-    // TERN_(ADVANCED_PAUSE_FEATURE, pause_menu_response = PAUSE_RESPONSE_RESUME_PRINT);
+    TERN_(ADVANCED_PAUSE_FEATURE, pause_menu_response = PAUSE_RESPONSE_RESUME_PRINT);
   }
   else if (DIALOG_IS(TYPE_FILAMENT_LOAD_HEAT, TYPE_FILAMENT_UNLOAD_HEAT, TYPE_FILAMENT_HEAT_LOAD_COMPLETED, TYPE_FILAMENT_HEAT_UNLOAD_COMPLETED)) {
     thermalManager.setTargetHotend(uiCfg.hotendTargetTempBak, uiCfg.extruderIndex);
-    clear_cur_ui();
-    draw_return_ui();
+    goto_previous_ui();
   }
   else if (DIALOG_IS(TYPE_FILAMENT_LOADING, TYPE_FILAMENT_UNLOADING)) {
-    queue.enqueue_one_P(PSTR("M410"));
+    queue.enqueue_one(F("M410"));
     uiCfg.filament_rate                = 0;
     uiCfg.filament_loading_completed   = false;
     uiCfg.filament_unloading_completed = false;
@@ -213,17 +202,10 @@ static void btn_cancel_event_cb(lv_obj_t *btn, lv_event_t event) {
     uiCfg.filament_unloading_time_flg  = false;
     uiCfg.filament_unloading_time_cnt  = 0;
     thermalManager.setTargetHotend(uiCfg.hotendTargetTempBak, uiCfg.extruderIndex);
-    clear_cur_ui();
-    draw_return_ui();
-  }
-  else if(DIALOG_IS(TYPE_PRINT_FILE)) {
-
-    clear_cur_ui();
-    lv_draw_print_file();
+    goto_previous_ui();
   }
   else {
-    clear_cur_ui();
-    draw_return_ui();
+    goto_previous_ui();
   }
 }
 
@@ -590,7 +572,14 @@ void filament_dialog_handle() {
     lv_draw_dialog(DIALOG_TYPE_FILAMENT_LOAD_COMPLETED);
   }
 
-
+  if (uiCfg.filament_unload_heat_flg) {
+    const celsius_t diff = thermalManager.wholeDegHotend(uiCfg.extruderIndex) - gCfgItems.filament_limit_temp;
+    if (ABS(diff) < 2 || diff > 0) {
+      uiCfg.filament_unload_heat_flg = false;
+      lv_clear_dialog();
+      lv_draw_dialog(DIALOG_TYPE_FILAMENT_HEAT_UNLOAD_COMPLETED);
+    }
+  }
 
   if (uiCfg.filament_unloading_completed) {
     uiCfg.filament_rate = 0;

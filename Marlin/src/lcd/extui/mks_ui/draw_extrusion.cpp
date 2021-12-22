@@ -55,7 +55,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
   if (event != LV_EVENT_RELEASED) return;
   switch (obj->mks_obj_id) {
     case ID_E_ADD:
-      if (thermalManager.degHotend(uiCfg.extruderIndex) >= EXTRUDE_MINTEMP) {
+      if (thermalManager.hotEnoughToExtrude(uiCfg.extruderIndex)) {
         sprintf_P((char *)public_buf_l, PSTR("G91\nG1 E%d F%d\nG90"), uiCfg.extruStep, 60 * uiCfg.extruSpeed);
         queue.inject(public_buf_l);
         extrudeAmount += uiCfg.extruStep;
@@ -63,9 +63,8 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
       }
       break;
     case ID_E_DEC:
-      if (thermalManager.degHotend(uiCfg.extruderIndex) >= EXTRUDE_MINTEMP) {
+      if (thermalManager.hotEnoughToExtrude(uiCfg.extruderIndex)) {
         sprintf_P((char *)public_buf_l, PSTR("G91\nG1 E%d F%d\nG90"), 0 - uiCfg.extruStep, 60 * uiCfg.extruSpeed);
-        // queue.enqueue_one_now(public_buf_l);
         queue.inject(public_buf_l);
         extrudeAmount -= uiCfg.extruStep;
         disp_extru_amount();
@@ -75,21 +74,20 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
       if (ENABLED(HAS_MULTI_EXTRUDER)) {
         if (uiCfg.extruderIndex == 0) {
           uiCfg.extruderIndex = 1;
-          queue.inject_P(PSTR("T1"));
+          queue.inject(F("T1"));
         }
         else {
           uiCfg.extruderIndex = 0;
-          queue.inject_P(PSTR("T0"));
+          queue.inject(F("T0"));
         }
       }
-      else{
+      else
         uiCfg.extruderIndex = 0;
-      }
 
-        extrudeAmount = 0;
-        disp_hotend_temp();
-        disp_ext_type();
-        disp_extru_amount();
+      extrudeAmount = 0;
+      disp_hotend_temp();
+      disp_ext_type();
+      disp_extru_amount();
       break;
     case ID_E_STEP:
       switch (uiCfg.extruStep) {
@@ -108,8 +106,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
       disp_ext_speed();
       break;
     case ID_E_RETURN:
-      clear_cur_ui();
-      draw_return_ui();
+      goto_previous_ui();
       break;
   }
 }
