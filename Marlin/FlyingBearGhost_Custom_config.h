@@ -24,6 +24,14 @@
 // #define FBGHOST_IS_4S
 
 
+/*****************************************
+ *    OLD SCHOOL UI    *******************
+ *****************************************
+ * Per un bug su Marlin 2.0.9.2 per schede MKS V1.x e V2 l'interfaccia grafica
+ * causa un layer shift sull'asse Y in maniera randomica.
+ * Per poter utilizzare il Firmware si consiglia di passare alla vecchia interfaccia COLOR_UI
+ * https://github.com/MarlinFirmware/Marlin/issues/22967
+ */
 #define OLD_SCHOOL_UI
 
 
