@@ -79,7 +79,6 @@
   #define ESTATE(S) (READ(S##_PIN) != S##_ENDSTOP_INVERTING)
 
   void test_gpio_readlevel_L() {
-
     WRITE(WIFI_IO0_PIN, HIGH);
     delay(10);
     pw_det_sta = (READ(MKS_TEST_POWER_LOSS_PIN) == LOW);
@@ -212,7 +211,6 @@
   #if ENABLED(SDSUPPORT)
 
     void mks_gpio_test() {
-      watchdog_refresh();
       init_test_gpio();
 
       test_gpio_readlevel_L();
@@ -231,25 +229,18 @@
           && (READ(PE6) == LOW)
           && (READ(PE7) == LOW)
         #endif
-      ){
+      )
         disp_det_ok();
-      }
-      else{
+      else
         disp_det_error();
-      }
-      watchdog_refresh();
 
-      if (endstopx1_sta && endstopy1_sta && endstopz1_sta && endstopz2_sta) {
+      if (endstopx1_sta && endstopy1_sta && endstopz1_sta && endstopz2_sta)
         disp_Limit_ok();
-      }
-      else{
+      else
         disp_Limit_error();
-      }
-      watchdog_refresh();
     }
 
     void mks_hardware_test() {
-      watchdog_refresh();
       if (millis() % 2000 < 1000) {
         thermalManager.fan_speed[0] = 255;
         WRITE(X_DIR_PIN, LOW);
@@ -307,10 +298,8 @@
       else {
       }
 
-      watchdog_refresh();
-      if (disp_state == PRINT_READY_UI) {
+      if (disp_state == PRINT_READY_UI)
         mks_disp_test();
-      }
     }
 
   #endif
@@ -708,24 +697,28 @@ void disp_char_1624(uint16_t x, uint16_t y, uint8_t c, uint16_t charColor, uint1
   }
 }
 
-void disp_string(uint16_t x, uint16_t y, const char * string, uint16_t charColor, uint16_t bkColor) {
-  while (*string != '\0') {
-    disp_char_1624(x, y, *string, charColor, bkColor);
-    string++;
-    x += 16;
-  }
+void disp_string(uint16_t x, uint16_t y, const char * cstr, uint16_t charColor, uint16_t bkColor) {
+  for (char c; (c = *cstr); cstr++, x += 16)
+    disp_char_1624(x, y, c, charColor, bkColor);
+}
+
+void disp_string(uint16_t x, uint16_t y, FSTR_P const fstr, uint16_t charColor, uint16_t bkColor) {
+  PGM_P pstr = FTOP(fstr);
+  for (char c; (c = pgm_read_byte(pstr)); pstr++, x += 16)
+    disp_char_1624(x, y, c, charColor, bkColor);
 }
 
 void disp_assets_update() {
   SPI_TFT.LCD_clear(0x0000);
-  disp_string(100, 140, "Assets Updating...", 0xFFFF, 0x0000);
+  disp_string(100, 140, F("Assets Updating..."), 0xFFFF, 0x0000);
 }
 
-void disp_assets_update_progress(const char *msg) {
-  char buf[30];
-  memset(buf, ' ', COUNT(buf));
-  strncpy(buf, msg, strlen(msg));
-  buf[COUNT(buf) - 1] = '\0';
+void disp_assets_update_progress(FSTR_P const fmsg) {
+  static constexpr int buflen = 30;
+  char buf[buflen];
+  memset(buf, ' ', buflen);
+  strncpy_P(buf, FTOP(fmsg), buflen - 1);
+  buf[buflen - 1] = '\0';
   disp_string(100, 165, buf, 0xFFFF, 0x0000);
 }
 

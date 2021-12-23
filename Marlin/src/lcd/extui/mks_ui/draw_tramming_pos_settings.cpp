@@ -54,8 +54,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
   switch (obj->mks_obj_id) {
     case ID_MANUAL_POS_RETURN:
       uiCfg.para_ui_page = false;
-      lv_clear_tramming_pos_settings();
-      draw_return_ui();
+      goto_previous_ui();
       return;
     case ID_MANUAL_POS_X1:
       value = level_pos_x1;
@@ -105,7 +104,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
 void lv_draw_tramming_pos_settings() {
   char buf2[50];
 
-  scr = lv_screen_create(MANUAL_LEVELING_POSIGION_UI, machine_menu.LevelingParaConfTitle);
+  scr = lv_screen_create(MANUAL_LEVELING_POSITION_UI, machine_menu.LevelingParaConfTitle);
 
   if (!uiCfg.para_ui_page) {
     itoa(gCfgItems.trammingPos[0].x, public_buf_l, 10);
@@ -124,7 +123,6 @@ void lv_draw_tramming_pos_settings() {
     itoa(gCfgItems.trammingPos[3].y, buf2, 10);
     lv_screen_menu_item_2_edit(scr, leveling_menu.position4, PARA_UI_POS_X, PARA_UI_POS_Y * 4, event_handler, ID_MANUAL_POS_Y4, 3, buf2, ID_MANUAL_POS_X4, public_buf_l);
 
-    // lv_big_button_create(scr, "F:/bmp_back70x40.bin", machine_menu.next, PARA_UI_TURN_PAGE_POS_X, PARA_UI_TURN_PAGE_POS_Y, event_handler, ID_MANUAL_POS_DOWN, true);
     lv_screen_menu_item_turn_page(scr, machine_menu.next, event_handler, ID_MANUAL_POS_DOWN);
 
   }
@@ -133,12 +131,10 @@ void lv_draw_tramming_pos_settings() {
     itoa(gCfgItems.trammingPos[4].y, buf2, 10);
     lv_screen_menu_item_2_edit(scr, leveling_menu.position5, PARA_UI_POS_X, PARA_UI_POS_Y, event_handler, ID_MANUAL_POS_Y5, 0, buf2, ID_MANUAL_POS_X5, public_buf_l);
 
-    // lv_big_button_create(scr, "F:/bmp_back70x40.bin", machine_menu.previous, PARA_UI_TURN_PAGE_POS_X, PARA_UI_TURN_PAGE_POS_Y, event_handler, ID_MANUAL_POS_UP, true);
     lv_screen_menu_item_turn_page(scr, machine_menu.previous, event_handler, ID_MANUAL_POS_UP);
 
   }
 
-  // lv_big_button_create(scr, "F:/bmp_back70x40.bin", common_menu.text_back, PARA_UI_BACL_POS_X + 10, PARA_UI_BACL_POS_Y, event_handler, ID_MANUAL_POS_RETURN, true);
   lv_screen_menu_item_return(scr, event_handler, ID_MANUAL_POS_RETURN);
 
 }
@@ -151,4 +147,3 @@ void lv_clear_tramming_pos_settings() {
 }
 
 #endif // HAS_TFT_LVGL_UI
-

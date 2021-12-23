@@ -78,7 +78,6 @@
 #include "draw_keyboard.h"
 #include "draw_media_select.h"
 #include "draw_encoder_settings.h"
-// #include "draw_bltouch_settings.h"
 #include "draw_zoffset.h"
 
 #include "../../../inc/MarlinConfigPre.h"
@@ -145,8 +144,8 @@
 
   #define PARA_UI_ARROW_V          12
 
-  #define PARA_UI_BACL_POS_X        400
-  #define PARA_UI_BACL_POS_Y        270
+  #define PARA_UI_BACK_POS_X        400
+  #define PARA_UI_BACK_POS_Y        270
 
   #define PARA_UI_TURN_PAGE_POS_X   320
   #define PARA_UI_TURN_PAGE_POS_Y   270
@@ -172,9 +171,6 @@
   #define QRCODE_Y                  40
   #define QRCODE_WIDTH              160
 
-  #define PARA_UI_TURN_BTN_X_SIZE   70
-  #define PARA_UI_TURN_BTN_Y_SIZE   40
-
 #else // ifdef TFT35
 
   #define TFT_WIDTH     320
@@ -183,7 +179,7 @@
 #endif // ifdef TFT35
 
 #ifdef __cplusplus
-  extern "C" { /* C-declarations for C++ */
+  extern "C" {
 #endif
 
 extern char public_buf_m[100];
@@ -241,9 +237,9 @@ typedef struct UI_Config_Struct {
                            eStepMax = 10;
   // Extruder speed (mm/s)
   uint8_t extruSpeed;
-  static constexpr uint8_t eSpeedH = 20,
+  static constexpr uint8_t eSpeedH =  1,
                            eSpeedN = 10,
-                           eSpeedL = 1;
+                           eSpeedL = 20;
   uint8_t print_state;
   uint8_t stepPrintSpeed;
   uint8_t waitEndMoves;
@@ -253,7 +249,7 @@ typedef struct UI_Config_Struct {
   uint16_t moveSpeed;
   uint16_t cloud_port;
   uint16_t moveSpeed_bak;
-  uint32_t print_progress;
+  uint32_t totalSend;
   uint32_t filament_loading_time,
            filament_unloading_time,
            filament_loading_time_cnt,
@@ -276,7 +272,7 @@ typedef enum {
   PAUSE_UI,
   EXTRUSION_UI,
   FAN_UI,
-  PRE_HEAT_UI,
+  PREHEAT_UI,
   CHANGE_SPEED_UI,
   TEMP_UI,
   SET_UI,
@@ -311,15 +307,14 @@ typedef enum {
   MACHINE_SETTINGS_UI,
   TEMPERATURE_SETTINGS_UI,
   MOTOR_SETTINGS_UI,
-  MACHINETYPE_UI,
+  MACHINE_TYPE_UI,
   STROKE_UI,
   HOME_DIR_UI,
   ENDSTOP_TYPE_UI,
   FILAMENT_SETTINGS_UI,
-  LEVELING_SETTIGNS_UI,
   LEVELING_PARA_UI,
   DELTA_LEVELING_PARA_UI,
-  MANUAL_LEVELING_POSIGION_UI,
+  MANUAL_LEVELING_POSITION_UI,
   MAXFEEDRATE_UI,
   STEPS_UI,
   ACCELERATION_UI,
@@ -332,7 +327,7 @@ typedef enum {
   DOUBLE_Z_UI,
   ENABLE_INVERT_UI,
   NUMBER_KEY_UI,
-  BABY_STEP_UI,
+  BABYSTEP_UI,
   ERROR_MESSAGE_UI,
   PAUSE_POS_UI,
   TMC_CURRENT_UI,
@@ -343,7 +338,7 @@ typedef enum {
   ENCODER_SETTINGS_UI,
   TOUCH_CALIBRATION_UI,
   GCODE_UI,
-  MEDIA_SELECT_UI,
+  MEDIA_SELECT_UI
 } DISP_STATE;
 
 typedef struct {
@@ -475,6 +470,7 @@ void lv_eom_hook(void *);
 void GUI_RefreshPage();
 void clear_cur_ui();
 void draw_return_ui();
+void goto_previous_ui();
 void sd_detection();
 void gCfg_to_spiFlah();
 void print_time_count();
@@ -555,11 +551,6 @@ void lv_screen_menu_item_onoff_update(lv_obj_t *btn, const bool curValue);
 
 void lv_screen_menu_item_turn_page(lv_obj_t *par, const char *text, lv_event_cb_t cb, const int id);
 void lv_screen_menu_item_return(lv_obj_t *par, lv_event_cb_t cb, const int id);
-
-// set scr id and title
-#ifdef USE_NEW_LVGL_CONF
-lv_obj_t* lv_set_scr_id_title(lv_obj_t *scr ,DISP_STATE newScreenType, const char *title);
-#endif
 
 #define _DIA_1(T)       (uiCfg.dialogType == DIALOG_##T)
 #define DIALOG_IS(V...) DO(DIA,||,V)

@@ -47,8 +47,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
   if (event != LV_EVENT_RELEASED) return;
   switch (obj->mks_obj_id) {
     case ID_WIFI_RETURN:
-      lv_clear_wifi_settings();
-      draw_return_ui();
+      goto_previous_ui();
       break;
     case ID_WIFI_MODEL:
       if (gCfgItems.wifi_mode_sel == AP_MODEL) {
@@ -162,7 +161,6 @@ void lv_draw_wifi_settings() {
     // lv_label_set_text(labelConfig, machine_menu.wifiConfig);
     // lv_obj_align(labelConfig, buttonConfig, LV_ALIGN_CENTER, 0, 0);
     lv_screen_menu_item_turn_page(scr, machine_menu.wifiConfig, event_handler, ID_WIFI_CONFIG);
-
 
     // lv_label_set_text(label_Back, common_menu.text_back);
     // lv_obj_align(label_Back, buttonBack, LV_ALIGN_CENTER, 0, 0);
