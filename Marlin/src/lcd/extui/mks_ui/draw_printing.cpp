@@ -302,14 +302,7 @@ void setProBarRate() {
     rate = (rate_tmp_r - (PREVIEW_SIZE + To_pre_view)) * 100 / (gCfgItems.curFilesize - (PREVIEW_SIZE + To_pre_view));
   }
 
-  if (rate <= 0) {
-    uiCfg.print_progress = 0;
-
-    return;
-  }
-
-  uiCfg.print_progress = rate;
-
+  if (rate <= 0) return;
 
   if (disp_state == PRINTING_UI) {
     lv_bar_set_value(bar1, rate, LV_ANIM_ON);
@@ -324,16 +317,14 @@ void setProBarRate() {
         flash_preview_begin = false;
         default_preview_flg = false;
         lv_clear_printing();
-
-
         lv_draw_dialog(DIALOG_TYPE_FINISH_PRINT);
 
         once_flag = true;
 
         #if HAS_SUICIDE
           if (gCfgItems.finish_power_off) {
-            gcode.process_subcommands_now_P(PSTR("M1001"));
-            queue.inject_P(PSTR("M81"));
+            gcode.process_subcommands_now(F("M1001"));
+            queue.inject(F("M81"));
             marlin_state = MF_RUNNING;
           }
         #endif

@@ -53,7 +53,7 @@ void printer_state_polling() {
         uiCfg.waitEndMoves = 0;
         planner.synchronize();
 
-        gcode.process_subcommands_now_P(PSTR("M25"));
+        gcode.process_subcommands_now(F("M25"));
 
         // save the position
         uiCfg.current_x_position_bak = current_position.x;
@@ -93,7 +93,7 @@ void printer_state_polling() {
         sprintf_P(public_buf_m, PSTR("G1 Z%s"), dtostrf(uiCfg.current_z_position_bak, 1, 1, str_1));
         gcode.process_subcommands_now(public_buf_m);
       }
-      gcode.process_subcommands_now_P(M24_STR);
+      gcode.process_subcommands_now(FPSTR(M24_STR));
       uiCfg.print_state = WORKING;
       start_print_time();
 
@@ -147,15 +147,13 @@ void printer_state_polling() {
 
   #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
     if (uiCfg.autoLeveling) {
-      #ifdef OCTOPRINT
-        gcode.process_subcommands_now_P(PSTR("G28\n@BEDLEVELVISUALIZER\nG29 T"));
-      #else
-        get_gcode_command(AUTO_LEVELING_COMMAND_ADDR, (uint8_t *)public_buf_m);
-        public_buf_m[sizeof(public_buf_m) - 1] = 0;
-        gcode.process_subcommands_now_P(PSTR(public_buf_m));
-      #endif
-      clear_cur_ui();
+
+      get_gcode_command(AUTO_LEVELING_COMMAND_ADDR, (uint8_t *)public_buf_m);
+      public_buf_m[sizeof(public_buf_m) - 1] = 0;
+      gcode.process_subcommands_now(PSTR(public_buf_m));
+
       #ifdef BLTOUCH
+        clear_cur_ui();
         zoffset_do_init(false);
         lv_draw_zoffset_settings();
       #endif

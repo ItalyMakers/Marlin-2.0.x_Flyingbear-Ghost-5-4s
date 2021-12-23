@@ -345,7 +345,7 @@ static bool longName2DosName(const char *longName, char *dosName) {
           hdma->DmaBaseAddress->IFCR = (DMA_ISR_GIF1 << hdma->ChannelIndex);
 
           SET_BIT(hdma->ErrorCode, HAL_DMA_ERROR_TE);       // Update error code
-          hdma->State= HAL_DMA_STATE_READY;                 // Change the DMA state
+          hdma->State = HAL_DMA_STATE_READY;                // Change the DMA state
           __HAL_UNLOCK(hdma);                               // Process Unlocked
           return HAL_ERROR;
         }
@@ -841,6 +841,7 @@ static void wifi_gcode_exec(uint8_t *cmd_line) {
   int8_t tempBuf[100] = { 0 };
   uint8_t *tmpStr = 0;
   int cmd_value;
+  volatile int print_rate;
   if (strchr((char *)cmd_line, '\n') && (strchr((char *)cmd_line, 'G') || strchr((char *)cmd_line, 'M') || strchr((char *)cmd_line, 'T'))) {
     tmpStr = (uint8_t *)strchr((char *)cmd_line, '\n');
     if (tmpStr) *tmpStr = '\0';
@@ -1067,8 +1068,9 @@ static void wifi_gcode_exec(uint8_t *cmd_line) {
         case 27:
           // Report print rate
           if ((uiCfg.print_state == WORKING) || (uiCfg.print_state == PAUSED)|| (uiCfg.print_state == REPRINTING)) {
+            print_rate = uiCfg.totalSend;
             ZERO(tempBuf);
-            sprintf_P((char *)tempBuf, PSTR("M27 %d\r\n"), uiCfg.print_progress);
+            sprintf_P((char *)tempBuf, PSTR("M27 %d\r\n"), print_rate);
             send_to_wifi((uint8_t *)tempBuf, strlen((char *)tempBuf));
           }
           break;
@@ -1167,7 +1169,7 @@ static void wifi_gcode_exec(uint8_t *cmd_line) {
           }
 
           send_to_wifi((uint8_t *)tempBuf, strlen((char *)tempBuf));
-          queue.enqueue_one_P(PSTR("M105"));
+          queue.enqueue_one(F("M105"));
           break;
 
         case 992:
@@ -2016,7 +2018,7 @@ void get_wifi_commands() {
                 TERN_(ARC_SUPPORT, case 2 ... 3:)
                 TERN_(BEZIER_CURVE_SUPPORT, case 5:)
                 SERIAL_ECHOLNPGM(STR_ERR_STOPPED);
-                LCD_MESSAGEPGM(MSG_STOPPED);
+                LCD_MESSAGE(MSG_STOPPED);
                 break;
             }
           }
@@ -2024,16 +2026,16 @@ void get_wifi_commands() {
 
         #if DISABLED(EMERGENCY_PARSER)
           // Process critical commands early
-          if (strcmp(command, "M108") == 0) {
+          if (strcmp_P(command, PSTR("M108")) == 0) {
             wait_for_heatup = false;
             TERN_(HAS_LCD_MENU, wait_for_user = false);
           }
-          if (strcmp(command, "M112") == 0) kill(M112_KILL_STR, nullptr, true);
-          if (strcmp(command, "M410") == 0) quickstop_stepper();
+          if (strcmp_P(command, PSTR("M112")) == 0) kill(FPSTR(M112_KILL_STR), nullptr, true);
+          if (strcmp_P(command, PSTR("M410")) == 0) quickstop_stepper();
         #endif
 
         // Add the command to the queue
-        queue.enqueue_one_P(wifi_line_buffer);
+        queue.enqueue_one(wifi_line_buffer);
       }
       else if (wifi_read_count >= MAX_CMD_SIZE - 1) {
 

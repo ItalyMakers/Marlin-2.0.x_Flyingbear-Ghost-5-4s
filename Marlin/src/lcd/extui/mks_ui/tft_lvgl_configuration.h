@@ -27,25 +27,12 @@
  */
 
 #ifdef __cplusplus
-  extern "C" { /* C-declarations for C++ */
+  extern "C" {
 #endif
 
 #include <lvgl.h>
 
 //#define TFT_ROTATION TFT_ROTATE_180
-
-// #define USE_NEW_LVGL_CONF
-
-#ifdef USE_NEW_LVGL_CONF
-typedef struct {
-
-  lv_obj_t *src_main;
-  lv_obj_t *src_1;
-  lv_obj_t *src_2;
-
-}mks_ui_t;
-extern mks_ui_t mks_ui;
-#endif
 
 extern uint8_t bmp_public_buf[14 * 1024];
 extern uint8_t public_buf[513];
