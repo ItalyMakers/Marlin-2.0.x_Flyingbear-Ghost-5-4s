@@ -38,10 +38,7 @@
   #include "../../../MarlinCore.h"
 #endif
 
-#ifndef USE_NEW_LVGL_CONF
-  static lv_obj_t *scr;
-#endif
-
+static lv_obj_t *scr;
 extern lv_group_t*  g;
 
 enum {
@@ -60,7 +57,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
   if (event != LV_EVENT_RELEASED) return;
   if (obj->mks_obj_id == ID_S_CONTINUE) return;
   if (obj->mks_obj_id == ID_S_MOTOR_OFF) {
-    TERN(HAS_SUICIDE, suicide(), queue.enqueue_now_P(PSTR("M84")));
+    TERN(HAS_SUICIDE, suicide(), queue.enqueue_now(F("M84")));
     return;
   }
   lv_clear_set();
@@ -114,12 +111,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
 }
 
 void lv_draw_set() {
-#ifdef USE_NEW_LVGL_CONF
-  mks_ui.src_main = lv_set_scr_id_title(mks_ui.src_main, SET_UI, "");
-#else
   scr = lv_screen_create(SET_UI);
-#endif
-#ifndef USE_NEW_LVGL_CONF
   lv_big_button_create(scr, "F:/bmp_eeprom_settings.bin", set_menu.eepromSet, INTERVAL_V, titleHeight, event_handler, ID_S_EEPROM_SET);
   lv_big_button_create(scr, "F:/bmp_fan.bin", set_menu.fan, BTN_X_PIXEL + INTERVAL_V * 2, titleHeight, event_handler, ID_S_FAN);
   lv_big_button_create(scr, "F:/bmp_about.bin", set_menu.about, BTN_X_PIXEL * 2 + INTERVAL_V * 3, titleHeight, event_handler, ID_S_ABOUT);
