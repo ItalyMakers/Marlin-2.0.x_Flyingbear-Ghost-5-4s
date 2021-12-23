@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2021 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -21,13 +21,14 @@
  */
 #pragma once
 
-#ifdef __cplusplus
-  extern "C" {
-#endif
+#define BOARD_INFO_NAME "FYSETC SPIDER V22"
+#define DEFAULT_MACHINE_NAME BOARD_INFO_NAME
 
-void lv_draw_step_settings();
-void lv_clear_step_settings();
+#define TEMP_3_PIN                          PC3
+#define TEMP_4_PIN                          PB1
+#define TEMP_BED_PIN                        PB0
 
-#ifdef __cplusplus
-  } /* C-declarations for C++ */
-#endif
+#define FAN_PIN                             PA13
+#define FAN1_PIN                            PA14
+
+#include "pins_FYSETC_SPIDER.h"

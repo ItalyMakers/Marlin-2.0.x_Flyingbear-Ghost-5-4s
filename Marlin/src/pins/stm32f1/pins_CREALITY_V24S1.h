@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2021 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -21,13 +21,16 @@
  */
 #pragma once
 
-#ifdef __cplusplus
-  extern "C" {
-#endif
+/**
+ * Creality v2.4.S1 (STM32F103RE) v101 as found in the Ender 7 board pin assignments
+ */
 
-void lv_draw_step_settings();
-void lv_clear_step_settings();
+#define BOARD_INFO_NAME      "Creality v2.4.S1 V101"
+#define DEFAULT_MACHINE_NAME "Creality3D"
 
-#ifdef __cplusplus
-  } /* C-declarations for C++ */
-#endif
+//
+// Heaters
+//
+#define HEATER_BED_PIN                      PA15  // HOT BED
+
+#include "pins_CREALITY_V4.h"

@@ -120,7 +120,7 @@
 
 // SD card information first addr
 #define VAR_INF_ADDR                    0x000000
-#define FLASH_INF_VALID_FLAG            0x20211206
+#define FLASH_INF_VALID_FLAG            0x20201118
 
 // Store some gcode commands, such as auto leveling commands
 #define GCODE_COMMAND_ADDR              VAR_INF_ADDR + 3 * 1024
@@ -131,7 +131,7 @@
 #define OTHERS_COMMAND_ADDR_4           OTHERS_COMMAND_ADDR_3 + 100
 
 #ifdef __cplusplus
-  extern "C" { /* C-declarations for C++ */
+  extern "C" {
 #endif
 
 union union32 {

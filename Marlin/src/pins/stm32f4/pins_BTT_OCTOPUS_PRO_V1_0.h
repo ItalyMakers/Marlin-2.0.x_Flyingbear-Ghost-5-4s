@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2021 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -21,13 +21,20 @@
  */
 #pragma once
 
-#ifdef __cplusplus
-  extern "C" {
+#define BOARD_INFO_NAME "BTT OCTOPUS PRO V1.0"
+
+//
+// Temperature Sensors
+//
+#if TEMP_SENSOR_0 == -5
+  #define TEMP_0_CS_PIN                     PF8   // Max31865 CS
+  #define TEMP_0_SCK_PIN                    PA5
+  #define TEMP_0_MISO_PIN                   PA6
+  #define TEMP_0_MOSI_PIN                   PA7
+  #define SOFTWARE_SPI                            // Max31865 and LCD SD share a set of SPIs, Set SD to softwareSPI for Max31865
+  #define FORCE_SOFT_SPI
+#else
+  #define TEMP_0_PIN                        PF4   // TH0
 #endif
 
-void lv_draw_step_settings();
-void lv_clear_step_settings();
-
-#ifdef __cplusplus
-  } /* C-declarations for C++ */
-#endif
+#include "pins_BTT_OCTOPUS_V1_common.h"
