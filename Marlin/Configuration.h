@@ -2688,7 +2688,6 @@
 #ifdef FBGHOST_MKS_ROBIN_TFT35
   #define MKS_ROBIN_TFT35
 #endif
->>>>>>> 12e4ea7e... fix merge errors
 
 //
 // 480x272, 4.3", FSMC Display From MKS
