@@ -837,12 +837,12 @@ void GUI_RefreshPage() {
     case DIALOG_UI:
       filament_dialog_handle();
       TERN_(MKS_WIFI_MODULE, wifi_scan_handle());
-      // #if ENABLED(AUTO_BED_LEVELING_BILINEAR) && ENABLED(PREHEAT_BEFORE_LEVELING)
-      //   if (temps_update_flag) {
-      //     temps_update_flag = false;
-      //     disp_dialog_temp_offset_value();
-      //   }
-      // #endif
+      #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
+          disp_dialog_temp_offset_value();
+        // if (temps_update_flag) {
+        //   temps_update_flag = false;
+        // }
+      #endif
     break;
     case MESHLEVELING_UI: break;
     case HARDWARE_TEST_UI: break;

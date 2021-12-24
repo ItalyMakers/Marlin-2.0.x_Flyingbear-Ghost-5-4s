@@ -40,6 +40,15 @@
 // #define FBGHOST_IS_4S
 
 
+/*****************************************
+ *    OLD SCHOOL UI    *******************
+ *****************************************
+ * classic Vintage Marlin's COLOR_UI. no setup or UI edits here.
+ * just a raw interface.
+ */
+// #define OLD_SCHOOL_UI
+
+
 
 /*****************************************
  *       BLTOUCH       *******************
@@ -87,7 +96,9 @@
   #define FBGHOST_INVERT_E0_DIR   true
 #endif
 
-/**
+/*****************************************
+ *       STEP/MM       *******************
+ *****************************************
  * Default Axis Steps Per Unit (steps/mm)
  * Override with M92
  *                                               X,  Y,  Z[, I [, J [, K]]], E0 [, E1[, E2...]]
@@ -103,11 +114,6 @@
   #define FBGHOST_Z_SAFE_HOMING_X_POINT           X_CENTER  // X point for Z homing
   #define FBGHOST_Z_SAFE_HOMING_Y_POINT           Y_CENTER  // Y point for Z homing
 
-  // #define FBGHOST_PREHEAT_BEFORE_LEVELING
-  #ifdef FBGHOST_PREHEAT_BEFORE_LEVELING
-    #define FBGHOST_LEVELING_NOZZLE_TEMP  120   // (°C) Only applies to E0 at this time
-    #define FBGHOST_LEVELING_BED_TEMP      50
-  #endif
 #else
   #define FBGHOST_MESH_BED_LEVELING
 
@@ -217,6 +223,14 @@
 #define FBGHOST_PREHEAT_2_TEMP_HOTEND   235
 #define FBGHOST_PREHEAT_2_TEMP_BED      75
 #define FBGHOST_PREHEAT_2_FAN_SPEED     0 // Value from 0 to 255
+
+
+
+#define FBGHOST_PREHEAT_BEFORE_LEVELING
+#ifdef FBGHOST_PREHEAT_BEFORE_LEVELING
+  #define FBGHOST_LEVELING_NOZZLE_TEMP  FBGHOST_PREHEAT_1_TEMP_HOTEND   // (°C) Only applies to E0 at this time
+  #define FBGHOST_LEVELING_BED_TEMP     FBGHOST_PREHEAT_1_TEMP_BED
+#endif
 
 
 
@@ -444,3 +458,8 @@
 
 
 
+#ifdef OLD_SCHOOL_UI
+  #define FBGHOST_TFT_COLOR_UI
+#else
+  #define FBGHOST_TFT_LVGL_UI
+#endif
