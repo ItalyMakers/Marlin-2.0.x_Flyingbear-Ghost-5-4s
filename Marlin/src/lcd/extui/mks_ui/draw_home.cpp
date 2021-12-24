@@ -47,38 +47,56 @@ enum {
 };
 
 static void event_handler(lv_obj_t *obj, lv_event_t event) {
-  if (event != LV_EVENT_RELEASED) return;
-  switch (obj->mks_obj_id) {
-    case ID_H_ALL:
-      #if ENABLED(BLTOUCH)
-        queue.inject_P(PSTR("G28Z\nG28XY"));
-      #else
-        queue.inject_P(G28_STR);
-      #endif
 
-      break;
-    case ID_H_X:
-      queue.inject_P(PSTR("G28X"));
-      break;
-    case ID_H_Y:
-      queue.inject_P(PSTR("G28Y"));
-      break;
-    case ID_H_XY:
+  // if (event != LV_EVENT_RELEASED) return;
+  bool is_rb_full = true;
+
+  if(!queue.ring_buffer.full(1)) {
+    is_rb_full = true;
+  }else{
+    is_rb_full = false;
+  }
+
+  if ((event == LV_EVENT_RELEASED) || (event == LV_EVENT_PRESS_LOST)) {
+
+    switch (obj->mks_obj_id) {
+      case ID_H_ALL:
+        queue.inject_P(G28_STR);
+        break;
+      case ID_H_X:
+        if(is_rb_full) {
+          queue.inject_P(PSTR("G28X"));
+        }
+        break;
+      case ID_H_Y:
+        if(is_rb_full) {
+          queue.inject_P(PSTR("G28Y"));
+        }
+        break;
+      case ID_H_Z:
+        if(is_rb_full) {
+          queue.inject_P(PSTR("G28Z"));
+        }
+        break;
+
+      case ID_H_XY:
       queue.inject_P(PSTR("G28XY"));
       break;
-    case ID_H_Z:
-      queue.inject_P(PSTR("G28Z"));
-      break;
-    case ID_H_OFF_ALL:
-      queue.inject_P(PSTR("M84"));
-      break;
-    case ID_H_OFF_XY:
-      queue.inject_P(PSTR("M84XY"));
-      break;
-    case ID_H_RETURN:
-      clear_cur_ui();
-      draw_return_ui();
-      break;
+      case ID_H_OFF_ALL:
+        if(is_rb_full) {
+          queue.inject_P(PSTR("M84"));
+        }
+        break;
+      case ID_H_OFF_XY:
+        if(is_rb_full) {
+          queue.inject_P(PSTR("M84XY"));
+        }
+        break;
+      case ID_H_RETURN:
+        clear_cur_ui();
+        draw_return_ui();
+        break;
+    }
   }
 }
 

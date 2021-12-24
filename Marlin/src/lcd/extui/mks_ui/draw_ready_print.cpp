@@ -133,6 +133,7 @@ void disp_Limit_ok() {
   lv_obj_set_style(limit_info, &limit_style);
   lv_label_set_text(limit_info, "Limit:ok");
 }
+
 void disp_Limit_error() {
   limit_style.text.color  = lv_color_make(0xFB, 0x33, 0x14);
   lv_obj_set_style(limit_info, &limit_style);
