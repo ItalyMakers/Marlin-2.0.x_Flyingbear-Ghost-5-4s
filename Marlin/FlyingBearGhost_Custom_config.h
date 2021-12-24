@@ -16,8 +16,24 @@
  * i parametri driver e step/mm cambiano in base alla tua stampante
  */
 
-//default motherboard
-#define FBGHOST_MOTHERBOARD     BOARD_MKS_ROBIN_NANO
+
+/*****************************************
+ *     MOTHERBOARD     *******************
+ *****************************************
+ * Scegli la tua scheda madre
+ */
+//choose your motherboard
+#define MOTHERBOARD     BOARD_MKS_ROBIN_NANO
+// #define MOTHERBOARD     BOARD_MKS_ROBIN_NANO_V1_3_F4
+// #define MOTHERBOARD     BOARD_MKS_ROBIN_NANO_V2
+// #define MOTHERBOARD     BOARD_MKS_ROBIN_NANO_V3
+
+#if MOTHERBOARD == BOARD_MKS_ROBIN_NANO || MOTHERBOARD == BOARD_MKS_ROBIN_NANO_V1_3_F4
+  #define FBGHOST_MKS_ROBIN_TFT35
+#else
+  #define FBGHOST_MKS_TS35_V2_0
+#endif
+
 
 //  Choose your printer
 #define FBGHOST_IS_5

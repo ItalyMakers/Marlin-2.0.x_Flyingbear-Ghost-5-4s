@@ -64,6 +64,7 @@ extern int upload_result;
 extern uint32_t upload_time_sec;
 extern uint32_t upload_size;
 extern bool temps_update_flag;
+extern uint32_t pause_menu_response;
 
 //#define CANCEL_ON_RIGHT   // Put 'Cancel' on the right (as it was before)
 
@@ -133,8 +134,8 @@ static void btn_ok_event_cb(lv_obj_t *btn, lv_event_t event) {
   #if ENABLED(ADVANCED_PAUSE_FEATURE)
     else if (DIALOG_IS(PAUSE_MESSAGE_WAITING, PAUSE_MESSAGE_INSERT, PAUSE_MESSAGE_HEAT))
       wait_for_user = false;
-    else if (DIALOG_IS(PAUSE_MESSAGE_OPTION))
-      pause_menu_response = PAUSE_RESPONSE_EXTRUDE_MORE;
+    // else if (DIALOG_IS(PAUSE_MESSAGE_OPTION))
+      // pause_menu_response = PAUSE_RESPONSE_EXTRUDE_MORE;
     else if (DIALOG_IS(PAUSE_MESSAGE_RESUME)) {
       goto_previous_ui();
     }
@@ -185,10 +186,11 @@ static void btn_ok_event_cb(lv_obj_t *btn, lv_event_t event) {
 
 static void btn_cancel_event_cb(lv_obj_t *btn, lv_event_t event) {
   if (event != LV_EVENT_RELEASED) return;
-  if (DIALOG_IS(PAUSE_MESSAGE_OPTION)) {
-    TERN_(ADVANCED_PAUSE_FEATURE, pause_menu_response = PAUSE_RESPONSE_RESUME_PRINT);
-  }
-  else if (DIALOG_IS(TYPE_FILAMENT_LOAD_HEAT, TYPE_FILAMENT_UNLOAD_HEAT, TYPE_FILAMENT_HEAT_LOAD_COMPLETED, TYPE_FILAMENT_HEAT_UNLOAD_COMPLETED)) {
+  // if (DIALOG_IS(PAUSE_MESSAGE_OPTION)) {
+  //   // TERN_(ADVANCED_PAUSE_FEATURE, pause_menu_response = PAUSE_RESPONSE_RESUME_PRINT);
+  // }
+  // else
+  if (DIALOG_IS(TYPE_FILAMENT_LOAD_HEAT, TYPE_FILAMENT_UNLOAD_HEAT, TYPE_FILAMENT_HEAT_LOAD_COMPLETED, TYPE_FILAMENT_HEAT_UNLOAD_COMPLETED)) {
     thermalManager.setTargetHotend(uiCfg.hotendTargetTempBak, uiCfg.extruderIndex);
     goto_previous_ui();
   }

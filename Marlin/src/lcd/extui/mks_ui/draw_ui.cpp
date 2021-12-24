@@ -1485,7 +1485,7 @@ void lv_screen_menu_item_turn_page(lv_obj_t *par, const char *text, lv_event_cb_
 }
 
 void lv_screen_menu_item_return(lv_obj_t *par, lv_event_cb_t cb, const int id) {
-  lv_obj_t* btnReturn = lv_btn_create(par, PARA_UI_BACL_POS_X, PARA_UI_BACL_POS_Y, PARA_UI_BACK_BTN_X_SIZE, PARA_UI_BACK_BTN_Y_SIZE, cb, id);
+  lv_obj_t* btnReturn = lv_btn_create(par, PARA_UI_BACK_POS_X, PARA_UI_BACK_POS_Y, PARA_UI_BACK_BTN_X_SIZE, PARA_UI_BACK_BTN_Y_SIZE, cb, id);
   lv_obj_t* labelReturn = lv_label_create_empty(btnReturn);
   lv_btn_set_style_both(btnReturn, &style_para_back);
   lv_label_set_text(labelReturn, common_menu.text_back);

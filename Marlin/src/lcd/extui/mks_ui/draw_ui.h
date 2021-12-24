@@ -171,6 +171,8 @@
   #define QRCODE_Y                  40
   #define QRCODE_WIDTH              160
 
+  #define PARA_UI_TURN_BTN_X_SIZE   70
+  #define PARA_UI_TURN_BTN_Y_SIZE   40
 #else // ifdef TFT35
 
   #define TFT_WIDTH     320

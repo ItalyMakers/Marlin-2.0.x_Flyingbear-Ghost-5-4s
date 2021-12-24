@@ -85,7 +85,7 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
       #else
         sprintf_P(baby_buf, PSTR("G1 Z%s"), dtostrf(current_position.z + step_dist, 1, 3, str_1));
       #endif
-      gcode.process_subcommands_now_P(PSTR(baby_buf));
+      gcode.process_subcommands_now(PSTR(baby_buf));
 
       zoffset_diff += step_dist;
       break;
@@ -95,7 +95,7 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
       #else
         sprintf_P(baby_buf, PSTR("G1 Z%s"), dtostrf(current_position.z - step_dist, 1, 3, str_1));
       #endif
-      gcode.process_subcommands_now_P(PSTR(baby_buf));
+      gcode.process_subcommands_now(PSTR(baby_buf));
       zoffset_diff -= step_dist;
       break;
     case ID_ZOFFSET_SAVE:
