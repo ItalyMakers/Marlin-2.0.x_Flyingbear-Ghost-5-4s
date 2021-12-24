@@ -43,10 +43,10 @@
 
 extern lv_group_t *g;
 static lv_obj_t *scr, *labelV, *buttonV, *zOffsetText;
-#ifdef MESH_BED_LEVELING
+// #ifdef MESH_BED_LEVELING
+// #endif
   static lv_obj_t *labelExt1, *labelBed;
   static lv_obj_t *buttonExt1, *buttonBed;
-#endif
 
 static lv_obj_t *buttonNext, *buttonSave, *buttonBack;
 
@@ -176,17 +176,18 @@ void lv_draw_zoffset_settings(void) {
   lv_label_set_text(labelInit, machine_menu.BLTouchInit);
   lv_obj_align(labelInit, buttonInitstate, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
 
+  buttonExt1 = lv_img_create(scr, nullptr);
+  lv_img_set_src(buttonExt1, "F:/bmp_ext1_state.bin");
+  lv_obj_set_pos(buttonExt1, 216, 50);
+
+  buttonBed = lv_img_create(scr, nullptr);
+  lv_img_set_src(buttonBed, "F:/bmp_bed_state.bin");
+  lv_obj_set_pos(buttonBed, 287, 50);
+
+  labelExt1 = lv_label_create(scr, 196, 115, nullptr);
+  labelBed  = lv_label_create(scr, 267, 115, nullptr);
+
   #ifdef MESH_BED_LEVELING
-    buttonExt1 = lv_img_create(scr, nullptr);
-    lv_img_set_src(buttonExt1, "F:/bmp_ext1_state.bin");
-    lv_obj_set_pos(buttonExt1, 216, 50);
-
-    buttonBed = lv_img_create(scr, nullptr);
-    lv_img_set_src(buttonBed, "F:/bmp_bed_state.bin");
-    lv_obj_set_pos(buttonBed, 287, 50);
-
-    labelExt1 = lv_label_create(scr, 196, 115, nullptr);
-    labelBed  = lv_label_create(scr, 267, 115, nullptr);
 
     zOffsetText = lv_label_create(scr, 120, 140, nullptr);
   #else
@@ -256,7 +257,6 @@ void disp_zoffset_value() {
 
   lv_label_set_text(zOffsetText, buf);
 
-  #ifdef MESH_BED_LEVELING
     #if HAS_HOTEND
       sprintf(public_buf_l, printing_menu.temp1, (int)thermalManager.temp_hotend[0].celsius, (int)thermalManager.temp_hotend[0].target);
       lv_label_set_text(labelExt1, public_buf_l);
@@ -269,7 +269,8 @@ void disp_zoffset_value() {
       lv_label_set_text(labelBed, public_buf_l);
       lv_obj_align(labelBed, buttonBed, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
     #endif
-  #endif
+  // #ifdef MESH_BED_LEVELING
+  // #endif
 }
 
 void zoffset_do_init(bool resetZoffset) {

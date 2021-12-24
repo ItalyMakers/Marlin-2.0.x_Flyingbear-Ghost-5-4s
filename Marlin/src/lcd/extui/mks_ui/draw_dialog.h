@@ -80,7 +80,7 @@ void lv_draw_dialog(uint8_t type);
 void lv_clear_dialog();
 void filament_sprayer_temp();
 void filament_dialog_handle();
-// void disp_dialog_temp_offset_value();
+void disp_dialog_temp_offset_value();
 void lv_filament_setbar();
 
 #ifdef __cplusplus
