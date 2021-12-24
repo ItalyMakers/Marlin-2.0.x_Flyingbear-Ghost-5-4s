@@ -2658,7 +2658,9 @@
 // 480x320, 3.5", SPI Display From MKS
 // Normally used in MKS Robin Nano V2
 //
-//#define MKS_TS35_V2_0
+#ifdef FBGHOST_MKS_TS35_V2_0
+  #define MKS_TS35_V2_0
+#endif
 
 //
 // 320x240, 2.4", FSMC Display From MKS
@@ -2683,6 +2685,10 @@
 // Normally used in MKS Robin Nano V1.2
 //
 #define MKS_ROBIN_TFT35
+#ifdef FBGHOST_MKS_ROBIN_TFT35
+  #define MKS_ROBIN_TFT35
+#endif
+>>>>>>> 12e4ea7e... fix merge errors
 
 //
 // 480x272, 4.3", FSMC Display From MKS
