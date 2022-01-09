@@ -994,7 +994,7 @@
 #define DEFAULT_MINTRAVELFEEDRATE     0.0     // (mm/s) Minimum travel feedrate. Set with M205 T.
 
 // Minimum time that a segment needs to take as the buffer gets emptied
-#define DEFAULT_MINSEGMENTTIME        50000   // (µs) Set with M205 B.
+#define DEFAULT_MINSEGMENTTIME        20000   // (µs) Set with M205 B.
 
 // Slow down the machine if the lookahead buffer is (by default) half full.
 // Increase the slowdown divisor for larger buffer sizes.
@@ -1721,12 +1721,12 @@
 // Specify additional languages for the UI. Default specified by LCD_LANGUAGE.
 //
 #if ANY(DOGLCD, TFT_COLOR_UI, TOUCH_UI_FTDI_EVE, IS_DWIN_MARLINUI)
-  //#define LCD_LANGUAGE_2 fr
+  #define LCD_LANGUAGE_2 it
   //#define LCD_LANGUAGE_3 de
   //#define LCD_LANGUAGE_4 es
-  //#define LCD_LANGUAGE_5 it
+  //#define LCD_LANGUAGE_5 fr
   #ifdef LCD_LANGUAGE_2
-    //#define LCD_LANGUAGE_AUTO_SAVE // Automatically save language to EEPROM on change
+    #define LCD_LANGUAGE_AUTO_SAVE // Automatically save language to EEPROM on change
   #endif
 #endif
 
@@ -2164,18 +2164,18 @@
 // The number of linear moves that can be in the planner at once.
 // The value of BLOCK_BUFFER_SIZE must be a power of 2 (e.g., 8, 16, 32)
 #if BOTH(SDSUPPORT, DIRECT_STEPPING)
-  #define  BLOCK_BUFFER_SIZE 32   //  8
+  #define  BLOCK_BUFFER_SIZE 16   //  8
 #elif ENABLED(SDSUPPORT)
-  #define BLOCK_BUFFER_SIZE 32
+  #define BLOCK_BUFFER_SIZE 16
 #else
-  #define BLOCK_BUFFER_SIZE 32
+  #define BLOCK_BUFFER_SIZE 16
 #endif
 
 // @section serial
 
 // The ASCII buffer for serial input
 #define MAX_CMD_SIZE 96
-#define BUFSIZE 16
+#define BUFSIZE 8
 
 // Transmission to Host Buffer Size
 // To save 386 bytes of PROGMEM (and TX_BUFFER_SIZE+3 bytes of RAM) set to 0.
@@ -2190,7 +2190,7 @@
 // Without XON/XOFF flow control (see SERIAL_XON_XOFF below) 32 bytes should be enough.
 // To use flow control, set this buffer size to at least 1024 bytes.
 // :[0, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048]
-#define RX_BUFFER_SIZE 1024
+#define RX_BUFFER_SIZE 512
 
 #if RX_BUFFER_SIZE >= 1024
   // Enable to have the controller send XON/XOFF control characters to
@@ -3749,14 +3749,26 @@
   // #define CUSTOM_MENU_MAIN_ONLY_IDLE         // Only show custom menu when the machine is idle
 
 
-  #define MAIN_MENU_ITEM_1_DESC PREHEAT_1_LABEL " (" STRINGIFY(PREHEAT_1_TEMP_HOTEND) "/" STRINGIFY(PREHEAT_1_TEMP_BED) ")"
-  #define MAIN_MENU_ITEM_1_GCODE "M140 S" STRINGIFY(PREHEAT_1_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_1_TEMP_HOTEND)
+  // #define MAIN_MENU_ITEM_1_DESC PREHEAT_1_LABEL " (" STRINGIFY(PREHEAT_1_TEMP_HOTEND) "/" STRINGIFY(PREHEAT_1_TEMP_BED) ")"
+  // #define MAIN_MENU_ITEM_1_GCODE "M140 S" STRINGIFY(PREHEAT_1_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_1_TEMP_HOTEND)
   // #define MAIN_MENU_ITEM_1_CONFIRM          // Show a confirmation dialog before this action
+  // #define MAIN_MENU_ITEM_1_BACK
+  // #define MAIN_MENU_ITEM_1_BACK_HOME
+
+  // #define MAIN_MENU_ITEM_2_DESC PREHEAT_2_LABEL   " (" STRINGIFY(PREHEAT_2_TEMP_HOTEND) "/" STRINGIFY(PREHEAT_2_TEMP_BED) ")"
+  // #define MAIN_MENU_ITEM_2_GCODE "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_2_TEMP_HOTEND)
+  // #define MAIN_MENU_ITEM_2_CONFIRM
+  // #define MAIN_MENU_ITEM_2_BACK
+  // #define MAIN_MENU_ITEM_2_BACK_HOME
+
+  #define MAIN_MENU_ITEM_1_DESC "COOL DOWN"
+  #define MAIN_MENU_ITEM_1_GCODE "M106 S0\nM104 S0\nM140 S0"
+  // #define MAIN_MENU_ITEM_1_CONFIRM
   // #define MAIN_MENU_ITEM_1_BACK
   #define MAIN_MENU_ITEM_1_BACK_HOME
 
-  #define MAIN_MENU_ITEM_2_DESC PREHEAT_2_LABEL   " (" STRINGIFY(PREHEAT_2_TEMP_HOTEND) "/" STRINGIFY(PREHEAT_2_TEMP_BED) ")"
-  #define MAIN_MENU_ITEM_2_GCODE "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_2_TEMP_HOTEND)
+  #define MAIN_MENU_ITEM_2_DESC "Touch Cal."
+  #define MAIN_MENU_ITEM_2_GCODE "M995"
   // #define MAIN_MENU_ITEM_2_CONFIRM
   // #define MAIN_MENU_ITEM_2_BACK
   #define MAIN_MENU_ITEM_2_BACK_HOME
@@ -4217,7 +4229,7 @@
 #define PINS_DEBUGGING
 
 // Enable Marlin dev mode which adds some special commands
-#define MARLIN_DEV_MODE
+// #define MARLIN_DEV_MODE
 
 #if ENABLED(MARLIN_DEV_MODE)
   /**
