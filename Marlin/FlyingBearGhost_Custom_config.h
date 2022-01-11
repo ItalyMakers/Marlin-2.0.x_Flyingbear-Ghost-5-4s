@@ -56,7 +56,7 @@
  * decommentare per abilitare il BLTOUCH
  */
 
-// #define FBGHOST_BLTOUCH
+#define FBGHOST_BLTOUCH
 
 
 
@@ -113,6 +113,9 @@
   #define FBGHOST_GRID_MAX_POINTS_Y               FBGHOST_GRID_MAX_POINTS_X
   #define FBGHOST_Z_SAFE_HOMING_X_POINT           X_CENTER  // X point for Z homing
   #define FBGHOST_Z_SAFE_HOMING_Y_POINT           Y_CENTER  // Y point for Z homing
+
+  // permette la calibrazione manuale oltre che tramite BLTOUCH
+  #define FBGHOST_ADD_5_POINTS
 
 #else
   #define FBGHOST_MESH_BED_LEVELING
