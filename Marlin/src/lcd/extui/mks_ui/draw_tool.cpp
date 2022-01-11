@@ -32,9 +32,11 @@
 #include "../../../inc/MarlinConfig.h"
 
 extern lv_group_t *g;
+
 #ifndef USE_NEW_LVGL_CONF
 static lv_obj_t *scr;
 #endif
+
 enum {
   ID_T_PRE_HEAT = 1,
   ID_T_EXTRUCT,
@@ -52,7 +54,6 @@ enum {
 
 static void event_handler(lv_obj_t *obj, lv_event_t event) {
   if (event != LV_EVENT_RELEASED) return;
-  if (TERN1(AUTO_BED_LEVELING_BILINEAR, obj->mks_obj_id != ID_T_LEVELING))
     lv_clear_tool();
   switch (obj->mks_obj_id) {
     case ID_T_PRE_HEAT:
