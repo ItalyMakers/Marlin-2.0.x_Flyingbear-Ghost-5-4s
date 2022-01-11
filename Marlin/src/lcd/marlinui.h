@@ -289,7 +289,7 @@ public:
       #define PROGRESS_SCALE 1U
       #define PROGRESS_MASK 0x7F
     #endif
-    #if ENABLED(LCD_SET_PROGRESS_MANUALLY)
+    #if ENABLED(SET_PROGRESS_MANUALLY)
       static progress_t progress_override;
       static void set_progress(const progress_t p) { progress_override = _MIN(p, 100U * (PROGRESS_SCALE)); }
       static void set_progress_done() { progress_override = (PROGRESS_MASK + 1U) + 100U * (PROGRESS_SCALE); }

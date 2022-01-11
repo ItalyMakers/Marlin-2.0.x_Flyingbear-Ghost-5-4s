@@ -56,7 +56,17 @@
  * decommentare per abilitare il BLTOUCH
  */
 
-// #define FBGHOST_BLTOUCH
+#define FBGHOST_BLTOUCH
+
+
+
+/*****************************************
+ *      OCTOPRINT      *******************
+ *****************************************
+ * decommentare per feature inerenti ad Octoprint
+ */
+
+#define FBGHOST_OCTOPRINT
 
 
 
@@ -75,11 +85,11 @@
  */
 
 //PRESETS - usare FBGHOST_CUSTOM_CONF se si ha una configurazione particolare. A fondo documento trovi i settaggi standard.
-// #define FBGHOST_DRIVER_CUSTOM_CONF
+#define FBGHOST_DRIVER_CUSTOM_CONF
 // #define FBGHOST_DRIVER_ALL_A4988
 // #define FBGHOST_DRIVER_ALL_TMC2208
 // #define FBGHOST_DRIVER_ALL_TMC2209
-#define FBGHOST_DRIVER_XY_TMC2208_ZE_A4988
+// #define FBGHOST_DRIVER_XY_TMC2208_ZE_A4988
 
 #ifdef FBGHOST_DRIVER_CUSTOM_CONF
   #define FBGHOST_X_DRIVER_TYPE   TMC2208_STANDALONE
@@ -104,7 +114,7 @@
  *                                               X,  Y,  Z[, I [, J [, K]]], E0 [, E1[, E2...]]
  *
  *///                                            X,  Y,   Z,  E0
-#define FBGHOST_DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 409}
+#define FBGHOST_DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80.05, 402, 852.42}
 
 
 
@@ -169,7 +179,7 @@
  */
 
 // Italy Makers Print Head Position (https://www.thingiverse.com/thing:4848085)
-#define  FBGHOST_NOZZLE_TO_PROBE_OFFSET {42.10,-15.5,0}   // { 10, 10, 0 }
+#define  FBGHOST_NOZZLE_TO_PROBE_OFFSET {42.10,-15.5, -1.83}   // { 10, 10, 0 }
 
 
 
@@ -216,7 +226,7 @@
 // Preheat Constants
 #define FBGHOST_PREHEAT_1_LABEL         "PLA"
 #define FBGHOST_PREHEAT_1_TEMP_HOTEND   200
-#define FBGHOST_PREHEAT_1_TEMP_BED      65
+#define FBGHOST_PREHEAT_1_TEMP_BED      55
 #define FBGHOST_PREHEAT_1_FAN_SPEED     0 // Value from 0 to 255
 
 #define FBGHOST_PREHEAT_2_LABEL         "PETG"
@@ -280,7 +290,7 @@
  * See https://marlinfw.org/docs/features/lin_advance.html for full instructions.
  */
 
-// #define FBGHOST_LIN_ADVANCE
+#define FBGHOST_LIN_ADVANCE
 
 #ifdef FBGHOST_LIN_ADVANCE
   #define FBGHOST_LIN_ADVANCE_K 0.22

@@ -22,7 +22,7 @@
 
 #include "../../inc/MarlinConfig.h"
 
-#if ENABLED(LCD_SET_PROGRESS_MANUALLY)
+#if ENABLED(SET_PROGRESS_MANUALLY)
 
 #include "../gcode.h"
 #include "../../lcd/marlinui.h"
@@ -59,4 +59,4 @@ void GcodeSuite::M73() {
   #endif
 }
 
-#endif // LCD_SET_PROGRESS_MANUALLY
+#endif // SET_PROGRESS_MANUALLY

@@ -647,7 +647,7 @@ private:
     static void M48();
   #endif
 
-  #if ENABLED(LCD_SET_PROGRESS_MANUALLY)
+  #if ENABLED(SET_PROGRESS_MANUALLY)
     static void M73();
   #endif
 

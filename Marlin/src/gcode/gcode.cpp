@@ -193,7 +193,7 @@ void GcodeSuite::get_destination_from_command() {
       destination.e = current_position.e;
   #endif
 
-  
+
 
   #if ENABLED(POWER_LOSS_RECOVERY) && !PIN_EXISTS(POWER_LOSS)
     // Only update power loss recovery on moves with E
@@ -209,14 +209,14 @@ void GcodeSuite::get_destination_from_command() {
       recovery.save();
     }
 
-    // if(recovery.enabled) 
+    // if(recovery.enabled)
     //   test_pr = 1;
-    // else 
+    // else
     //   test_pr = 2;
 
-    // if(IS_SD_PRINTING()) 
+    // if(IS_SD_PRINTING())
     //   test_pr = 3;
-    // else 
+    // else
     //   test_pr = 4;
 
     // if(recovery.enabled && IS_SD_PRINTING()) {
@@ -556,7 +556,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 48: M48(); break;                                    // M48: Z probe repeatability test
       #endif
 
-      #if ENABLED(LCD_SET_PROGRESS_MANUALLY)
+      #if ENABLED(SET_PROGRESS_MANUALLY)
         case 73: M73(); break;                                    // M73: Set progress percentage (for display on LCD)
       #endif
 
