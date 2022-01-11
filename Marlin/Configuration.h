@@ -940,7 +940,7 @@
 
 #define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
-  #define MAX_FEEDRATE_EDIT_VALUES    { 300, 300, 10, 70 } // ...or, set your own edit limits
+  #define MAX_FEEDRATE_EDIT_VALUES    FBGHOST_DEFAULT_MAX_FEEDRATE // ...or, set your own edit limits
 #endif
 
 /**
@@ -953,7 +953,7 @@
 
 #define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
-  #define MAX_ACCEL_EDIT_VALUES       { 6000, 6000, 200, 20000 } // ...or, set your own edit limits
+  #define MAX_ACCEL_EDIT_VALUES       FBGHOST_DEFAULT_MAX_ACCELERATION // ...or, set your own edit limits
 #endif
 
 /**
@@ -1750,15 +1750,13 @@
 //#define MANUAL_J_HOME_POS 0
 //#define MANUAL_K_HOME_POS 0
 
-// Use "Z Safe Homing" to avoid homing with a Z probe outside the bed area.
-//
-// With this feature enabled:
-//
-// - Allow Z homing only after X and Y homing AND stepper drivers still enabled.
-// - If stepper drivers time out, it will need X and Y homing again before Z homing.
-// - Move the Z probe (or nozzle) to a defined XY point before Z Homing.
-// - Prevent Z homing when the Z probe is outside bed area.
-//
+/**
+ * Use "Z Safe Homing" to avoid homing with a Z probe outside the bed area.
+ *
+ * - Moves the Z probe (or nozzle) to a defined XY point before Z homing.
+ * - Allows Z homing only when XY positions are known and trusted.
+ * - If stepper drivers sleep, XY homing may be required again before Z homing.
+ */
 #define Z_SAFE_HOMING
 
 #if ENABLED(Z_SAFE_HOMING)
@@ -2658,7 +2656,9 @@
 // 480x320, 3.5", SPI Display From MKS
 // Normally used in MKS Robin Nano V2
 //
-//#define MKS_TS35_V2_0
+#ifdef FBGHOST_MKS_TS35_V2_0
+  #define MKS_TS35_V2_0
+#endif
 
 //
 // 320x240, 2.4", FSMC Display From MKS
@@ -2683,6 +2683,9 @@
 // Normally used in MKS Robin Nano V1.2
 //
 #define MKS_ROBIN_TFT35
+#ifdef FBGHOST_MKS_ROBIN_TFT35
+  #define MKS_ROBIN_TFT35
+#endif
 
 //
 // 480x272, 4.3", FSMC Display From MKS
@@ -2755,8 +2758,13 @@
  *   root of your SD card, together with the compiled firmware.
  */
 //#define TFT_CLASSIC_UI
-// #define TFT_COLOR_UI
-#define TFT_LVGL_UI
+#ifdef FBGHOST_TFT_COLOR_UI
+  #define TFT_COLOR_UI
+#endif
+
+#ifdef FBGHOST_TFT_LVGL_UI
+  #define TFT_LVGL_UI
+#endif
 
 #if ENABLED(TFT_LVGL_UI)
   #define MKS_WIFI_MODULE  // MKS WiFi module
@@ -2820,7 +2828,7 @@
   #endif
 
   #if ENABLED(TFT_COLOR_UI)
-    //#define SINGLE_TOUCH_NAVIGATION
+    #define SINGLE_TOUCH_NAVIGATION
   #endif
 #endif
 
@@ -2900,14 +2908,18 @@
  *
  * LED Type. Enable only one of the following two options.
  */
-//#define RGB_LED
-//#define RGBW_LED
+#ifdef FBGHOST_RGB_LED
+  #define RGB_LED
+#endif
+#ifdef FBGHOST_RGBW_LED
+  #define RGBW_LED
+#endif
 
 #if EITHER(RGB_LED, RGBW_LED)
-  //#define RGB_LED_R_PIN 34
-  //#define RGB_LED_G_PIN 43
-  //#define RGB_LED_B_PIN 35
-  //#define RGB_LED_W_PIN -1
+  #define RGB_LED_R_PIN FBGHOST_RGB_LED_R_PIN
+  #define RGB_LED_G_PIN FBGHOST_RGB_LED_G_PIN
+  #define RGB_LED_B_PIN FBGHOST_RGB_LED_B_PIN
+  #define RGB_LED_W_PIN FBGHOST_RGB_LED_W_PIN
 #endif
 
 // Support for Adafruit NeoPixel LED driver

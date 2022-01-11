@@ -58,7 +58,7 @@ static lv_obj_t *label_abs;
 static lv_obj_t *label_pla;
 
 static lv_obj_t *label_cooldown;
-static lv_obj_t *label_emStop;
+// static lv_obj_t *label_emStop;
 
 #if HAS_MULTI_HOTEND
   static lv_obj_t *labelExt2;
@@ -133,6 +133,7 @@ void disp_Limit_ok() {
   lv_obj_set_style(limit_info, &limit_style);
   lv_label_set_text(limit_info, "Limit:ok");
 }
+
 void disp_Limit_error() {
   limit_style.text.color  = lv_color_make(0xFB, 0x33, 0x14);
   lv_obj_set_style(limit_info, &limit_style);
@@ -178,6 +179,7 @@ void set_main_screen(void) {
 }
 
 void lv_draw_ready_print() {
+
   char buf[30] = {0};
   lv_obj_t *buttonTool;
 
@@ -358,10 +360,10 @@ void disp_ext_heart_ready_print() {
     label_abs = lv_label_create(mks_ui.src_main, (180+50), (260 + 10), PREHEAT_2_LABEL);
 
     lv_big_button_create(mks_ui.src_main, "F:/bmp_mini_temp0.bin"," ", ( 320), 210, event_handler, ID_EMSTOP);
-    lv_big_button_create(mks_ui.src_main, "F:/bmp_mini_emergency_stop.bin"," ", ( 320), 260, event_handler, ID_COOLDOWN);
+    // lv_big_button_create(mks_ui.src_main, "F:/bmp_mini_emergency_stop.bin"," ", ( 320), 260, event_handler, ID_COOLDOWN);
 
     label_cooldown = lv_label_create(mks_ui.src_main, (320+50), (210 + 10), "Cool Down");
-    label_emStop = lv_label_create(mks_ui.src_main, (320+50), (260 + 10), "Emergency Stop");
+    // label_emStop = lv_label_create(mks_ui.src_main, (320+50), (260 + 10), "Emergency Stop");
   #else
     lv_big_button_create(scr, "F:/bmp_temp_mini.bin"," ", ( 180), 210, event_handler, ID_P_PLA);
     lv_big_button_create(scr, "F:/bmp_temp_mini.bin"," ", ( 180), 260, event_handler, ID_P_ABS);
@@ -370,10 +372,10 @@ void disp_ext_heart_ready_print() {
     label_abs = lv_label_create(scr, (180+50), (260 + 10), PREHEAT_2_LABEL);
 
     lv_big_button_create(scr, "F:/bmp_mini_temp0.bin"," ", ( 320), 210, event_handler, ID_COOLDOWN);
-    lv_big_button_create(scr, "F:/bmp_mini_emergency_stop.bin"," ", ( 320), 260, event_handler, ID_EMSTOP);
-
     label_cooldown = lv_label_create(scr, (320+50), (210 + 10), "Cool Down");
-    label_emStop = lv_label_create(scr, (320+50), (260 + 10), "Emerg. Stop");
+
+    // lv_big_button_create(scr, "F:/bmp_mini_emergency_stop.bin"," ", ( 320), 260, event_handler, ID_EMSTOP);
+    // label_emStop = lv_label_create(scr, (320+50), (260 + 10), "Emerg. Stop");
 
   #endif
     // label_pla = lv_btn_create(scr, ( 180+45), (210), 80, 40, event_handler, ID_P_PLA);
