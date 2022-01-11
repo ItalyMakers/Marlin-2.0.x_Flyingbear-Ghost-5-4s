@@ -63,7 +63,11 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
 
     switch (obj->mks_obj_id) {
       case ID_H_ALL:
-        queue.inject_P(G28_STR);
+        #if ENABLED(BLTOUCH)
+          queue.inject_P(PSTR("G28Z\nG28XY"));
+        #else
+          queue.inject_P(G28_STR);
+        #endif
         break;
       case ID_H_X:
         if(is_rb_full) {
@@ -95,8 +99,8 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
         }
         break;
       case ID_H_RETURN:
-        lv_clear_home();
-        lv_draw_tool();
+        clear_cur_ui();
+        draw_return_ui();
         break;
     }
   }
@@ -110,8 +114,9 @@ void lv_draw_home() {
   lv_big_button_create(mks_ui.src_main, "F:/bmp_zeroX.bin", home_menu.home_x, BTN_X_PIXEL + INTERVAL_V * 2, titleHeight, event_handler, ID_H_X);
   lv_big_button_create(mks_ui.src_main, "F:/bmp_zeroY.bin", home_menu.home_y, BTN_X_PIXEL * 2 + INTERVAL_V * 3, titleHeight, event_handler, ID_H_Y);
   lv_big_button_create(mks_ui.src_main, "F:/bmp_zeroZ.bin", home_menu.home_z, BTN_X_PIXEL * 3 + INTERVAL_V * 4, titleHeight, event_handler, ID_H_Z);
-  lv_big_button_create(mks_ui.src_main, "F:/bmp_function1.bin", set_menu.motoroff, INTERVAL_V, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_H_OFF_ALL);
-  lv_big_button_create(mks_ui.src_main, "F:/bmp_function1.bin", set_menu.motoroffXY, BTN_X_PIXEL + INTERVAL_V * 2, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_H_OFF_XY);
+  lv_big_button_create(mks_ui.src_main, "F:/bmp_leveling1.bin", home_menu.home_xy, INTERVAL_V, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_H_XY);
+  lv_big_button_create(mks_ui.src_main, "F:/bmp_function1.bin", set_menu.motoroff, BTN_X_PIXEL + INTERVAL_V * 2, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_H_OFF_ALL);
+  lv_big_button_create(mks_ui.src_main, "F:/bmp_function1.bin", set_menu.motoroffXY, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_H_OFF_XY);
   lv_big_button_create(mks_ui.src_main, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_H_RETURN);
 #else
   scr = lv_screen_create(ZERO_UI);

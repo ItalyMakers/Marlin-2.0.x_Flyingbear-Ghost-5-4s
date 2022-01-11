@@ -34,7 +34,7 @@
 
 //#define TFT_ROTATION TFT_ROTATE_180
 
-#define USE_NEW_LVGL_CONF
+// #define USE_NEW_LVGL_CONF
 
 #ifdef USE_NEW_LVGL_CONF
 typedef struct {
