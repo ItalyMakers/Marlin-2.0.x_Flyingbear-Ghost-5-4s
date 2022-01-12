@@ -94,7 +94,7 @@ void lv_draw_manualLevel() {
   #if ENABLED(MESH_BED_LEVELING)
     lv_big_button_create(scr, "F:/bmp_test.bin", machine_menu.MeshBLSettings, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_ZOFFSET);
   #elif ENABLED(FBGHOST_ADD_5_POINTS)
-    lv_big_button_create(scr, "F:/bmp_autoleveling.bin", machine_menu.MeshBLSettings, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_BLTOUCH);
+    lv_big_button_create(scr, "F:/bmp_autoleveling.bin", tool_menu.autoleveling, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_BLTOUCH);
   #endif
 
   lv_big_button_create(scr, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_MANUAL_RETURN);
