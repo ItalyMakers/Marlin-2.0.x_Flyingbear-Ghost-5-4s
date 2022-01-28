@@ -56,7 +56,7 @@
  * decommentare per abilitare il BLTOUCH
  */
 
-// #define FBGHOST_BLTOUCH
+#define FBGHOST_BLTOUCH
 
 
 
@@ -75,11 +75,11 @@
  */
 
 //PRESETS - usare FBGHOST_CUSTOM_CONF se si ha una configurazione particolare. A fondo documento trovi i settaggi standard.
-// #define FBGHOST_DRIVER_CUSTOM_CONF
+#define FBGHOST_DRIVER_CUSTOM_CONF
 // #define FBGHOST_DRIVER_ALL_A4988
 // #define FBGHOST_DRIVER_ALL_TMC2208
 // #define FBGHOST_DRIVER_ALL_TMC2209
-#define FBGHOST_DRIVER_XY_TMC2208_ZE_A4988
+// #define FBGHOST_DRIVER_XY_TMC2208_ZE_A4988
 
 #ifdef FBGHOST_DRIVER_CUSTOM_CONF
   #define FBGHOST_X_DRIVER_TYPE   TMC2208_STANDALONE
@@ -104,7 +104,7 @@
  *                                               X,  Y,  Z[, I [, J [, K]]], E0 [, E1[, E2...]]
  *
  *///                                            X,  Y,   Z,  E0
-#define FBGHOST_DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 409}
+#define FBGHOST_DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80.05, 402, 852.42}
 
 
 
@@ -113,6 +113,9 @@
   #define FBGHOST_GRID_MAX_POINTS_Y               FBGHOST_GRID_MAX_POINTS_X
   #define FBGHOST_Z_SAFE_HOMING_X_POINT           X_CENTER  // X point for Z homing
   #define FBGHOST_Z_SAFE_HOMING_Y_POINT           Y_CENTER  // Y point for Z homing
+
+  // permette la calibrazione manuale oltre che tramite BLTOUCH
+  #define FBGHOST_ADD_5_POINTS
 
 #else
   #define FBGHOST_MESH_BED_LEVELING
@@ -169,7 +172,7 @@
  */
 
 // Italy Makers Print Head Position (https://www.thingiverse.com/thing:4848085)
-#define  FBGHOST_NOZZLE_TO_PROBE_OFFSET {42.10,-15.5,0}   // { 10, 10, 0 }
+#define  FBGHOST_NOZZLE_TO_PROBE_OFFSET {42.10,-15.5, -1.83}   // { 10, 10, 0 }
 
 
 
@@ -216,12 +219,12 @@
 // Preheat Constants
 #define FBGHOST_PREHEAT_1_LABEL         "PLA"
 #define FBGHOST_PREHEAT_1_TEMP_HOTEND   200
-#define FBGHOST_PREHEAT_1_TEMP_BED      65
+#define FBGHOST_PREHEAT_1_TEMP_BED      70
 #define FBGHOST_PREHEAT_1_FAN_SPEED     0 // Value from 0 to 255
 
 #define FBGHOST_PREHEAT_2_LABEL         "PETG"
 #define FBGHOST_PREHEAT_2_TEMP_HOTEND   235
-#define FBGHOST_PREHEAT_2_TEMP_BED      75
+#define FBGHOST_PREHEAT_2_TEMP_BED      85
 #define FBGHOST_PREHEAT_2_FAN_SPEED     0 // Value from 0 to 255
 
 
@@ -236,9 +239,9 @@
 
 //PID
 //HOTEND
-#define FBGHOST_DEFAULT_Kp 11.14
-#define FBGHOST_DEFAULT_Ki 0.72
-#define FBGHOST_DEFAULT_Kd 43.09
+#define FBGHOST_DEFAULT_Kp 32.78
+#define FBGHOST_DEFAULT_Ki 3.98
+#define FBGHOST_DEFAULT_Kd 67.53
 
 //BEDTEMP
 #define FBGHOST_DEFAULT_bedKp 52.63
@@ -280,7 +283,7 @@
  * See https://marlinfw.org/docs/features/lin_advance.html for full instructions.
  */
 
-// #define FBGHOST_LIN_ADVANCE
+#define FBGHOST_LIN_ADVANCE
 
 #ifdef FBGHOST_LIN_ADVANCE
   #define FBGHOST_LIN_ADVANCE_K 0.22

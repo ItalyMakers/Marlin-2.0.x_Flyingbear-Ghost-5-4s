@@ -42,6 +42,7 @@ enum {
   ID_M_POINT4,
   ID_M_POINT5,
   ID_M_ZOFFSET,
+  ID_M_BLTOUCH,
   ID_MANUAL_RETURN
 };
 
@@ -67,6 +68,13 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
         lv_draw_zoffset_settings();
       break;
     #endif
+    #if ENABLED(FBGHOST_ADD_5_POINTS)
+      case ID_M_BLTOUCH:
+        clear_cur_ui();
+        lv_draw_dialog(DIALOG_TYPE_AUTO_LEVELING_TIPS);
+        uiCfg.autoLeveling = true;
+      break;
+    #endif
     case ID_MANUAL_RETURN:
       lv_clear_manualLevel();
       lv_draw_tool();
@@ -85,6 +93,8 @@ void lv_draw_manualLevel() {
   lv_big_button_create(scr, "F:/bmp_leveling5.bin", leveling_menu.position5, INTERVAL_V, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_POINT5);
   #if ENABLED(MESH_BED_LEVELING)
     lv_big_button_create(scr, "F:/bmp_test.bin", machine_menu.MeshBLSettings, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_ZOFFSET);
+  #elif ENABLED(FBGHOST_ADD_5_POINTS)
+    lv_big_button_create(scr, "F:/bmp_autoleveling.bin", tool_menu.autoleveling, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_BLTOUCH);
   #endif
 
   lv_big_button_create(scr, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_MANUAL_RETURN);
