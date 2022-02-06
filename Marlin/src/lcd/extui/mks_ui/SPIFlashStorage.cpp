@@ -20,11 +20,11 @@
  *
  */
 
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
 
-#include "../../../inc/MarlinConfig.h"
+#include "../../../../inc/MarlinConfig.h"
 #include "SPIFlashStorage.h"
 
 extern W25QXXFlash W25QXX;
@@ -43,9 +43,9 @@ uint32_t SPIFlashStorage::m_startAddress;
   static uint32_t rle_compress(T *output, uint32_t outputLength, T *input, uint32_t inputLength, uint32_t& inputProcessed) {
     uint32_t count = 0, out = 0, index, i;
     T pixel;
-    // 32767 for uint16_t
-    // 127 for uint16_t
-    // calculated at compile time
+    //32767 for uint16_t
+    //127 for uint16_t
+    //calculated at compile time
     constexpr T max = (0xFFFFFFFF >> (8 * (4 - sizeof(T)))) / 2;
 
     inputProcessed = 0;
@@ -169,24 +169,10 @@ void SPIFlashStorage::endWrite() {
 
 void SPIFlashStorage::savePage(uint8_t *buffer) {
   W25QXX.SPI_FLASH_BufferWrite(buffer, m_startAddress + (SPI_FLASH_PageSize * m_currentPage), SPI_FLASH_PageSize);
-  // Test env
-  // char fname[256];
-  // snprintf(fname, sizeof(fname), "./pages/page-%03d.data", m_currentPage);
-  // FILE *fp = fopen(fname, "wb");
-  // fwrite(buffer, 1, m_compressedDataUsed, fp);
-  // fclose(fp);
 }
 
 void SPIFlashStorage::loadPage(uint8_t *buffer) {
   W25QXX.SPI_FLASH_BufferRead(buffer, m_startAddress + (SPI_FLASH_PageSize * m_currentPage), SPI_FLASH_PageSize);
-  // Test env
-  // char fname[256];
-  // snprintf(fname, sizeof(fname), "./pages/page-%03d.data", m_currentPage);
-  // FILE *fp = fopen(fname, "rb");
-  // if (fp) {
-  //     fread(buffer, 1, SPI_FLASH_PageSize, fp);
-  //     fclose(fp);
-  // }
 }
 
 void SPIFlashStorage::flushPage() {
@@ -204,7 +190,7 @@ void SPIFlashStorage::flushPage() {
       return;
     }
 
-    // Part of the m_pageData was compressed, so adjust the pointers, freeing what was processed, shift the buffer
+    // Part of the m_pageData was compressed, so ajust the pointers, freeing what was processed, shift the buffer
     // TODO: To avoid this copy, use a circular buffer
     memmove(m_pageData, m_pageData + inputProcessed, m_pageDataUsed - inputProcessed);
     m_pageDataUsed -= inputProcessed;

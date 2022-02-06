@@ -19,16 +19,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
 
 #include "draw_ui.h"
 #include <lv_conf.h>
 
-#include "../../../gcode/queue.h"
-#include "../../../inc/MarlinConfig.h"
+#include "../../../../gcode/queue.h"
+#include "../../../../inc/MarlinConfig.h"
 
 extern const char G28_STR[];
 
@@ -57,7 +56,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
           queue.inject_P(G28_STR);
         }
         const int ind = obj->mks_obj_id - ID_M_POINT1;
-        sprintf_P(public_buf_l, PSTR("G1Z10\nG1X%dY%dF4000\nG1Z0"), gCfgItems.trammingPos[ind].x, gCfgItems.trammingPos[ind].y);
+        sprintf_P(public_buf_l, PSTR("G1Z10\nG1X%dY%d\nG1Z0"), gCfgItems.levelingPos[ind][0], gCfgItems.levelingPos[ind][1]);
         queue.inject(public_buf_l);
       }
       break;
@@ -82,7 +81,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
   }
 }
 
-void lv_draw_manualLevel() {
+void lv_draw_manualLevel(void) {
   scr = lv_screen_create(LEVELING_UI);
   // Create an Image button
   lv_obj_t *buttonPoint1 = lv_big_button_create(scr, "F:/bmp_leveling1.bin", leveling_menu.position1, INTERVAL_V, titleHeight, event_handler, ID_M_POINT1);

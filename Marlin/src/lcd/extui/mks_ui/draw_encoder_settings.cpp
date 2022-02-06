@@ -19,15 +19,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
 
 #include "draw_ui.h"
 #include <lv_conf.h>
 
-#include "../../../inc/MarlinConfig.h"
+#include "../../../../inc/MarlinConfig.h"
 
 #if BUTTONS_EXIST(EN1, EN2)
 
@@ -45,7 +44,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
   switch (obj->mks_obj_id) {
     case ID_ENCODER_RETURN:
       lv_clear_encoder_settings();
-      draw_return_ui();
+      lv_draw_return_ui();
       break;
     case ID_ENCODER_STATE:
       gCfgItems.encoder_enable ^= true;
@@ -55,10 +54,9 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
   }
 }
 
-void lv_draw_encoder_settings() {
+void lv_draw_encoder_settings(void) {
   scr = lv_screen_create(ENCODER_SETTINGS_UI, machine_menu.EncoderConfTitle);
   buttonEncoderState = lv_screen_menu_item_onoff(scr, machine_menu.EncoderConfText, PARA_UI_POS_X, PARA_UI_POS_Y, event_handler, ID_ENCODER_STATE, 0, gCfgItems.encoder_enable);
-  // lv_big_button_create(scr, "F:/bmp_back70x40.bin", common_menu.text_back, PARA_UI_BACL_POS_X, PARA_UI_BACL_POS_Y, event_handler, ID_ENCODER_RETURN, true);
   lv_screen_menu_item_return(scr, event_handler, ID_ENCODER_RETURN);
 }
 

@@ -27,10 +27,29 @@
 
 #define MIN_FILE_PRINTED   100 //5000
 
-void printer_state_polling();
-void filament_pin_setup();
-void filament_check();
-bool get_filemant_pins();
+
+typedef enum {
+
+  F_STATUS_CHECK,       // ??????
+  F_STATUS_WAIT,        // ????,????
+  F_STATUS_RUN,         // ?????????
+  F_STATUS_WAIT_UP,     // ??????
+  F_STATUS_END,         // ??,??
+}filament_status_t;
+
+typedef struct {
+
+  filament_status_t status;
+  uint32_t tick_start;
+  uint32_t tick_end;
+  uint32_t tick_delay;
+}filament_check_t;
+
+extern void printer_state_polling();
+extern void filament_pin_setup();
+extern void filament_check();
+extern void filament_check_2();
+extern bool get_filemant_pins(void);
 
 #ifdef __cplusplus
   } /* C-declarations for C++ */

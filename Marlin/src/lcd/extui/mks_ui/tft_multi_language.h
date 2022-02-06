@@ -29,7 +29,7 @@
 #include "tft_Language_sp.h"
 #include "tft_Language_it.h"
 
-void disp_language_init();
+extern void disp_language_init();
 
 #define LANG_SIMPLE_CHINESE    1
 #define LANG_COMPLEX_CHINESE   2
@@ -48,7 +48,7 @@ void disp_language_init();
 #define MULTI_LANGUAGE_ENABLE   1
 #define MULTI_LANGUAGE_DISABLE  0
 
-typedef struct machine_common_disp {
+typedef struct machine_common_disp{
   const char *default_value;
 
   const char *next;
@@ -103,9 +103,15 @@ typedef struct machine_common_disp {
 
   const char *LevelingParaConfTitle;
   const char *LevelingParaConf;
-  const char *TrammingPosConf;
+  const char *LevelingManuPosConf;
   const char *LevelingAutoCommandConf;
   const char *LevelingAutoZoffsetConf;
+  const char *LevelingTouchmiConf;
+  const char *TouchmiInit;
+  const char *TouchmiOffsetpos;
+  const char *TouchmiOffsetneg;
+  const char *TouchmiSave;
+  const char *TouchmiTest;
 
   const char *BLTouchLevelingConfTitle;
   const char *BLTouchLevelingConf;
@@ -251,7 +257,9 @@ typedef struct machine_common_disp {
   const char *PausePosition;
   const char *WifiSettings;
   const char *EncoderSettings;
-
+  const char *xModeSettings;
+  const char *hotendOffsetSettings;
+  
   const char *Z2ConfTitle;
   const char *Z2Enable;
   const char *Z2EndstopEnable;
@@ -302,6 +310,17 @@ typedef struct machine_common_disp {
 
   const char *EncoderConfTitle;
   const char *EncoderConfText;
+
+  const char *XmodeConfigTitle;
+  const char *fullControl;
+  const char *autoPark;
+  const char *duplication;
+  const char *mirror;
+
+  const char *hotendOffsetConfigTitle;
+  const char *hotendXoffset;
+  const char *hotendYoffset;
+  const char *hotendZoffset;
 
 } machine_common_def;
 
@@ -393,6 +412,17 @@ typedef struct home_menu_disp {
 } home_menu_def;
 
 extern home_menu_def home_menu;
+
+typedef struct touchmi_menu_disp {
+  const char *title;
+  const char *init;
+  const char *zoffsetpos;
+  const char *zoffsetneg;
+  const char *test;
+  const char *save;
+} touchmi_menu_def;
+
+extern touchmi_menu_def touchmi_menu;
 
 typedef struct file_menu_disp {
   const char *title;
@@ -705,8 +735,12 @@ typedef struct print_file_dialog_disp {
   const char *print_time;
   const char *reprint;
   const char *wifi_enable_tips;
+  const char *machinePausingTips;
   const char *autolevelingTips;
-
+  const char *hourText;
+  const char *minuteText;
+  const char *secondText;
+  const char *timeConsum;
 } print_file_dialog_menu_def;
 
 extern print_file_dialog_menu_def print_file_dialog_menu;
@@ -762,7 +796,7 @@ typedef struct pause_msg_disp {
 
 extern pause_msg_def pause_msg_menu;
 
-typedef struct eeprom_disp {
+typedef struct eeprom_disp{
   const char *title;
   const char *store;
   const char *read;
@@ -831,6 +865,13 @@ extern eeprom_def eeprom_menu;
 #define HOME_Z_TEXT         "Z"
 #define HOME_ALL_TEXT       "All"
 
+#define TM_INIT             "Init"
+#define TM_ZOFFSETPOS       "Offset +"
+#define TM_ZOFFSETNEG       "Offset -"
+#define TM_SAVE             "Save"
+#define TM_TEST             "Test"
+
+//#if defined(MKS_ROBIN_NANO)
 #define ABOUT_TYPE_TEXT     "MKS Robin Pro"
 
 #define ABOUT_VERSION_TEXT  "1.0.0"

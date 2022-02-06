@@ -19,10 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../platforms.h"
-
-#ifdef HAL_STM32
+#if defined(ARDUINO_ARCH_STM32) && !defined(STM32GENERIC)
 
 #include "../../../inc/MarlinConfig.h"
 
@@ -37,6 +34,16 @@ LCD_CONTROLLER_TypeDef *TFT_FSMC::LCD;
 
 void TFT_FSMC::Init() {
   uint32_t controllerAddress;
+
+  #if PIN_EXISTS(TFT_RESET)
+    OUT_WRITE(TFT_RESET_PIN, HIGH);
+    HAL_Delay(100);
+  #endif
+
+  #if PIN_EXISTS(TFT_BACKLIGHT)
+    OUT_WRITE(TFT_BACKLIGHT_PIN, HIGH);
+  #endif
+
   FSMC_NORSRAM_TimingTypeDef Timing, ExtTiming;
 
   uint32_t NSBank = (uint32_t)pinmap_peripheral(digitalPinToPinName(TFT_CS_PIN), PinMap_FSMC_CS);
@@ -118,13 +125,9 @@ void TFT_FSMC::Init() {
   DMAtx.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
   DMAtx.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
   DMAtx.Init.Mode = DMA_NORMAL;
-  DMAtx.Init.Priority = DMA_PRIORITY_LOW;
+  DMAtx.Init.Priority = DMA_PRIORITY_HIGH;
 
   LCD = (LCD_CONTROLLER_TypeDef *)controllerAddress;
-
-  // __HAL_DMA_ENABLE_IT(&DMAtx, DMA_IT_TC);
-  // HAL_NVIC_SetPriority(DMA2_Channel1_IRQn, 0, 0);
-  // HAL_NVIC_EnableIRQ(DMA2_Channel1_IRQn);
 }
 
 uint32_t TFT_FSMC::GetID() {
@@ -174,28 +177,5 @@ void TFT_FSMC::TransmitDMA(uint32_t MemoryIncrease, uint16_t *Data, uint16_t Cou
   Abort();
 }
 
-void TFT_FSMC::TransmitDMA_TI(uint32_t MemoryIncrease, uint16_t *Data, uint16_t Count) {
-
-  DMAtx.Init.PeriphInc = MemoryIncrease;
-
-  HAL_DMA_Init(&DMAtx);
-
-  HAL_NVIC_SetPriority(DMA2_Channel1_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(DMA2_Channel1_IRQn);
-
-  DataTransferBegin();
-  HAL_DMA_Start_IT(&DMAtx, (uint32_t)Data, (uint32_t)&(LCD->RAM), Count);
-  // HAL_DMA_Start(&DMAtx, (uint32_t)Data, (uint32_t)&(LCD->RAM), Count);
-  // HAL_DMA_PollForTransfer(&DMAtx, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
-  // Abort();
-}
-
-extern "C" void DMA2_Channel1_IRQHandler(void) { 
-  HAL_DMA_IRQHandler(&(TFT_FSMC::DMAtx)); 
-}
-
-
-
-
 #endif // HAS_FSMC_TFT
-#endif // HAL_STM32
+#endif // ARDUINO_ARCH_STM32 && !STM32GENERIC

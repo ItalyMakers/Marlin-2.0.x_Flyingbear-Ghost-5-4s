@@ -19,15 +19,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
 
 #include "draw_ui.h"
 #include <lv_conf.h>
 
-#include "../../../inc/MarlinConfig.h"
+#include "../../../../inc/MarlinConfig.h"
 
 extern lv_group_t *g;
 static lv_obj_t *scr;
@@ -49,7 +48,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
     case ID_FILAMENT_SET_RETURN:
       uiCfg.para_ui_page = false;
       lv_clear_filament_settings();
-      draw_return_ui();
+      lv_draw_return_ui();
       break;
     case ID_FILAMENT_SET_IN_LENGTH:
       value = load_length;
@@ -89,7 +88,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
   }
 }
 
-void lv_draw_filament_settings() {
+void lv_draw_filament_settings(void) {
   scr = lv_screen_create(FILAMENT_SETTINGS_UI, machine_menu.FilamentConfTitle);
 
   if (!uiCfg.para_ui_page) {
@@ -105,21 +104,16 @@ void lv_draw_filament_settings() {
     itoa(gCfgItems.filamentchange_unload_speed, public_buf_l, 10);
     lv_screen_menu_item_1_edit(scr, machine_menu.OutSpeed, PARA_UI_POS_X, PARA_UI_POS_Y * 4, event_handler, ID_FILAMENT_SET_OUT_SPEED, 3, public_buf_l);
 
-    // lv_big_button_create(scr, "F:/bmp_back70x40.bin", machine_menu.next, PARA_UI_TURN_PAGE_POS_X, PARA_UI_TURN_PAGE_POS_Y, event_handler, ID_FILAMENT_SET_DOWN, true);
     lv_screen_menu_item_turn_page(scr, machine_menu.next, event_handler, ID_FILAMENT_SET_DOWN);
   }
   else {
     itoa(gCfgItems.filament_limit_temp, public_buf_l, 10);
     lv_screen_menu_item_1_edit(scr, machine_menu.FilamentTemperature, PARA_UI_POS_X, PARA_UI_POS_Y, event_handler, ID_FILAMENT_SET_TEMP, 0, public_buf_l);
 
-    // lv_big_button_create(scr, "F:/bmp_back70x40.bin", machine_menu.previous, PARA_UI_TURN_PAGE_POS_X, PARA_UI_TURN_PAGE_POS_Y, event_handler, ID_FILAMENT_SET_UP, true);
-      lv_screen_menu_item_turn_page(scr, machine_menu.previous, event_handler, ID_FILAMENT_SET_UP);
-
+    lv_screen_menu_item_turn_page(scr, machine_menu.previous, event_handler, ID_FILAMENT_SET_UP);
   }
 
-  // lv_big_button_create(scr, "F:/bmp_back70x40.bin", common_menu.text_back, PARA_UI_BACL_POS_X, PARA_UI_BACL_POS_Y, event_handler, ID_FILAMENT_SET_RETURN, true);
-    lv_screen_menu_item_return(scr, event_handler, ID_FILAMENT_SET_RETURN);
-
+  lv_screen_menu_item_return(scr, event_handler, ID_FILAMENT_SET_RETURN);
 }
 
 void lv_clear_filament_settings() {

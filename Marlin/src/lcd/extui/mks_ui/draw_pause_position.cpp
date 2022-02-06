@@ -19,16 +19,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
 
 #include "draw_ui.h"
 #include <lv_conf.h>
 
-#include "../../../module/planner.h"
-#include "../../../inc/MarlinConfig.h"
+#include "../../../../module/planner.h"
+#include "../../../../inc/MarlinConfig.h"
 
 extern lv_group_t *g;
 static lv_obj_t *scr;
@@ -45,7 +44,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
   lv_clear_pause_position();
   switch (obj->mks_obj_id) {
     case ID_PAUSE_RETURN:
-      draw_return_ui();
+      lv_draw_return_ui();
       return;
     case ID_PAUSE_X:
       value = pause_pos_x;
@@ -60,7 +59,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
   lv_draw_number_key();
 }
 
-void lv_draw_pause_position() {
+void lv_draw_pause_position(void) {
   scr = lv_screen_create(PAUSE_POS_UI, machine_menu.PausePosText);
 
   dtostrf(gCfgItems.pausePosX, 1, 1, public_buf_l);
@@ -72,9 +71,7 @@ void lv_draw_pause_position() {
   dtostrf(gCfgItems.pausePosZ, 1, 1, public_buf_l);
   lv_screen_menu_item_1_edit(scr, machine_menu.zPos, PARA_UI_POS_X, PARA_UI_POS_Y * 3, event_handler, ID_PAUSE_Z, 2, public_buf_l);
 
-  // lv_big_button_create(scr, "F:/bmp_back70x40.bin", common_menu.text_back, PARA_UI_BACL_POS_X, PARA_UI_BACL_POS_Y, event_handler, ID_PAUSE_RETURN, true);
-    lv_screen_menu_item_return(scr, event_handler, ID_PAUSE_RETURN);
-
+  lv_screen_menu_item_return(scr, event_handler, ID_PAUSE_RETURN);
 }
 
 void lv_clear_pause_position() {

@@ -19,8 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
 
@@ -29,14 +28,11 @@
 #include "draw_ui.h"
 #include <lv_conf.h>
 
-#include "../../../gcode/queue.h"
-#include "../../../inc/MarlinConfig.h"
+#include "../../../../gcode/queue.h"
+#include "../../../../inc/MarlinConfig.h"
 
 extern lv_group_t *g;
-
-#ifndef USE_NEW_LVGL_CONF
 static lv_obj_t *scr;
-#endif
 
 enum {
   ID_H_ALL = 1,
@@ -99,26 +95,14 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
         }
         break;
       case ID_H_RETURN:
-        clear_cur_ui();
-        draw_return_ui();
+        lv_clear_cur_ui();
+      lv_draw_return_ui();
         break;
     }
   }
 }
 
-void lv_draw_home() {
-
-#ifdef USE_NEW_LVGL_CONF
-  mks_ui.src_main = lv_set_scr_id_title(mks_ui.src_main, ZERO_UI, "");
-  lv_big_button_create(mks_ui.src_main, "F:/bmp_zeroAll.bin", home_menu.home_all, INTERVAL_V, titleHeight, event_handler, ID_H_ALL);
-  lv_big_button_create(mks_ui.src_main, "F:/bmp_zeroX.bin", home_menu.home_x, BTN_X_PIXEL + INTERVAL_V * 2, titleHeight, event_handler, ID_H_X);
-  lv_big_button_create(mks_ui.src_main, "F:/bmp_zeroY.bin", home_menu.home_y, BTN_X_PIXEL * 2 + INTERVAL_V * 3, titleHeight, event_handler, ID_H_Y);
-  lv_big_button_create(mks_ui.src_main, "F:/bmp_zeroZ.bin", home_menu.home_z, BTN_X_PIXEL * 3 + INTERVAL_V * 4, titleHeight, event_handler, ID_H_Z);
-  lv_big_button_create(mks_ui.src_main, "F:/bmp_leveling1.bin", home_menu.home_xy, INTERVAL_V, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_H_XY);
-  lv_big_button_create(mks_ui.src_main, "F:/bmp_function1.bin", set_menu.motoroff, BTN_X_PIXEL + INTERVAL_V * 2, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_H_OFF_ALL);
-  lv_big_button_create(mks_ui.src_main, "F:/bmp_function1.bin", set_menu.motoroffXY, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_H_OFF_XY);
-  lv_big_button_create(mks_ui.src_main, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_H_RETURN);
-#else
+void lv_draw_home(void) {
   scr = lv_screen_create(ZERO_UI);
   lv_big_button_create(scr, "F:/bmp_zeroAll.bin", home_menu.home_all, INTERVAL_V, titleHeight, event_handler, ID_H_ALL);
   lv_big_button_create(scr, "F:/bmp_zeroX.bin", home_menu.home_x, BTN_X_PIXEL + INTERVAL_V * 2, titleHeight, event_handler, ID_H_X);
@@ -128,21 +112,13 @@ void lv_draw_home() {
   lv_big_button_create(scr, "F:/bmp_function1.bin", set_menu.motoroff, BTN_X_PIXEL + INTERVAL_V * 2, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_H_OFF_ALL);
   lv_big_button_create(scr, "F:/bmp_function1.bin", set_menu.motoroffXY, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_H_OFF_XY);
   lv_big_button_create(scr, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_H_RETURN);
-#endif
-
 }
 
 void lv_clear_home() {
   #if HAS_ROTARY_ENCODER
     if (gCfgItems.encoder_enable) lv_group_remove_all_objs(g);
   #endif
-
-#ifdef USE_NEW_LVGL_CONF
-  lv_obj_clean(mks_ui.src_main);
-#else
   lv_obj_del(scr);
-#endif
-
 }
 
 #endif // HAS_TFT_LVGL_UI

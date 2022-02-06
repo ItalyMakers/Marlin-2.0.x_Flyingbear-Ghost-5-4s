@@ -51,6 +51,7 @@
 #if MB(RUMBA32_V1_1)
 
   #define SERVO0_PIN                        PA15
+  #undef BTN_PIN
 
   #if HAS_TMC_UART
     //

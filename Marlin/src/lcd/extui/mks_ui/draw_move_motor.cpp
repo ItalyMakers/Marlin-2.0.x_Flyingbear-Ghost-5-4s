@@ -19,28 +19,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
 
 #include "draw_ui.h"
 #include <lv_conf.h>
 
-#include "../../../gcode/queue.h"
-#include "../../../module/motion.h"
-#include "../../../inc/MarlinConfig.h"
+#include "../../../../gcode/queue.h"
+#include "../../../../module/motion.h"
+#include "../../../../inc/MarlinConfig.h"
 
 extern lv_group_t *g;
-
-#ifndef USE_NEW_LVGL_CONF
 static lv_obj_t *scr;
-#endif
 
 static lv_obj_t *labelV, *buttonV, *labelP;
 static lv_task_t *updatePosTask;
 static char cur_label = 'Z';
 static float cur_pos = 0;
+
+void disp_cur_pos();
 
 enum {
   ID_M_X_P = 1,
@@ -53,50 +51,82 @@ enum {
   ID_M_RETURN
 };
 
-void disp_cur_pos() {
-  char str_1[16];
-  sprintf_P(public_buf_l, PSTR("%c:%s mm"), cur_label, dtostrf(cur_pos, 1, 1, str_1));
-  if (labelP) lv_label_set_text(labelP, public_buf_l);
-}
-
 static void event_handler(lv_obj_t *obj, lv_event_t event) {
   char str_1[16];
   if (event != LV_EVENT_RELEASED) return;
-  if (!queue.ring_buffer.full(1)) {
-    bool do_inject = true;
-    float dist = uiCfg.move_dist;
-    switch (obj->mks_obj_id) {
-      case ID_M_X_N: dist *= -1; case ID_M_X_P: cur_label = 'X'; break;
-      case ID_M_Y_N: dist *= -1; case ID_M_Y_P: cur_label = 'Y'; break;
-      case ID_M_Z_N: dist *= -1; case ID_M_Z_P: cur_label = 'Z'; break;
-      default: do_inject = false;
-    }
-    if (do_inject) {
-      sprintf_P(public_buf_l, PSTR("G91\nG1 %c%s F%d\nG90"), cur_label, dtostrf(dist, 1, 3, str_1), uiCfg.moveSpeed);
-      queue.inject(public_buf_l);
-    }
-  }
-
   switch (obj->mks_obj_id) {
+    case ID_M_X_P:
+      if (!queue.ring_buffer.full(3)) {
+        queue.enqueue_one_P(PSTR("G91"));
+        sprintf_P(public_buf_l, PSTR("G1 X%s F%d"), dtostrf(uiCfg.move_dist, 1, 3, str_1), uiCfg.moveSpeed);
+        queue.enqueue_one_now(public_buf_l);
+        queue.enqueue_one_P(PSTR("G90"));
+        cur_label = 'X';
+      }
+      break;
+    case ID_M_X_N:
+      if (!queue.ring_buffer.full(3)) {
+        queue.enqueue_now_P(PSTR("G91"));
+        sprintf_P(public_buf_l, PSTR("G1 X-%s F%d"), dtostrf(uiCfg.move_dist, 1, 3, str_1), uiCfg.moveSpeed);
+        queue.enqueue_one_now(public_buf_l);
+        queue.enqueue_now_P(PSTR("G90"));
+        cur_label = 'X';
+      }
+      break;
+    case ID_M_Y_P:
+      if (!queue.ring_buffer.full(3)) {
+        queue.enqueue_now_P(PSTR("G91"));
+        sprintf_P(public_buf_l, PSTR("G1 Y%s F%d"), dtostrf(uiCfg.move_dist, 1, 3, str_1), uiCfg.moveSpeed);
+        queue.enqueue_one_now(public_buf_l);
+        queue.enqueue_now_P(PSTR("G90"));
+        cur_label = 'Y';
+      }
+      break;
+    case ID_M_Y_N:
+      if (!queue.ring_buffer.full(3)) {
+        queue.enqueue_now_P(PSTR("G91"));
+        sprintf_P(public_buf_l, PSTR("G1 Y-%s F%d"), dtostrf(uiCfg.move_dist, 1, 3, str_1), uiCfg.moveSpeed);
+        queue.enqueue_one_now(public_buf_l);
+        queue.enqueue_now_P(PSTR("G90"));
+        cur_label = 'Y';
+      }
+      break;
+    case ID_M_Z_P:
+      if (!queue.ring_buffer.full(3)) {
+        queue.enqueue_now_P(PSTR("G91"));
+        sprintf_P(public_buf_l, PSTR("G1 Z%s F%d"), dtostrf(uiCfg.move_dist, 1, 3, str_1), uiCfg.moveSpeed);
+        queue.enqueue_one_now(public_buf_l);
+        queue.enqueue_now_P(PSTR("G90"));
+        cur_label = 'Z';
+      }
+      break;
+    case ID_M_Z_N:
+      if (!queue.ring_buffer.full(3)) {
+        queue.enqueue_now_P(PSTR("G91"));
+        sprintf_P(public_buf_l, PSTR("G1 Z-%s F%d"), dtostrf(uiCfg.move_dist, 1, 3, str_1), uiCfg.moveSpeed);
+        queue.enqueue_one_now(public_buf_l);
+        queue.enqueue_now_P(PSTR("G90"));
+        cur_label = 'Z';
+      }
+      break;
     case ID_M_STEP:
-      if (ABS(10 * (int)uiCfg.move_dist) == 100)
+      if (abs(10 * (int)uiCfg.move_dist) == 100)
         uiCfg.move_dist = 0.1;
       else
         uiCfg.move_dist *= 10.0f;
       disp_move_dist();
       break;
     case ID_M_RETURN:
-      // lv_clear_move_motor();
-      // lv_draw_tool();
-      clear_cur_ui();
-      draw_return_ui();
+      lv_clear_cur_ui();
+      lv_draw_return_ui();
       return;
   }
   disp_cur_pos();
 }
 
-void refresh_pos(lv_task_t *) {
-  switch (cur_label) {
+void refresh_pos(lv_task_t *)
+{
+  switch(cur_label) {
     case 'X': cur_pos = current_position.x; break;
     case 'Y': cur_pos = current_position.y; break;
     case 'Z': cur_pos = current_position.z; break;
@@ -104,20 +134,7 @@ void refresh_pos(lv_task_t *) {
   }
   disp_cur_pos();
 }
-
-void lv_draw_move_motor() {
-
-#ifdef USE_NEW_LVGL_CONF
-  mks_ui.src_main = lv_set_scr_id_title(mks_ui.src_main, MOVE_MOTOR_UI, "");
-
-  lv_big_button_create(mks_ui.src_main, "F:/bmp_xAdd.bin", move_menu.x_add, INTERVAL_V, titleHeight, event_handler, ID_M_X_P);
-  lv_big_button_create(mks_ui.src_main, "F:/bmp_xDec.bin", move_menu.x_dec, INTERVAL_V, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_X_N);
-  lv_big_button_create(mks_ui.src_main, "F:/bmp_yAdd.bin", move_menu.y_add, BTN_X_PIXEL + INTERVAL_V * 2, titleHeight, event_handler, ID_M_Y_P);
-  lv_big_button_create(mks_ui.src_main, "F:/bmp_yDec.bin", move_menu.y_dec, BTN_X_PIXEL + INTERVAL_V * 2, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_Y_N);
-  lv_big_button_create(mks_ui.src_main, "F:/bmp_zAdd.bin", move_menu.z_add, BTN_X_PIXEL * 2 + INTERVAL_V * 3, titleHeight, event_handler, ID_M_Z_P);
-  lv_big_button_create(mks_ui.src_main, "F:/bmp_zDec.bin", move_menu.z_dec, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_Z_N);
-
-#else 
+void lv_draw_move_motor(void) {
   scr = lv_screen_create(MOVE_MOTOR_UI);
   lv_obj_t *buttonXI = lv_big_button_create(scr, "F:/bmp_xAdd.bin", move_menu.x_add, INTERVAL_V, titleHeight, event_handler, ID_M_X_P);
   lv_obj_clear_protect(buttonXI, LV_PROTECT_FOLLOW);
@@ -126,40 +143,34 @@ void lv_draw_move_motor() {
   lv_big_button_create(scr, "F:/bmp_yDec.bin", move_menu.y_dec, BTN_X_PIXEL + INTERVAL_V * 2, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_Y_N);
   lv_big_button_create(scr, "F:/bmp_zAdd.bin", move_menu.z_add, BTN_X_PIXEL * 2 + INTERVAL_V * 3, titleHeight, event_handler, ID_M_Z_P);
   lv_big_button_create(scr, "F:/bmp_zDec.bin", move_menu.z_dec, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_Z_N);
-#endif
 
   // button with image and label changed dynamically by disp_move_dist
-#ifdef USE_NEW_LVGL_CONF
-  buttonV = lv_imgbtn_create(mks_ui.src_main, nullptr, BTN_X_PIXEL * 3 + INTERVAL_V * 4, titleHeight, event_handler, ID_M_STEP);
-#else
   buttonV = lv_imgbtn_create(scr, nullptr, BTN_X_PIXEL * 3 + INTERVAL_V * 4, titleHeight, event_handler, ID_M_STEP);
-#endif
   labelV = lv_label_create_empty(buttonV);
   #if HAS_ROTARY_ENCODER
     if (gCfgItems.encoder_enable) lv_group_add_obj(g, buttonV);
   #endif
 
 
-#ifdef USE_NEW_LVGL_CONF
-  lv_big_button_create(mks_ui.src_main, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_RETURN);
-  // lv_obj_t * title = lv_obj_get_child_back(mks_ui.src_main, nullptr);
-#else
   lv_big_button_create(scr, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_RETURN);
-  lv_obj_t * title = lv_obj_get_child_back(scr, nullptr);
-#endif
+
   // We need to patch the title to leave some space on the right for displaying the status
-  
-  // if (title != nullptr) lv_obj_set_width(title, TFT_WIDTH - 101);
-#ifdef USE_NEW_LVGL_CONF
-  labelP = lv_label_create(mks_ui.src_main, TFT_WIDTH - 100, TITLE_YPOS, "Z:0.0mm");
-#else
+  lv_obj_t * title = lv_obj_get_child_back(scr, NULL);
+  if (title != NULL) lv_obj_set_width(title, TFT_WIDTH - 101);
   labelP = lv_label_create(scr, TFT_WIDTH - 100, TITLE_YPOS, "Z:0.0mm");
-#endif
-  if (labelP != nullptr)
+  if (labelP != NULL)
     updatePosTask = lv_task_create(refresh_pos, 300, LV_TASK_PRIO_LOWEST, 0);
+
 
   disp_move_dist();
   disp_cur_pos();
+}
+
+
+void disp_cur_pos() {
+  char str_1[16];
+  sprintf_P(public_buf_l, PSTR("%c:%s mm"), cur_label, dtostrf(cur_pos, 1, 1, str_1));
+  if (labelP) lv_label_set_text(labelP, public_buf_l);
 }
 
 void disp_move_dist() {
@@ -191,11 +202,7 @@ void lv_clear_move_motor() {
     if (gCfgItems.encoder_enable) lv_group_remove_all_objs(g);
   #endif
   lv_task_del(updatePosTask);
-#ifdef USE_NEW_LVGL_CONF
-  lv_obj_clean(mks_ui.src_main);
-#else
   lv_obj_del(scr);
-#endif
 }
 
 #endif // HAS_TFT_LVGL_UI

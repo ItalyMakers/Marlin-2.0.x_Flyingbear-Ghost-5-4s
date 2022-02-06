@@ -99,9 +99,15 @@
 
 #define LEVELING_CONF_TITLE_EN          "Machine Settings>Leveling settings"
 #define LEVELING_PARA_CONF_EN           "Leveling settings"
-#define TRAMMING_POS_EN                 "Manual leveling coordinate settings"
+#define LEVELING_MANUAL_POS_EN          "Manual leveling coordinate settings"
 #define LEVELING_AUTO_COMMAND_EN        "AutoLeveling command settings"
 #define LEVELING_AUTO_ZOFFSET_EN        "Nozzle-to-probe offsets settings"
+#define LEVELING_TOUCHMI_EN             "Settings-TouchMi-Probe"
+#define TM_INIT_EN                      "Init"
+#define TM_ZOFFSETPOS_EN                "Zoffset+"
+#define TM_ZOFFSETNEG_EN                "Zoffset-"
+#define TM_SAVE_EN                      "Save"
+#define TM_TEST_EN                      "Test"
 
 #define BLTOUCH_LEVELING_TITTLE_EN      "Machine Settings>BL-Touch Probe"
 #define BLTOUCH_LEVELING_EN             "BL-Touch Probe"
@@ -244,6 +250,8 @@
 #define WIFI_SETTINGS_EN                "Wi-Fi parameter settings"
 #define HOMING_SENSITIVITY_CONF_EN      "Homing sensitivity settings"
 #define ENCODER_SETTINGS_EN             "Rotary encoder settings"
+#define X_MODE_SETTINGS_EN              "X-mode"
+#define HOTEND_OFFSET_SETTINGS_EN       "Hotend-offset"
 
 #define Z2_AND_Z2ENDSTOP_CONF_TITLE_EN  "Z2 Settings"
 #define Z2_ENABLE_EN                    "Z2 Enable"
@@ -283,6 +291,17 @@
 
 #define ENCODER_CONF_TITLE_EN                 "Machine Settings>Rotary encoder settings"
 #define ENCODER_CONF_TEXT_EN                  "Is the encoder function used?"
+
+#define DUAL_X_MODE_CONF_TITLE_EN             "Machine Settings>Dual x mode"
+#define FULL_CONTROL_MODE_EN	              "Full control mode"
+#define AUTO_PARK_MODE_EN		              "Auto park mode"
+#define DUPLICATION_MODE_EN	                  "Duplication mode"
+#define MIRROR_MODE_EN		                  "Mirrored mode"
+
+#define HOTEND_OFFSET_CONF_TITLE_EN           "Machine Settings>Hotend offset"
+#define HOTEND_OFFSET_X_EN                    "Hotend X2 offset"
+#define HOTEND_OFFSET_Y_EN                    "Hotend Y2 offset"
+#define HOTEND_OFFSET_Z_EN                    "Hotend Z2 offset"
 
 #define TOOL_TEXT_EN            "Tool"
 #define PREHEAT_TEXT_EN         "Preheat"
@@ -418,6 +437,7 @@
 #define FILAMENT_DIALOG_LOAD_COMPLETE_TIPS_EN   "Load filament completed,\nclick <confirm> for return!"
 #define FILAMENT_DIALOG_UNLOAD_COMPLETE_TIPS_EN "Unload filament completed,\nclick <confirm> for return!"
 
+
 #define PRE_HEAT_EXT_TEXT_EN            "E"
 #define PRE_HEAT_BED_TEXT_EN            "Bed"
 
@@ -499,8 +519,11 @@
 #define DIALOG_PRINT_FINISH_EN              "Done print!"
 #define DIALOG_PRINT_TIME_EN                "Print time: "
 #define DIALOG_REPRINT_EN                   "Print again"
-#define DIALOG_WIFI_ENABLE_TIPS_EN "The wifi module is being configured\nplease wait a moment....."
+#define DIALOG_WIFI_ENABLE_TIPS_EN          "The wifi module is being configured\nplease wait a moment....."
+#define DIALOG_PAUSING_TIPS_EN              "The machine pauses..."
 #define DIALOG_AUTO_LEVELING_TIPS_EN        "Auto-leveling, please wait..."
+#define DIALOG_TIME_CONSUMING_TEXT_EN       "Printing time:"
+
 
 #define HOTBED_ENABLE_EN        "Enable heatbed"
 #define MOTOR_EN_HIGH_LEVEL_EN  "High"
@@ -521,7 +544,7 @@
 #define TEXT_WIFI_FORGET_EN         "Forget Network"
 #define TEXT_DISCONECTED_EN         "Wi-Fi Connected"
 
-// wifi-list
+//wifi-list
 #define MAIN_BUILT_EN       "Build"
 #define MAIN_FILAMENT_EN    "Filament"
 #define MAIN_SETUP_EN       "Setup"
@@ -530,7 +553,7 @@
 #define FILE_MENU_BUILD_EN  "Build"
 #define FILE_MENU_MENU_EN   " < Menu"
 
-// about
+//about
 #define ABOUT_TITLE_EN                    "About"
 #define ABOUT_BUILT_MACHINES_EN           "Built Machines"
 #define ABOUT_SPARK_EN                    "Spark"
@@ -538,52 +561,52 @@
 #define ABOUT_SERIAL_NUMBER_EN            "Serial Number:"
 #define ABOUT_S_NUMBER_EN                 "DCPLX02KFC6P"
 
-// set
+//set
 #define SETUP_TITLE_EN                    "Setup"
 #define SETUP_WIFI_EN                     "Wi-Fi"
 #define SETUP_MANUAL_IP_EN                "Manual IP"
 #define SETUP_WIFI_NOT_CONNECTED_EN       "Not Connected"
 #define SETUP_WIFI_NETWORK_EN             "WiFi_Network"
 
-// build
+//build
 #define BUILD_TITLE_EN                    "Build"
 #define BUILD_SD_CARD_EN                  "SD Card"
 #define BUILD_USB_DRIVE_EN                "USB Drive"
 
-// SD card
+//SD card
 #define SD_CARD_TITLE_EN                  "SD Card"
 #define SD_CARD_BACK_EN                   "< Back"
-// USB Drive
+//USB Drive
 #define USB_DRIVE_TITLE_EN                "USB Drive"
 #define USB_DRIVE_BACK_EN                 "< Back"
 #define FILE_PAGES_EN                     "%d/%d"
 #define FILE_NEXT_PAGE_EN                 "Next Page"
 #define MEDIA_SELECT_TITLE_EN             "Select Media"
 
-// BUILD PLATE
+//BUILD PLATE
 #define PLATE_TITLE_EN                    "Build Plate"
 #define PLATE_BACK_EN                     "< Back"
 #define PLATE_CONFIRM_EN                  "Confirm >"
 #define PLATE_TIPS_EN                     "Confirm that there is a Clear\nBuild Plate installed in the\nmachine."
 
-// build model
+//build model
 #define MODEL_TITLE_EN                    "Build Model"
 #define MODEL_START_BUILD_EN              "Start Build"
 #define MODEL_BACK_EN                     "< Back"
 
-// building
+//building
 #define BUILDING_TITLE_EN                 "Building"
 #define BUILDING_MENU_EN                  "Build Menu"
 #define BUILDING_COMPLETED                "Build\nComplete"
 
-// building menu
+//building menu
 #define BUILDING_MENU_TITLE_EN            "Build Menu"
 #define BUILDING_MENU_SETTINGS_EN         "Build Settings"
 #define BUILDING_MENU_PAUSE_EN            "Pause Build"
 #define BUILDING_MENU_CANCEL_EN           "Cancel Build"
 #define BUILDING_MENU_BACK_EN             "< Back"
 
-// build settings
+//build settings
 #define SETTINGS_TITLE_EN                 "Build Settings"
 #define SETTINGS_NOZZLE_TEMPER_EN         "Nozzle Temp:"
 #define SETTINGS_NOZZLE_VALUE_EN          "%d"
@@ -593,13 +616,13 @@
 #define SETTINGS_SPEED_VALUE_EN           "Standard"
 #define SETTINGS_BACK_EN                  "< Back"
 
-// build paused
+//build paused
 #define PAUSED_TITLE_EN                   "Build Paused"
 #define PAUSED_RESUME_EN                  "Resume Build"
 #define PAUSED_CANCEL_EN                  "Cancel Build"
 #define PAUSED_BACK_EN                    "< Back"
 
-// build cancel
+//build cancel
 #define CANCEL_TITLE_EN                   "Cancel Build"
 #define CANCEL_BUILD_EN                   "Cancel Build"
 #define CANCEL_TIPS_EN                    "Are you sure you want to\ncancel this build? The model\nwill be deleted from this\nmachine. It will need to be\nresent from your computer\nbefore it can be built in the\nfuture."
@@ -607,31 +630,31 @@
 #define CANCEL_BUILD_DISPLAY_EN           "Build\nCanceled"
 #define CANCEL_OVER_PLATE_TIPS_EN         "Confirm that the Build Plate\nhas been removed from the\nmachine."
 
-// filament model enter
+//filament model enter
 #define FILAMENT_MODEL_ENTER_TITLE_EN     "Model-PLA"
 #define FILAMENT_MODEL_ENTER_BACK_EN      "< Back"
 #define FILAMENT_MODEL_ENTER_BEGIN_EN     "Begin >"
 #define FILAMENT_MODEL_ENTER_TIPS_EN      "The Model Filament spool\ncompartment is located on\nthe right side of the machine."
 
-// filament model PLA
+//filament model PLA
 #define FILAMENT_MODEL_PLA_TITLE_EN       "Model-PLA"
 #define FILAMENT_PLA_LOAD_TITLE_EN        "Load Filament"
 #define FILAMENT_PLA_UNLOAD_TITLE_EN      "Unload Filament"
 #define FILAMENT_MODEL_PLA_LOAD_EN        "Load Filament"
 #define FILAMENT_MODEL_PLA_UNLOAD_EN      "Unload Filament"
-// filament support enter
+//filament support enter
 #define FILAMENT_SUPPORT_ENTER_TITLE_EN   "Support-PVA"
 #define FILAMENT_SUPPORT_ENTER_BACK_EN    "< Back"
 #define FILAMENT_SUPPORT_ENTER_BEGIN_EN   "Begin >"
 #define FILAMENT_SUPPORT_ENTER_TIPS_EN    "The Support Filament spool\ncompartment is located on\nthe left side of the machine."
-// filament heating
+//filament heating
 #define FILAMENT_HEATING_LOAD_TITLE_EN    "Load Filament"
 #define FILAMENT_HEATING_UNLOAD_TITLE_EN  "Unload Filament"
 #define FILAMENT_HEATING_CANCEL_EN        "< Cancel"
 #define FILAMENT_HEATING_MATERIAL_EN      "Material:"
 #define FILAMENT_HEATING_PLA_EN           "Model-PLA"
 #define FILAMENT_HEATING_TIPS_EN          "Print head is heating..."
-// rotate left
+//rotate left
 #define ROTATE_LEFT_LOAD_TITLE_EN         "Load Filament"
 #define ROTATE_LEFT_UNLOAD_TITLE_EN       "Unload Filament"
 #define ROTATE_LEFT_CANCEL_EN             "< Cancel"
@@ -640,7 +663,7 @@
 #define ROTATE_LEFT_NEXT_EN               "Next >"
 #define ROTATE_LEFT_TIPS_EN               "Rotate extruder selection\ndial to the left."
 
-// hang spool
+//hang spool
 #define HANG_SPOOL_TITLE_EN         "Load Filament"
 #define HANG_SPOOL_PREVIOUS_EN      "< Previous"
 #define HANG_SPOOL_MATERIAL_EN      "Material:"
@@ -648,7 +671,7 @@
 #define HANG_SPOOL_NEXT_EN          "Next >"
 #define HANG_SPOOL_TIPS_EN          "Hang the spool in the spool\ncompartment as shown."
 
-// feed filament
+//feed filament
 #define FEED_FILAMENT_TITLE_EN      "Load Filament"
 #define FEED_FILAMENT_PREVIOUS_EN   "< Previous"
 #define FEED_FILAMENT_MATERIAL_EN   "Material:"
@@ -656,7 +679,7 @@
 #define FEED_FILAMENT_NEXT_EN       "Next >"
 #define FEED_FILAMENT_TIPS_EN       "Feed filament into extruder\nup beyond the gears."
 
-// feed filament
+//feed filament
 #define ROTATE_UP_TITLE_EN          "Load Filament"
 #define ROTATE_UP_PREVIOUS_EN        "< Previous"
 #define ROTATE_UP_MATERIAL_EN       "Material:"
@@ -664,20 +687,20 @@
 #define ROTATE_UP_NEXT_EN           "Next >"
 #define ROTATE_UP_TIPS_EN           "Rotate extruder selection\ndial up."
 
-// filament begin
+//filament begin
 #define FEED_BEGIN_TITLE_EN         "Load Filament"
 #define FEED_BEGIN_MATERIAL_EN      "Material:"
 #define FEED_BEGIN_PLA_EN           "Model-PLA"
 #define FEED_BEGIN_NEXT_EN          "Next >"
 #define FEED_BEGIN_TIPS_EN          "Press Next when filament\nbegins to extrude."
 
-// filament finish
+//filament finish
 #define FEED_FINISH_TITLE_EN        "Load Filament"
 #define FEED_FINISH_MATERIAL_EN     "Material:"
 #define FEED_FINISH_PLA_EN          "Model-PLA"
 #define FEED_FINISH_NEXT_EN         "Finish >"
 #define FEED_FINISH_TIPS_EN         "Remove filament from the\nnozzle and discard."
-// fiament remove
+//fiament remove
 #define REMOVE_SPOOL_TITLE_EN       "Unload Filament"
 #define REMOVE_SPOOL_PREVIOUS_EN     "< Previous"
 #define REMOVE_SPOOL_FINISH_EN      "Finish >"
@@ -689,7 +712,7 @@
 #define LOAD_FINISH_EN              "Load\nFilament\nComplete"
 #define UNLOAD_FINISH_EN            "Unload\nFilament\nComplete"
 
-// manual ip
+//manual ip
 #define MANUAL_IP_TITLE_EN          "Manual IP"
 #define MANUAL_IP_CANCEL_EN         "< Cancel"
 #define MANUAL_IP_APPLY_EN          "Join >"

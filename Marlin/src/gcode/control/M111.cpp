@@ -57,19 +57,19 @@ void GcodeSuite::M111() {
     SERIAL_ECHOPGM(STR_DEBUG_OFF);
     #if !defined(__AVR__) || !defined(USBCON)
       #if ENABLED(SERIAL_STATS_RX_BUFFER_OVERRUNS)
-        SERIAL_ECHOPGM("\nBuffer Overruns: ", MYSERIAL1.buffer_overruns());
+        SERIAL_ECHOPAIR("\nBuffer Overruns: ", MYSERIAL1.buffer_overruns());
       #endif
 
       #if ENABLED(SERIAL_STATS_RX_FRAMING_ERRORS)
-        SERIAL_ECHOPGM("\nFraming Errors: ", MYSERIAL1.framing_errors());
+        SERIAL_ECHOPAIR("\nFraming Errors: ", MYSERIAL1.framing_errors());
       #endif
 
       #if ENABLED(SERIAL_STATS_DROPPED_RX)
-        SERIAL_ECHOPGM("\nDropped bytes: ", MYSERIAL1.dropped());
+        SERIAL_ECHOPAIR("\nDropped bytes: ", MYSERIAL1.dropped());
       #endif
 
       #if ENABLED(SERIAL_STATS_MAX_RX_QUEUED)
-        SERIAL_ECHOPGM("\nMax RX Queue Size: ", MYSERIAL1.rxMaxEnqueued());
+        SERIAL_ECHOPAIR("\nMax RX Queue Size: ", MYSERIAL1.rxMaxEnqueued());
       #endif
     #endif // !__AVR__ || !USBCON
   }

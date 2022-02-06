@@ -26,12 +26,11 @@
 
 #ifdef __IMXRT1062__
 
-#include "../../inc/MarlinConfig.h"
 #include "HAL.h"
-
 #include <SPI.h>
 #include <pins_arduino.h>
 #include "spi_pins.h"
+#include "../../core/macros.h"
 
 static SPISettings spiConfig;
 
@@ -82,7 +81,7 @@ void spiInit(uint8_t spiRate) {
   case SPI_SPEED_5:       clock =   625000; break;
   case SPI_SPEED_6:       clock =   312500; break;
   default:
-    clock = 4000000; // Default from the SPI library
+    clock = 4000000; // Default from the SPI libarary
   }
   spiConfig = SPISettings(clock, MSBFIRST, SPI_MODE0);
   SPI.begin();

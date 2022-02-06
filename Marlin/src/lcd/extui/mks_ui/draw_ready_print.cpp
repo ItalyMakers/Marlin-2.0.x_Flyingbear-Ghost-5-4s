@@ -19,8 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
 
@@ -28,19 +27,19 @@
 #include "draw_tool.h"
 #include <lv_conf.h>
 #include "tft_lvgl_configuration.h"
+#include "mks_hardware_test.h"
 #include "draw_ui.h"
 
 #include <lvgl.h>
 
-#include "../../../module/temperature.h"
-#include "../../../inc/MarlinConfig.h"
+#include "../../../../module/temperature.h"
+#include "../../../../inc/MarlinConfig.h"
 
 #if ENABLED(TOUCH_SCREEN_CALIBRATION)
-  #include "../../tft_io/touch_calibration.h"
+  #include "../../../tft_io/touch_calibration.h"
   #include "draw_touch_calibration.h"
 #endif
 
-#include "mks_hardware.h"
 #include <stdio.h>
 #include "../../../gcode/queue.h"
 
@@ -50,9 +49,7 @@
 #define LABEL_MOD_Y         30
 
 extern lv_group_t*  g;
-#ifndef USE_NEW_LVGL_CONF
-  static lv_obj_t *scr;
-#endif
+static lv_obj_t *scr;
 static lv_obj_t *buttonExt1, *labelExt1, *buttonFanstate, *labelFan;
 static lv_obj_t *label_abs;
 static lv_obj_t *label_pla;
@@ -60,7 +57,7 @@ static lv_obj_t *label_pla;
 static lv_obj_t *label_cooldown;
 // static lv_obj_t *label_emStop;
 
-#if HAS_MULTI_HOTEND
+#if HAS_MULTI_EXTRUDER && DISABLED(SINGLENOZZLE)
   static lv_obj_t *labelExt2;
   static lv_obj_t *buttonExt2;
 #endif
@@ -71,7 +68,7 @@ static lv_obj_t *label_cooldown;
 #endif
 
 #if ENABLED(MKS_TEST)
-  uint8_t current_disp_ui = 0;
+  uint8_t curent_disp_ui = 0;
 #endif
 
 enum {
@@ -86,7 +83,6 @@ enum {
   ID_COOLDOWN,
   ID_EMSTOP,
 };
-
 static void event_handler(lv_obj_t *obj, lv_event_t event) {
   if (event != LV_EVENT_RELEASED) return;
 
@@ -127,15 +123,15 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
 }
 
 lv_obj_t *limit_info, *det_info;
-lv_style_t limit_style, det_style;
+lv_obj_t *tmc_state_info;
+lv_style_t limit_style, det_style, tmc_state_style;
 void disp_Limit_ok() {
   limit_style.text.color.full = 0xFFFF;
   lv_obj_set_style(limit_info, &limit_style);
   lv_label_set_text(limit_info, "Limit:ok");
 }
-
 void disp_Limit_error() {
-  limit_style.text.color  = lv_color_make(0xFB, 0x33, 0x14);
+  limit_style.text.color = lv_color_make(0xFB, 0x33, 0x14);
   lv_obj_set_style(limit_info, &limit_style);
   lv_label_set_text(limit_info, "Limit:error");
 }
@@ -145,60 +141,55 @@ void disp_det_ok() {
   lv_obj_set_style(det_info, &det_style);
   lv_label_set_text(det_info, "det:ok");
 }
-
 void disp_det_error() {
   det_style.text.color = lv_color_make(0xFB, 0x33, 0x14);
   lv_obj_set_style(det_info, &det_style);
   lv_label_set_text(det_info, "det:error");
 }
 
-lv_obj_t *e1, *e2, *e3, *bed;
+void disp_tmc_ok() {
+  tmc_state_style.text.color.full = 0xFFFF;
+  lv_obj_set_style(tmc_state_info, &tmc_state_style);
+  lv_label_set_text(tmc_state_info, "TMC CONNECTION OK");
+}
+void disp_tmc_error() {
+  tmc_state_style.text.color = lv_color_make(0xFB, 0x33, 0x14);
+  lv_obj_set_style(tmc_state_info, &tmc_state_style);
+  lv_label_set_text(tmc_state_info, "TMC CONNECTION ERROR");
+}
 
+lv_obj_t *e1, *e2, *e3, *bed;
 void mks_disp_test() {
-  char buf[30] = {0};
   #if HAS_HOTEND
-    sprintf_P(buf, PSTR("e1:%d"), thermalManager.wholeDegHotend(0));
+    char buf[30] = {0};
+    sprintf_P(buf, PSTR("e1:%d"), (int)thermalManager.temp_hotend[0].celsius);
     lv_label_set_text(e1, buf);
   #endif
   #if HAS_MULTI_HOTEND
-    sprintf_P(buf, PSTR("e2:%d"), thermalManager.wholeDegHotend(1));
+    sprintf_P(buf, PSTR("e2:%d"), (int)thermalManager.temp_hotend[1].celsius);
     lv_label_set_text(e2, buf);
   #endif
   #if HAS_HEATED_BED
-    sprintf_P(buf, PSTR("bed:%d"), thermalManager.wholeDegBed());
+    sprintf_P(buf, PSTR("bed:%d"), (int)thermalManager.temp_bed.celsius);
     lv_label_set_text(bed, buf);
   #endif
 }
 
-void set_main_screen(void) {
-#ifdef USE_NEW_LVGL_CONF
-  mks_ui.src_main = lv_obj_create(nullptr, nullptr);
-  lv_obj_set_style(mks_ui.src_main, &tft_style_scr);
-  lv_scr_load(mks_ui.src_main);
-#endif
-}
-
-void lv_draw_ready_print() {
-
-  char buf[30] = {0};
+void lv_draw_ready_print(void) {
+  #if HAS_HOTEND
+    char buf[30] = {0};
+  #endif
   lv_obj_t *buttonTool;
 
   disp_state_stack._disp_index = 0;
+  
   ZERO(disp_state_stack._disp_state);
 
-#ifdef USE_NEW_LVGL_CONF
-  mks_ui.src_main = lv_set_scr_id_title(mks_ui.src_main, PRINT_READY_UI, "");
-#else
-  scr = lv_screen_create(PRINT_READY_UI, "");
-#endif
-
   if (mks_test_flag == 0x1E) {
+    scr = lv_screen_create(MAIN_UI, "");
+
     // Create image buttons
-#ifdef USE_NEW_LVGL_CONF
-    buttonTool = lv_imgbtn_create(mks_ui.src_main, "F:/bmp_tool.bin", event_handler, ID_TOOL);
-#else
     buttonTool = lv_imgbtn_create(scr, "F:/bmp_tool.bin", event_handler, ID_TOOL);
-#endif
 
     lv_obj_set_pos(buttonTool, 360, 180);
 
@@ -208,100 +199,85 @@ void lv_draw_ready_print() {
       lv_obj_align(label_tool, buttonTool, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
     }
 
-    #if HAS_HOTEND
-#ifdef USE_NEW_LVGL_CONF
-      e1 = lv_label_create_empty(mks_ui.src_main);
-#else
+    #if 1
       e1 = lv_label_create_empty(scr);
-#endif
       lv_obj_set_pos(e1, 20, 20);
-      sprintf_P(buf, PSTR("e1:  %d"), thermalManager.wholeDegHotend(0));
-      lv_label_set_text(e1, buf);
-    #endif
-    #if HAS_MULTI_HOTEND
-      e2 = lv_label_create_empty(scr);
-      lv_obj_set_pos(e2, 20, 45);
-      sprintf_P(buf, PSTR("e2:  %d"), thermalManager.wholeDegHotend(1));
-      lv_label_set_text(e2, buf);
-    #endif
-    #if HAS_HEATED_BED
-#ifdef USE_NEW_LVGL_CONF
-      bed = lv_label_create_empty(mks_ui.src_main);
-#else
-      bed = lv_label_create_empty(scr);
-#endif
-      lv_obj_set_pos(bed, 20, 95);
-      sprintf_P(buf, PSTR("bed:  %d"), thermalManager.wholeDegBed());
-      lv_label_set_text(bed, buf);
-    #endif
-#ifdef USE_NEW_LVGL_CONF
-    limit_info = lv_label_create_empty(mks_ui.src_main);
-#else
-    limit_info = lv_label_create_empty(scr);
-#endif
-    lv_style_copy(&limit_style, &lv_style_scr);
-    limit_style.body.main_color.full = 0x0000;
-    limit_style.body.grad_color.full = 0x0000;
-    limit_style.text.color.full      = 0xFFFF;
-    lv_obj_set_style(limit_info, &limit_style);
+      #if HAS_HOTEND
+        sprintf_P(buf, PSTR("e1:  %d"), (int)thermalManager.temp_hotend[0].celsius);
+        lv_label_set_text(e1, buf);
+      #endif
+      #if HAS_MULTI_HOTEND
+        e2 = lv_label_create_empty(scr);
+        lv_obj_set_pos(e2, 20, 45);
+        sprintf_P(buf, PSTR("e2:  %d"), (int)thermalManager.temp_hotend[1].celsius);
+        lv_label_set_text(e2, buf);
+      #endif
 
-    lv_obj_set_pos(limit_info, 20, 120);
-    lv_label_set_text(limit_info, " ");
+      #if HAS_HEATED_BED
+        bed = lv_label_create_empty(scr);
+        lv_obj_set_pos(bed, 20, 95);
+        sprintf_P(buf, PSTR("bed:  %d"), (int)thermalManager.temp_bed.celsius);
+        lv_label_set_text(bed, buf);
+      #endif
 
-#ifdef USE_NEW_LVGL_CONF
-    det_info = lv_label_create_empty(mks_ui.src_main);
-#else
-    det_info = lv_label_create_empty(scr);
-#endif
-    lv_style_copy(&det_style, &lv_style_scr);
-    det_style.body.main_color.full = 0x0000;
-    det_style.body.grad_color.full = 0x0000;
-    det_style.text.color.full      = 0xFFFF;
-    lv_obj_set_style(det_info, &det_style);
+      limit_info = lv_label_create_empty(scr);
 
-    lv_obj_set_pos(det_info, 20, 145);
-    lv_label_set_text(det_info, " ");
+      lv_style_copy(&limit_style, &lv_style_scr);
+      limit_style.body.main_color.full = 0X0000;
+      limit_style.body.grad_color.full = 0X0000;
+      limit_style.text.color.full      = 0Xffff;
+      lv_obj_set_style(limit_info, &limit_style);
+
+      lv_obj_set_pos(limit_info, 20, 120);
+      lv_label_set_text(limit_info, " ");
+
+      det_info = lv_label_create_empty(scr);
+
+      lv_style_copy(&det_style, &lv_style_scr);
+      det_style.body.main_color.full = 0X0000;
+      det_style.body.grad_color.full = 0X0000;
+      det_style.text.color.full      = 0Xffff;
+      lv_obj_set_style(det_info, &det_style);
+
+      lv_obj_set_pos(det_info, 20, 145);
+      lv_label_set_text(det_info, " ");
+
+      tmc_state_info = lv_label_create_empty(scr);
+
+      lv_style_copy(&tmc_state_style, &lv_style_scr);
+      tmc_state_style.body.main_color.full = 0X0000;
+      tmc_state_style.body.grad_color.full = 0X0000;
+      tmc_state_style.text.color.full      = 0Xffff;
+      lv_obj_set_style(tmc_state_info, &tmc_state_style);
+
+      lv_obj_set_pos(tmc_state_info, 20, 170);
+      lv_label_set_text(tmc_state_info, " ");
+    #endif // if 1
+
   }
   else {
-#ifdef USE_NEW_LVGL_CONF
-    lv_big_button_create(mks_ui.src_main, "F:/bmp_tool.bin", main_menu.tool, 20, 60, event_handler, ID_TOOL);
-    lv_big_button_create(mks_ui.src_main, "F:/bmp_set.bin", main_menu.set, 180, 60, event_handler, ID_SET);
-    lv_big_button_create(mks_ui.src_main, "F:/bmp_printing.bin", main_menu.print, 340, 60, event_handler, ID_PRINT);
-#else
+
     lv_big_button_create(scr, "F:/bmp_tool.bin", main_menu.tool, 20, 60, event_handler, ID_TOOL);
     lv_big_button_create(scr, "F:/bmp_set.bin", main_menu.set, 180, 60, event_handler, ID_SET);
     lv_big_button_create(scr, "F:/bmp_printing.bin", main_menu.print, 340, 60, event_handler, ID_PRINT);
-#endif
+
     // Monitoring
     #if HAS_HOTEND
-#ifdef USE_NEW_LVGL_CONF
-      buttonExt1 = lv_big_button_create(mks_ui.src_main, "F:/bmp_ext1_state.bin", " ",( 20), 210, event_handler, ID_INFO_EXT);
-#else
       buttonExt1 = lv_big_button_create(scr, "F:/bmp_ext1_state.bin", " ",( 20), 210, event_handler, ID_INFO_EXT);
-#endif
     #endif
     #if HAS_MULTI_HOTEND
       buttonExt2 = lv_big_button_create(scr, "F:/bmp_ext2_state.bin", " ", 180, ICON_POS_Y, event_handler, ID_INFO_EXT);
     #endif
     #if HAS_HEATED_BED
-      #ifdef USE_NEW_LVGL_CONF
-            buttonBedstate = lv_big_button_create(mks_ui.src_main, "F:/bmp_bed_state.bin", " ", ( 20), 260, event_handler, ID_INFO_BED);
-      #else
             buttonBedstate = lv_big_button_create(scr, "F:/bmp_bed_state.bin", " ", ( 20), 260, event_handler, ID_INFO_BED);
-      #endif
+
     #endif
 
-#ifdef USE_NEW_LVGL_CONF
-    TERN_(HAS_HOTEND, labelExt1 = lv_label_create_empty(mks_ui.src_main));
-    TERN_(HAS_MULTI_HOTEND, labelExt2 = lv_label_create_empty(mks_ui.src_main));
-    TERN_(HAS_HEATED_BED, labelBed = lv_label_create_empty(mks_ui.src_main));
-    TERN_(HAS_FAN, labelFan = lv_label_create_empty(mks_ui.src_main));
-#else
     TERN_(HAS_HOTEND, labelExt1 = lv_label_create_empty(scr));
     TERN_(HAS_MULTI_HOTEND, labelExt2 = lv_label_create_empty(scr));
     TERN_(HAS_HEATED_BED, labelBed = lv_label_create_empty(scr));
     TERN_(HAS_FAN, labelFan = lv_label_create_empty(scr));
-#endif
+
     disp_ext_heart_ready_print();
     lv_temp_refr();
   }
@@ -344,27 +320,11 @@ void lv_clear_ready_print() {
   #if HAS_ROTARY_ENCODER
     if (gCfgItems.encoder_enable) lv_group_remove_all_objs(g);
   #endif
-#ifdef USE_NEW_LVGL_CONF
-  lv_obj_clean(mks_ui.src_main);
-#else
   lv_obj_del(scr);
-#endif
 }
 
 void disp_ext_heart_ready_print() {
-  #ifdef USE_NEW_LVGL_CONF
-    lv_big_button_create(mks_ui.src_main, "F:/bmp_temp_mini.bin"," ", ( 180), 210, event_handler, ID_P_PLA);
-    lv_big_button_create(mks_ui.src_main, "F:/bmp_temp_mini.bin"," ", ( 180), 260, event_handler, ID_P_ABS);
-
-    label_pla = lv_label_create(mks_ui.src_main, (180+50), (210 + 10), PREHEAT_1_LABEL);
-    label_abs = lv_label_create(mks_ui.src_main, (180+50), (260 + 10), PREHEAT_2_LABEL);
-
-    lv_big_button_create(mks_ui.src_main, "F:/bmp_mini_temp0.bin"," ", ( 320), 210, event_handler, ID_EMSTOP);
-    // lv_big_button_create(mks_ui.src_main, "F:/bmp_mini_emergency_stop.bin"," ", ( 320), 260, event_handler, ID_COOLDOWN);
-
-    label_cooldown = lv_label_create(mks_ui.src_main, (320+50), (210 + 10), "Cool Down");
-    // label_emStop = lv_label_create(mks_ui.src_main, (320+50), (260 + 10), "Emergency Stop");
-  #else
+  
     lv_big_button_create(scr, "F:/bmp_temp_mini.bin"," ", ( 180), 210, event_handler, ID_P_PLA);
     lv_big_button_create(scr, "F:/bmp_temp_mini.bin"," ", ( 180), 260, event_handler, ID_P_ABS);
 
@@ -377,7 +337,6 @@ void disp_ext_heart_ready_print() {
     // lv_big_button_create(scr, "F:/bmp_mini_emergency_stop.bin"," ", ( 320), 260, event_handler, ID_EMSTOP);
     // label_emStop = lv_label_create(scr, (320+50), (260 + 10), "Emerg. Stop");
 
-  #endif
     // label_pla = lv_btn_create(scr, ( 180+45), (210), 80, 40, event_handler, ID_P_PLA);
     // label_abs = lv_btn_create(scr, ( 180+45), (260), 80, 40, event_handler, ID_P_ABS);
 

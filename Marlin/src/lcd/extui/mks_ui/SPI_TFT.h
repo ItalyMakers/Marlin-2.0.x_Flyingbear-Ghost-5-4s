@@ -21,8 +21,11 @@
  */
 #pragma once
 
-#include "../../tft_io/tft_io.h"
-#include <stdint.h>
+#include "../../../../inc/MarlinConfigPre.h"
+
+#if HAS_TFT_LVGL_UI
+
+#include "../../../tft_io/tft_io.h"
 
 class TFT {
 public:
@@ -36,3 +39,5 @@ public:
 };
 
 extern TFT SPI_TFT;
+
+#endif // HAS_TFT_LVGL_UI

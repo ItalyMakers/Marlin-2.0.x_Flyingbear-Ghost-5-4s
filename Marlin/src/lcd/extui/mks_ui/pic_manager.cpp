@@ -19,8 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
 
@@ -28,11 +27,13 @@
 #include "draw_ui.h"
 #include "pic_manager.h"
 #include "draw_ready_print.h"
-#include "mks_hardware.h"
+#include "mks_hardware_test.h"
+
 #include "SPIFlashStorage.h"
-#include "../../../libs/W25Qxx.h"
-#include "../../../sd/cardreader.h"
-#include "../../../MarlinCore.h"
+#include "../../../../libs/W25Qxx.h"
+
+#include "../../../../sd/cardreader.h"
+#include "../../../../MarlinCore.h"
 
 extern uint16_t DeviceCode;
 
@@ -41,7 +42,7 @@ extern uint16_t DeviceCode;
 #endif
 
 static const char assets[][LONG_FILENAME_LENGTH] = {
-  // Homing screen
+  //homing screen
   "bmp_zeroAll.bin",
   "bmp_zero.bin",
   "bmp_zeroX.bin",
@@ -248,10 +249,10 @@ uint32_t lv_get_pic_addr(uint8_t *Pname) {
   currentFlashPage = 0;
 
   #if ENABLED(MARLIN_DEV_MODE)
-    SERIAL_ECHOLNPGM("Getting picture SPI Flash Address: ", (const char*)Pname);
+    SERIAL_ECHOLNPAIR("Getting picture SPI Flash Address: ", (const char*)Pname);
   #endif
 
-  W25QXX.init(SPI_FULL_SPEED);
+  W25QXX.init(SPI_QUARTER_SPEED);
 
   W25QXX.SPI_FLASH_BufferRead(&Pic_cnt, PIC_COUNTER_ADDR, 1);
   if (Pic_cnt == 0xFF) Pic_cnt = 0;
@@ -278,13 +279,13 @@ const char *bakPath = "_assets";
 
 void spiFlashErase_PIC() {
   volatile uint32_t pic_sectorcnt = 0;
-  W25QXX.init(SPI_FULL_SPEED);
-  // erase 0x001000 -64K
+  W25QXX.init(SPI_QUARTER_SPEED);
+  //erase 0x001000 -64K
   for (pic_sectorcnt = 0; pic_sectorcnt < (64 - 4) / 4; pic_sectorcnt++) {
     watchdog_refresh();
     W25QXX.SPI_FLASH_SectorErase(PICINFOADDR + pic_sectorcnt * 4 * 1024);
   }
-  // erase 64K -- 6M
+  //erase 64K -- 6M
   for (pic_sectorcnt = 0; pic_sectorcnt < (PIC_SIZE_xM * 1024 / 64 - 1); pic_sectorcnt++) {
     watchdog_refresh();
     W25QXX.SPI_FLASH_BlockErase((pic_sectorcnt + 1) * 64 * 1024);
@@ -294,8 +295,8 @@ void spiFlashErase_PIC() {
 #if HAS_SPI_FLASH_FONT
   void spiFlashErase_FONT() {
     volatile uint32_t Font_sectorcnt = 0;
-    W25QXX.init(SPI_FULL_SPEED);
-    for (Font_sectorcnt = 0; Font_sectorcnt < 32 - 1; Font_sectorcnt++) {
+    W25QXX.init(SPI_QUARTER_SPEED);
+    for (Font_sectorcnt = 0; Font_sectorcnt < 32-1; Font_sectorcnt++) {
       watchdog_refresh();
       W25QXX.SPI_FLASH_BlockErase(FONTINFOADDR + Font_sectorcnt * 64 * 1024);
     }
@@ -400,8 +401,8 @@ uint32_t Pic_Info_Write(uint8_t *P_name, uint32_t P_size) {
     longName[j] = '\0';
   }
 
-  static int8_t arrayFindStr(const char arr[][LONG_FILENAME_LENGTH], uint8_t arraySize, const char *str) {
-    for (uint8_t a = 0; a < arraySize; a++) {
+  static uint16_t arrayFindStr(const char arr[][LONG_FILENAME_LENGTH], uint16_t arraySize, const char* str) {
+    for (uint16_t a = 0; a < arraySize; a++) {
       if (strcasecmp(arr[a], str) == 0)
         return a;
     }
@@ -423,7 +424,7 @@ uint32_t Pic_Info_Write(uint8_t *P_name, uint32_t P_size) {
     createFilename(dosFilename, entry);
     if (!file.open(&dir, dosFilename, O_READ)) {
       #if ENABLED(MARLIN_DEV_MODE)
-        SERIAL_ECHOLNPGM("Error opening Asset: ", fn);
+        SERIAL_ECHOLNPAIR("Error opening Asset: ", fn);
       #endif
       return;
     }
@@ -431,7 +432,7 @@ uint32_t Pic_Info_Write(uint8_t *P_name, uint32_t P_size) {
     watchdog_refresh();
     disp_assets_update_progress(fn);
 
-    W25QXX.init(SPI_FULL_SPEED);
+    W25QXX.init(SPI_QUARTER_SPEED);
 
     uint16_t pbr;
     uint32_t pfileSize;
@@ -478,7 +479,7 @@ uint32_t Pic_Info_Write(uint8_t *P_name, uint32_t P_size) {
         } while (pbr >= BMP_WRITE_BUF_LEN);
       #endif
       #if ENABLED(MARLIN_DEV_MODE)
-        SERIAL_ECHOLNPGM("Space used: ", fn, " - ", (SPIFlash.getCurrentPage() + 1) * SPI_FLASH_PageSize / 1024, "KB");
+        SERIAL_ECHOLNPAIR("Space used: ", fn, " - ", (SPIFlash.getCurrentPage() + 1) * SPI_FLASH_PageSize / 1024, "KB");
         totalCompressed += (SPIFlash.getCurrentPage() + 1) * SPI_FLASH_PageSize;
       #endif
       SPIFlash.endWrite();
@@ -496,7 +497,7 @@ uint32_t Pic_Info_Write(uint8_t *P_name, uint32_t P_size) {
     file.close();
 
     #if ENABLED(MARLIN_DEV_MODE)
-      SERIAL_ECHOLNPGM("Asset added: ", fn);
+      SERIAL_ECHOLNPAIR("Asset added: ", fn);
     #endif
   }
 
@@ -518,14 +519,14 @@ uint32_t Pic_Info_Write(uint8_t *P_name, uint32_t P_size) {
       disp_assets_update_progress("Reading files...");
       dir_t d;
       while (dir.readDir(&d, card.longFilename) > 0) {
-        // If we don't get a long name, but gets a short one, try it
+        // If we dont get a long name, but gets a short one, try it
         if (card.longFilename[0] == 0 && d.name[0] != 0)
           dosName2LongName((const char*)d.name, card.longFilename);
         if (card.longFilename[0] == 0) continue;
         if (card.longFilename[0] == '.') continue;
 
-        int8_t a = arrayFindStr(assets, COUNT(assets), card.longFilename);
-        if (a >= 0 && a < (int8_t)COUNT(assets)) {
+        uint16_t a = arrayFindStr(assets, COUNT(assets), card.longFilename);
+        if (a >= 0 && a < (uint16_t)COUNT(assets)) {
           uint8_t assetType = ASSET_TYPE_ICON;
           if (strstr(assets[a], "_logo"))
             assetType = ASSET_TYPE_LOGO;
@@ -552,8 +553,8 @@ uint32_t Pic_Info_Write(uint8_t *P_name, uint32_t P_size) {
     #if ENABLED(MARLIN_DEV_MODE)
       uint8_t pic_counter = 0;
       W25QXX.SPI_FLASH_BufferRead(&pic_counter, PIC_COUNTER_ADDR, 1);
-      SERIAL_ECHOLNPGM("Total assets loaded: ", pic_counter);
-      SERIAL_ECHOLNPGM("Total Uncompressed: ", totalSizes, ", Compressed: ", totalCompressed);
+      SERIAL_ECHOLNPAIR("Total assets loaded: ", pic_counter);
+      SERIAL_ECHOLNPAIR("Total Uncompressed: ", totalSizes, ", Compressed: ", totalCompressed);
     #endif
   }
 
@@ -578,8 +579,8 @@ void Pic_Read(uint8_t *Pname, uint8_t *P_Rbuff) {
     do {
       W25QXX.SPI_FLASH_BufferRead(&PIC.name[j], PIC_NAME_ADDR + tmp_cnt, 1);
       tmp_cnt++;
-    } while (PIC.name[j++] != '\0' && j <= 50);  // fix-1025
-    // pic size
+    } while (PIC.name[j++] != '\0');
+    //pic size
     W25QXX.SPI_FLASH_BufferRead(PIC.size.bytes, PIC_SIZE_ADDR + i * 4, 4);
 
     if ((strcmp((char*)Pname, (char*)PIC.name)) == 0) {
@@ -596,21 +597,21 @@ void lv_pic_test(uint8_t *P_Rbuff, uint32_t addr, uint32_t size) {
     SPIFlash.readData(P_Rbuff, size);
     currentFlashPage++;
   #else
-    W25QXX.init(SPI_FULL_SPEED);
+    W25QXX.init(SPI_QUARTER_SPEED);
     W25QXX.SPI_FLASH_BufferRead((uint8_t *)P_Rbuff, addr, size);
   #endif
 }
 
 #if HAS_SPI_FLASH_FONT
   void get_spi_flash_data(const char *rec_buf, int addr, int size) {
-    W25QXX.init(SPI_FULL_SPEED);
+    W25QXX.init(SPI_QUARTER_SPEED);
     W25QXX.SPI_FLASH_BufferRead((uint8_t *)rec_buf, UNIGBK_FLASH_ADDR + addr, size);
   }
 #endif
 
 uint32_t logo_addroffset = 0;
 void Pic_Logo_Read(uint8_t *LogoName, uint8_t *Logo_Rbuff, uint32_t LogoReadsize) {
-  W25QXX.init(SPI_FULL_SPEED);
+  W25QXX.init(SPI_QUARTER_SPEED);
   W25QXX.SPI_FLASH_BufferRead(Logo_Rbuff, PIC_LOGO_ADDR + logo_addroffset, LogoReadsize);
   logo_addroffset += LogoReadsize;
   if (logo_addroffset >= LOGO_MAX_SIZE_TFT35)
@@ -619,7 +620,7 @@ void Pic_Logo_Read(uint8_t *LogoName, uint8_t *Logo_Rbuff, uint32_t LogoReadsize
 
 uint32_t default_view_addroffset = 0;
 void default_view_Read(uint8_t *default_view_Rbuff, uint32_t default_view_Readsize) {
-  W25QXX.init(SPI_FULL_SPEED);
+  W25QXX.init(SPI_QUARTER_SPEED);
   W25QXX.SPI_FLASH_BufferRead(default_view_Rbuff, DEFAULT_VIEW_ADDR_TFT35 + default_view_addroffset, default_view_Readsize);
   default_view_addroffset += default_view_Readsize;
   if (default_view_addroffset >= DEFAULT_VIEW_MAX_SIZE)
@@ -629,7 +630,7 @@ void default_view_Read(uint8_t *default_view_Rbuff, uint32_t default_view_Readsi
 #if HAS_BAK_VIEW_IN_FLASH
   uint32_t flash_view_addroffset = 0;
   void flash_view_Read(uint8_t *flash_view_Rbuff, uint32_t flash_view_Readsize) {
-    W25QXX.init(SPI_FULL_SPEED);
+    W25QXX.init(SPI_QUARTER_SPEED);
     W25QXX.SPI_FLASH_BufferRead(flash_view_Rbuff, BAK_VIEW_ADDR_TFT35 + flash_view_addroffset, flash_view_Readsize);
     flash_view_addroffset += flash_view_Readsize;
     if (flash_view_addroffset >= FLASH_VIEW_MAX_SIZE)

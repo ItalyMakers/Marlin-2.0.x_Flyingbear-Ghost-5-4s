@@ -25,6 +25,7 @@
 #define TOOL_TEXT_RU                    "инструмент"
 #define PREHEAT_TEXT_RU                 " нагрев"
 #define MOVE_TEXT_RU                    "движение"
+#define TEXT_ZOFFSET_RU                 "Z offset"
 #define HOME_TEXT_RU                    "домой"
 #define PRINT_TEXT_RU                   " печать"
 #define EXTRUDE_TEXT_RU                 "экструзия"
@@ -195,6 +196,7 @@
 #define TITLE_HOME_RU                       "Home"
 #define TITLE_EXTRUDE_RU                    "экструзия"
 #define TITLE_LEVELING_RU                   "уровень"
+#define TITLE_MLEVELING_RU                  "углы"
 #define TITLE_SET_RU                        "настройки"
 #define TITLE_MORE_RU                       "больше"
 #define TITLE_CHOOSEFILE_RU                 "файла"
@@ -236,6 +238,8 @@
 #define DIALOG_PRINT_TIME_RU                "Время печати: "
 #define DIALOG_REPRINT_RU                   "Print again"
 #define DIALOG_WIFI_ENABLE_TIPS_RU          "The wifi module is being configured,\nplease wait a moment....."
+#define DIALOG_PAUSING_TIPS_RU              "Машина останавливается ..."
+#define DIALOG_AUTO_LEVELING_TIPS_RU        "Автоматическое выравнивание, подождите ..."
 
 #define MESSAGE_PAUSING_RU            "Стоянка..."
 #define MESSAGE_CHANGING_RU           "Подождите, пока начнется смена филамента"
@@ -267,6 +271,7 @@
 #define EEPROM_REVERT_TIPS_RU         "Cбросить настройки к значениям по умолчанию?"
 #define EEPROM_SETTINGS_RU            "EEPROM"
 
+
 #define NEXT_RU                       "след."
 #define PREVIOUS_RU                   "пред."
 #define ENABLE_RU                     "да "
@@ -280,12 +285,28 @@
 #define ADVANCE_CONFIG_RU              "Pасширенные настройки"
 #define MACHINE_FILAMENT_CONFIG_RU     "Hастройки филамента"
 #define ENCODER_SETTINGS_RU            "Hастройки энкодера"
+#define X_MODE_SETTINGS_RU             "X-mode"
+#define EXTRUDE_OFFSET_SETTINGS_RU     "T-offset"
 
 #define LEVELING_CONF_TITLE_RU          "Hастройки принтера>Hастройки уровня"
 #define LEVELING_PARA_CONF_RU           "настройки уровня"
-#define TRAMMING_POS_RU                 "настройки координат для уровня"
+#define LEVELING_MANUAL_POS_RU          "настройки координат для уровня"
 #define LEVELING_AUTO_COMMAND_RU        "настройки комманд увтоуровня"
 #define LEVELING_AUTO_ZOFFSET_RU        "координаты смещения сопла"
+#define LEVELING_TOUCHMI_RU             "Settings-TouchMi-Probe"
+#define TM_INIT_RU                      "Init"
+#define TM_ZOFFSETPOS_RU                "Zoffset+"
+#define TM_ZOFFSETNEG_RU                "Zoffset-"
+#define TM_SAVE_RU                      "Save"
+#define TM_TEST_RU                      "Test"
+
+#define BLTOUCH_LEVELING_TITTLE_RU      "Settings>BL-Touch Probe"
+#define BLTOUCH_LEVELING_RU             "BL-Touch Probe"
+#define BLTOUCH_INIT_RU                 "Init"
+#define BLTOUCH_ZOFFSETPOS_RU           "Zoffset+"
+#define BLTOUCH_ZOFFSETNEG_RU           "Zoffset-"
+#define BLTOUCH_SAVE_RU                 "Save"
+#define BLTOUCH_TEST_RU                 "Test"
 
 #define MACHINE_CONFIG_TITLE_RU         "Hастройки принтера>настройки притера"
 #define MAXFEEDRATE_CONF_RU             "настройки максимальной скорости"
@@ -361,3 +382,16 @@
 
 #define ENCODER_CONF_TITLE_RU           "Hастройки принтера>Hастройки энкодера"
 #define ENCODER_CONF_TEXT_RU            "энкодер используется?"
+
+#define DUAL_X_MODE_CONF_TITLE_RU       "Machine Settings>Dual x mode"
+#define FULL_CONTROL_MODE_RU	        "Full control mode"
+#define AUTO_PARK_MODE_RU		        "Auto park mode"
+#define DUPLICATION_MODE_RU	            "Duplication mode"
+#define MIRROR_MODE_RU		            "Mirrored mode"
+
+#define HOTEND_OFFSET_SETTINGS_RU       "Machine Settings>Hotend offset"
+#define HOTEND_OFFSET_X_RU              "Hotend X2 offset"
+#define HOTEND_OFFSET_Y_RU              "Hotend Y2 offset"
+#define HOTEND_OFFSET_Z_RU              "Hotend Z2 offset"
+
+//end of Malderin translate

@@ -19,28 +19,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
 
 #include "draw_ui.h"
 #include <lv_conf.h>
 
-#include "../../../MarlinCore.h" // for marlin_state
-#include "../../../module/temperature.h"
-#include "../../../module/motion.h"
-#include "../../../sd/cardreader.h"
-#include "../../../gcode/queue.h"
-#include "../../../gcode/gcode.h"
-#include "../../../inc/MarlinConfig.h"
+#include "../../../../MarlinCore.h" // for marlin_state
+#include "../../../../module/temperature.h"
+#include "../../../../module/motion.h"
+#include "../../../../sd/cardreader.h"
+#include "../../../../gcode/queue.h"
+#include "../../../../gcode/gcode.h"
+#include "../../../../inc/MarlinConfig.h"
 
 #if ENABLED(POWER_LOSS_RECOVERY)
-  #include "../../../feature/powerloss.h"
+  #include "../../../../feature/powerloss.h"
 #endif
 
 #if BOTH(LCD_SET_PROGRESS_MANUALLY, USE_M73_REMAINING_TIME)
-  #include "../../marlinui.h"
+  #include "../../../marlinui.h"
 #endif
 
 extern lv_group_t *g;
@@ -52,14 +51,14 @@ static lv_obj_t *buttonPause, *buttonOperat, *buttonStop, *buttonExt1, *buttonFa
 static lv_style_t lv_bar_style_text;
 static lv_style_t lv_bar_style_base;
 
-#if HAS_MULTI_EXTRUDER
+#if HAS_MULTI_EXTRUDER && DISABLED(SINGLENOZZLE)
   static lv_obj_t *labelExt2;
   static lv_obj_t *buttonExt2;
 #endif
 
 #if HAS_HEATED_BED
+  static lv_obj_t *buttonBedstate;
   static lv_obj_t* labelBed;
-  static lv_obj_t* buttonBedstate;
 #endif
 
 enum {
@@ -75,7 +74,7 @@ enum {
 bool once_flag; // = false
 extern bool flash_preview_begin, default_preview_flg, gcode_preview_over;
 extern uint32_t To_pre_view;
-
+extern char public_buf_t[30];
 static void event_handler(lv_obj_t *obj, lv_event_t event) {
   if (event != LV_EVENT_RELEASED) return;
   if (gcode_preview_over) return;
@@ -146,7 +145,7 @@ void lv_draw_printing() {
   // Create image buttons
   buttonExt1 = lv_imgbtn_create(scr, "F:/bmp_ext1_state.bin", 206, 136, event_handler, ID_TEMP_EXT);
 
-  #if HAS_MULTI_EXTRUDER
+  #if HAS_MULTI_EXTRUDER && DISABLED(SINGLENOZZLE)
     buttonExt2 = lv_imgbtn_create(scr, "F:/bmp_ext2_state.bin", 350, 136, event_handler, ID_TEMP_EXT);
   #endif
 
@@ -162,8 +161,8 @@ void lv_draw_printing() {
 
   buttonZpos = lv_imgbtn_create(scr, "F:/bmp_zpos_state.bin", 350, 86, event_handler, ID_BABYSTEP);
 
-  buttonPause  = lv_imgbtn_create(scr, uiCfg.print_state == WORKING ? "F:/bmp_pause.bin" : "F:/bmp_resume.bin", 5, 240, event_handler, ID_PAUSE);
-  buttonStop   = lv_imgbtn_create(scr, "F:/bmp_stop.bin", 165, 240, event_handler, ID_STOP);
+  buttonPause = lv_imgbtn_create(scr, uiCfg.print_state == WORKING ? "F:/bmp_pause.bin" : "F:/bmp_resume.bin", 5, 240, event_handler, ID_PAUSE);
+  buttonStop = lv_imgbtn_create(scr, "F:/bmp_stop.bin", 165, 240, event_handler, ID_STOP);
   buttonOperat = lv_imgbtn_create(scr, "F:/bmp_operate.bin", 325, 240, event_handler, ID_OPTION);
 
   #if HAS_ROTARY_ENCODER
@@ -171,15 +170,12 @@ void lv_draw_printing() {
       lv_group_add_obj(g, buttonPause);
       lv_group_add_obj(g, buttonStop);
       lv_group_add_obj(g, buttonOperat);
-      lv_group_add_obj(g, buttonPause);
-      lv_group_add_obj(g, buttonPause);
-      lv_group_add_obj(g, buttonPause);
     }
   #endif
 
   labelExt1 = lv_label_create(scr, 250, 146, nullptr);
 
-  #if HAS_MULTI_EXTRUDER
+  #if HAS_MULTI_EXTRUDER && DISABLED(SINGLENOZZLE)
     labelExt2 = lv_label_create(scr, 395, 146, nullptr);
   #endif
 
@@ -187,7 +183,7 @@ void lv_draw_printing() {
     labelBed = lv_label_create(scr, 250, 196, nullptr);
   #endif
 
-  labelFan  = lv_label_create(scr, 395, 196, nullptr);
+  labelFan = lv_label_create(scr, 395, 196, nullptr);
   labelTime = lv_label_create(scr, 250, 96, nullptr);
   labelZpos = lv_label_create(scr, 395, 96, nullptr);
 
@@ -238,18 +234,18 @@ lv_style_copy(&lv_bar_style_base, &lv_style_pretty_color);
 }
 
 void disp_ext_temp() {
-  sprintf(public_buf_l, printing_menu.temp1, thermalManager.wholeDegHotend(0), thermalManager.degTargetHotend(0));
+  sprintf(public_buf_l, printing_menu.temp1, (int)thermalManager.degHotend(0), (int)thermalManager.degTargetHotend(0));
   lv_label_set_text(labelExt1, public_buf_l);
 
-  #if HAS_MULTI_EXTRUDER
-    sprintf(public_buf_l, printing_menu.temp1, thermalManager.wholeDegHotend(1), thermalManager.degTargetHotend(1));
+  #if HAS_MULTI_EXTRUDER && DISABLED(SINGLENOZZLE)
+    sprintf(public_buf_l, printing_menu.temp1, (int)thermalManager.degHotend(1), (int)thermalManager.degTargetHotend(1));
     lv_label_set_text(labelExt2, public_buf_l);
   #endif
 }
 
 void disp_bed_temp() {
   #if HAS_HEATED_BED
-    sprintf(public_buf_l, printing_menu.bed_temp, thermalManager.wholeDegBed(), thermalManager.degTargetBed());
+    sprintf(public_buf_l, printing_menu.bed_temp, (int)thermalManager.temp_bed.celsius, (int)thermalManager.temp_bed.target);
     lv_label_set_text(labelBed, public_buf_l);
   #endif
 }
@@ -270,7 +266,8 @@ void disp_print_time() {
 }
 
 void disp_fan_Zpos() {
-  dtostrf(current_position.z, 1, 3, public_buf_l);
+  char str_1[16];
+  sprintf_P(public_buf_l, PSTR("%s"), dtostrf(current_position[Z_AXIS], 1, 3, str_1));
   lv_label_set_text(labelZpos, public_buf_l);
 }
 
@@ -302,19 +299,12 @@ void setProBarRate() {
     rate = (rate_tmp_r - (PREVIEW_SIZE + To_pre_view)) * 100 / (gCfgItems.curFilesize - (PREVIEW_SIZE + To_pre_view));
   }
 
-  if (rate <= 0) {
-    uiCfg.print_progress = 0;
-
-    return;
-  }
-
-  uiCfg.print_progress = rate;
-
+  if (rate <= 0) return;
 
   if (disp_state == PRINTING_UI) {
     lv_bar_set_value(bar1, rate, LV_ANIM_ON);
     sprintf_P(public_buf_l, "%d%%", rate);
-    lv_label_set_text(bar1ValueText, public_buf_l);
+    lv_label_set_text(bar1ValueText,public_buf_l);
     lv_obj_align(bar1ValueText, bar1, LV_ALIGN_CENTER, 0, 0);
 
     if (marlin_state == MF_SD_COMPLETE) {
@@ -325,8 +315,9 @@ void setProBarRate() {
         default_preview_flg = false;
         lv_clear_printing();
 
+        sprintf_P((char *)public_buf_t,PSTR("%s %d%d-%d%d-%d%d"),print_file_dialog_menu.timeConsum,print_time.hours / 10, print_time.hours % 10, print_time.minutes / 10, print_time.minutes % 10, print_time.seconds / 10, print_time.seconds % 10);
 
-        lv_draw_dialog(DIALOG_TYPE_FINISH_PRINT);
+        lv_draw_dialog(DIALOG_TYPE_FINISH_PRINT); 
 
         once_flag = true;
 

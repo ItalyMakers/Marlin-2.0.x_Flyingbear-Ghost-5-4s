@@ -25,6 +25,7 @@
 #define TOOL_TEXT_FR                  "Prêt"
 #define PREHEAT_TEXT_FR               "Préchauffe"
 #define MOVE_TEXT_FR                  "Déplace"
+#define TEXT_ZOFFSET_FR               "Z Offset"
 #define HOME_TEXT_FR                  "Acceuil"
 #define PRINT_TEXT_FR                 "Impression"
 #define EXTRUDE_TEXT_FR               "Extruder"
@@ -238,6 +239,8 @@
 #define DIALOG_PRINT_TIME_FR          "Temps d'impression: "
 #define DIALOG_REPRINT_FR             "Réimprimer"
 #define DIALOG_WIFI_ENABLE_TIPS_FR    "Le module WIFI se charge\nAttendez SVP..."
+#define DIALOG_PAUSING_TIPS_FR        "La machine fait une pause ..."
+#define DIALOG_AUTO_LEVELING_TIPS_FR  "Mise à niveau automatique, veuillez patienter ..."
 
 #define MESSAGE_PAUSING_FR        "Parking..."
 #define MESSAGE_CHANGING_FR       "Attente filament pour démarrer"

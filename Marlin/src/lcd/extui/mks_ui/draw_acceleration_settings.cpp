@@ -19,16 +19,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
 
 #include "draw_ui.h"
 #include <lv_conf.h>
 
-#include "../../../module/planner.h"
-#include "../../../inc/MarlinConfig.h"
+#include "../../../../module/planner.h"
+#include "../../../../inc/MarlinConfig.h"
+#include "../../../../MarlinCore.h"
 
 extern lv_group_t *g;
 static lv_obj_t *scr;
@@ -53,7 +53,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
     case ID_ACCE_RETURN:
       uiCfg.para_ui_page = false;
       lv_clear_acceleration_settings();
-      draw_return_ui();
+      lv_draw_return_ui();
       break;
     case ID_ACCE_PRINT:
       value = PrintAcceleration;
@@ -108,7 +108,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
   }
 }
 
-void lv_draw_acceleration_settings() {
+void lv_draw_acceleration_settings(void) {
   scr = lv_screen_create(ACCELERATION_UI, machine_menu.AccelerationConfTitle);
   if (!uiCfg.para_ui_page) {
     dtostrf(planner.settings.acceleration, 1, 1, public_buf_l);
@@ -123,7 +123,6 @@ void lv_draw_acceleration_settings() {
     itoa(planner.settings.max_acceleration_mm_per_s2[X_AXIS], public_buf_l, 10);
     lv_screen_menu_item_1_edit(scr, machine_menu.X_Acceleration, PARA_UI_POS_X, PARA_UI_POS_Y * 4, event_handler, ID_ACCE_X, 3, public_buf_l);
 
-    // lv_big_button_create(scr, "F:/bmp_back70x40.bin", machine_menu.next, PARA_UI_TURN_PAGE_POS_X, PARA_UI_TURN_PAGE_POS_Y, event_handler, ID_ACCE_DOWN, true);
     lv_screen_menu_item_turn_page(scr, machine_menu.next, event_handler, ID_ACCE_DOWN);
   }
   else {
@@ -139,13 +138,10 @@ void lv_draw_acceleration_settings() {
     itoa(planner.settings.max_acceleration_mm_per_s2[E_AXIS_N(1)], public_buf_l, 10);
     lv_screen_menu_item_1_edit(scr, machine_menu.E1_Acceleration, PARA_UI_POS_X, PARA_UI_POS_Y * 4, event_handler, ID_ACCE_E1, 3, public_buf_l);
 
-    // lv_big_button_create(scr, "F:/bmp_back70x40.bin", machine_menu.previous, PARA_UI_TURN_PAGE_POS_X, PARA_UI_TURN_PAGE_POS_Y, event_handler, ID_ACCE_UP, true);
     lv_screen_menu_item_turn_page(scr, machine_menu.previous, event_handler, ID_ACCE_UP);
   }
 
-  // lv_big_button_create(scr, "F:/bmp_back70x40.bin", common_menu.text_back, PARA_UI_BACL_POS_X, PARA_UI_BACL_POS_Y, event_handler, ID_ACCE_RETURN, true);
-    lv_screen_menu_item_return(scr, event_handler, ID_ACCE_RETURN);
-
+  lv_screen_menu_item_return(scr, event_handler, ID_ACCE_RETURN);
 }
 
 void lv_clear_acceleration_settings() {

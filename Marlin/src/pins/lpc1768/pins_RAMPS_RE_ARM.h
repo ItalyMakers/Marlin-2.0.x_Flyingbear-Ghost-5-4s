@@ -119,6 +119,9 @@
    * If undefined software serial is used according to the pins below
    */
 
+  //
+  // Software serial
+  //
 
   // P2_08 E1-Step
   // P2_13 E1-Dir
@@ -127,28 +130,28 @@
     #define X_SERIAL_TX_PIN                P0_01
   #endif
   #ifndef X_SERIAL_RX_PIN
-    #define X_SERIAL_RX_PIN      X_SERIAL_TX_PIN
+    #define X_SERIAL_RX_PIN                P0_01
   #endif
 
   #ifndef Y_SERIAL_TX_PIN
     #define Y_SERIAL_TX_PIN                P0_00
   #endif
   #ifndef Y_SERIAL_RX_PIN
-    #define Y_SERIAL_RX_PIN      Y_SERIAL_TX_PIN
+    #define Y_SERIAL_RX_PIN                P0_00
   #endif
 
   #ifndef Z_SERIAL_TX_PIN
     #define Z_SERIAL_TX_PIN                P2_13
   #endif
   #ifndef Z_SERIAL_RX_PIN
-    #define Z_SERIAL_RX_PIN      Z_SERIAL_TX_PIN
+    #define Z_SERIAL_RX_PIN                P2_13
   #endif
 
   #ifndef E0_SERIAL_TX_PIN
     #define E0_SERIAL_TX_PIN               P2_08
   #endif
   #ifndef E0_SERIAL_RX_PIN
-    #define E0_SERIAL_RX_PIN    E0_SERIAL_TX_PIN
+    #define E0_SERIAL_RX_PIN               P2_08
   #endif
 
   // Reduce baud rate to improve software serial reliability
@@ -214,7 +217,7 @@
   #define FAN1_PIN                  RAMPS_D8_PIN
 #elif DISABLED(IS_RAMPS_SF)                       // Not Spindle, Fan (i.e., "EFBF" or "EFBE")
   #define HEATER_BED_PIN            RAMPS_D8_PIN
-  #if HOTENDS == 1 && DISABLED(HEATERS_PARALLEL)
+  #if HOTENDS == 1
     #define FAN1_PIN                MOSFET_D_PIN
   #else
     #define HEATER_1_PIN            MOSFET_D_PIN
@@ -245,8 +248,8 @@
 
 #define PS_ON_PIN                          P2_12  // (12)
 
-#if !defined(TEMP_0_CS_PIN) && DISABLED(USE_ZMAX_PLUG)
-  #define TEMP_0_CS_PIN                    P1_28
+#if !defined(MAX6675_SS_PIN) && DISABLED(USE_ZMAX_PLUG)
+  #define MAX6675_SS_PIN                   P1_28
 #endif
 
 #if ENABLED(CASE_LIGHT_ENABLE) && !PIN_EXISTS(CASE_LIGHT) && !defined(SPINDLE_LASER_ENA_PIN)
@@ -455,6 +458,8 @@
   #define SDCARD_CONNECTION              ONBOARD
 #endif
 
+#define ONBOARD_SD_CS_PIN                  P0_06  // Chip select for "System" SD card
+
 #if SD_CONNECTION_IS(LCD)
   #define SD_SCK_PIN                       P0_15  // (52)  system defined J3-9 & AUX-3
   #define SD_MISO_PIN                      P0_17  // (50)  system defined J3-10 & AUX-3
@@ -465,7 +470,6 @@
   #define SD_SCK_PIN                       P0_07
   #define SD_MISO_PIN                      P0_08
   #define SD_MOSI_PIN                      P0_09
-  #define ONBOARD_SD_CS_PIN                P0_06  // Chip select for "System" SD card
   #define SD_SS_PIN            ONBOARD_SD_CS_PIN
 #elif SD_CONNECTION_IS(CUSTOM_CABLE)
   #error "No custom SD drive cable defined for this board."

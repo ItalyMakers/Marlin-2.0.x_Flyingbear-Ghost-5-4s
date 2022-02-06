@@ -19,73 +19,80 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
 
 #include "draw_ui.h"
 #include <lv_conf.h>
 
-#include "../../../gcode/gcode.h"
-#include "../../../module/planner.h"
-#include "../../../module/motion.h"
-#include "../../../sd/cardreader.h"
-#include "../../../inc/MarlinConfig.h"
-#include "../../../MarlinCore.h"
-#include "../../../gcode/queue.h"
+#include "../../../../gcode/gcode.h"
+#include "../../../../module/temperature.h"
+#include "../../../../module/planner.h"
+#include "../../../../module/motion.h"
+#include "../../../../sd/cardreader.h"
+#include "../../../../inc/MarlinConfig.h"
+#include "../../../../MarlinCore.h"
+#include "../../../../gcode/queue.h"
 
 #if ENABLED(POWER_LOSS_RECOVERY)
-  #include "../../../feature/powerloss.h"
+  #include "../../../../feature/powerloss.h"
 #endif
 
 extern uint32_t To_pre_view;
 extern bool flash_preview_begin, default_preview_flg, gcode_preview_over;
-
+void esp_port_begin(uint8_t interrupt);
 void printer_state_polling() {
   char str_1[16];
   if (uiCfg.print_state == PAUSING) {
+    lv_clear_cur_ui();
+    lv_draw_dialog(DIALOG_TYPE_MACHINE_PAUSING_TIPS);
     #if ENABLED(SDSUPPORT)
-      if (!planner.has_blocks_queued() && card.getIndex() > MIN_FILE_PRINTED)
-        uiCfg.waitEndMoves++;
-
-      if (uiCfg.waitEndMoves > 20) {
-        uiCfg.waitEndMoves = 0;
-        planner.synchronize();
-
-        gcode.process_subcommands_now_P(PSTR("M25"));
-
-        // save the position
-        uiCfg.current_x_position_bak = current_position.x;
-        uiCfg.current_y_position_bak = current_position.y;
-        uiCfg.current_z_position_bak = current_position.z;
-
-        if (gCfgItems.pausePosZ != (float)-1) {
-          sprintf_P(public_buf_l, PSTR("G91\nG1 Z%s\nG90"), dtostrf(gCfgItems.pausePosZ, 1, 1, str_1));
-          gcode.process_subcommands_now(public_buf_l);
-        }
-        if (gCfgItems.pausePosX != (float)-1 && gCfgItems.pausePosY != (float)-1) {
-          sprintf_P(public_buf_l, PSTR("G1 X%s Y%s"), dtostrf(gCfgItems.pausePosX, 1, 1, str_1), dtostrf(gCfgItems.pausePosY, 1, 1, str_1));
-          gcode.process_subcommands_now(public_buf_l);
-        }
-        uiCfg.print_state = PAUSED;
-        uiCfg.current_e_position_bak = current_position.e;
-
-        gCfgItems.pause_reprint = true;
-        update_spi_flash();
+      while(queue.ring_buffer.length) {
+        queue.advance();
       }
+      planner.synchronize();
+      gcode.process_subcommands_now_P(PSTR("M25"));
+      //save the positon
+      uiCfg.current_x_position_bak = current_position.x;
+      uiCfg.current_y_position_bak = current_position.y;
+      uiCfg.current_z_position_bak = current_position.z;
+
+      if (gCfgItems.pausePosZ != (float)-1) {
+        gcode.process_subcommands_now_P(PSTR("G91"));
+        sprintf_P(public_buf_l, PSTR("G1 Z%s"), dtostrf(gCfgItems.pausePosZ, 1, 1, str_1));
+        gcode.process_subcommands_now(public_buf_l);
+        gcode.process_subcommands_now_P(PSTR("G90"));
+      }
+      if (gCfgItems.pausePosX != (float)-1) {
+        sprintf_P(public_buf_l, PSTR("G1 X%s"), dtostrf(gCfgItems.pausePosX, 1, 1, str_1));
+        gcode.process_subcommands_now(public_buf_l);
+      }
+      if (gCfgItems.pausePosY != (float)-1) {
+        sprintf_P(public_buf_l, PSTR("G1 Y%s"), dtostrf(gCfgItems.pausePosY, 1, 1, str_1));
+        gcode.process_subcommands_now(public_buf_l);
+      }
+      uiCfg.print_state = PAUSED;
+      uiCfg.current_e_position_bak = current_position.e;
+
+      gCfgItems.pause_reprint = true;
+      update_spi_flash();
+      lv_clear_cur_ui();
+      lv_draw_return_ui();
     #endif
   }
-  else
-    uiCfg.waitEndMoves = 0;
 
   if (uiCfg.print_state == PAUSED) {
   }
 
   if (uiCfg.print_state == RESUMING) {
     if (IS_SD_PAUSED()) {
-      if (gCfgItems.pausePosX != (float)-1 && gCfgItems.pausePosY != (float)-1) {
-        sprintf_P(public_buf_m, PSTR("G1 X%s Y%s"), dtostrf(uiCfg.current_x_position_bak, 1, 1, str_1), dtostrf(uiCfg.current_y_position_bak, 1, 1, str_1));
+      if (gCfgItems.pausePosX != (float)-1) {
+        sprintf_P(public_buf_m, PSTR("G1 X%s"), dtostrf(uiCfg.current_x_position_bak, 1, 1, str_1));
+        gcode.process_subcommands_now(public_buf_m);
+      }
+      if (gCfgItems.pausePosY != (float)-1) {
+        sprintf_P(public_buf_m, PSTR("G1 Y%s"), dtostrf(uiCfg.current_y_position_bak, 1, 1, str_1));
         gcode.process_subcommands_now(public_buf_m);
       }
       if (gCfgItems.pausePosZ != (float)-1) {
@@ -118,6 +125,7 @@ void printer_state_polling() {
       #endif
 
       recovery.resume();
+
       #if 0
         // Move back to the saved XY
         char str_1[16], str_2[16];
@@ -128,8 +136,10 @@ void printer_state_polling() {
         gcode.process_subcommands_now(public_buf_m);
 
         if (gCfgItems.pause_reprint && gCfgItems.pausePosZ != -1.0f) {
-          sprintf_P(public_buf_l, PSTR("G91\nG1 Z-%s\nG90"), dtostrf(gCfgItems.pausePosZ, 1, 1, str_2));
+          gcode.process_subcommands_now_P(PSTR("G91"));
+          sprintf_P(public_buf_l, PSTR("G1 Z-%.1f"), gCfgItems.pausePosZ);
           gcode.process_subcommands_now(public_buf_l);
+          gcode.process_subcommands_now_P(PSTR("G90"));
         }
       #endif
       uiCfg.print_state = WORKING;
@@ -140,9 +150,10 @@ void printer_state_polling() {
     }
   #endif
 
-  if (uiCfg.print_state == WORKING)
-    filament_check();
-
+  if (uiCfg.print_state == WORKING) {
+    filament_check(); // filament_check();
+  }
+    
   TERN_(MKS_WIFI_MODULE, wifi_looping());
 
   #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
@@ -154,7 +165,7 @@ void printer_state_polling() {
         public_buf_m[sizeof(public_buf_m) - 1] = 0;
         gcode.process_subcommands_now_P(PSTR(public_buf_m));
       #endif
-      clear_cur_ui();
+      lv_clear_cur_ui();
       #ifdef BLTOUCH
         zoffset_do_init(false);
         lv_draw_zoffset_settings();
@@ -163,6 +174,8 @@ void printer_state_polling() {
     }
   #endif
 }
+
+filament_check_t filament_c;
 
 void filament_pin_setup() {
   #if PIN_EXISTS(MT_DET_1)
@@ -174,15 +187,29 @@ void filament_pin_setup() {
   #if PIN_EXISTS(MT_DET_3)
     SET_INPUT_PULLUP(MT_DET_3_PIN);
   #endif
+
+  filament_c.status = F_STATUS_CHECK;
+  filament_c.tick_delay = MT_TIME_DELAY;
+  filament_c.tick_start = 0;
+  filament_c.tick_end = 0;
 }
 
 void filament_check() {
-  #if ANY_PIN(MT_DET_1, MT_DET_2, MT_DET_3)
+  #if (PIN_EXISTS(MT_DET_1) || PIN_EXISTS(MT_DET_2) || PIN_EXISTS(MT_DET_3))
     const int FIL_DELAY = 20;
   #endif
   #if PIN_EXISTS(MT_DET_1)
     static int fil_det_count_1 = 0;
-    if (READ(MT_DET_1_PIN) == MT_DET_PIN_STATE)
+    if (!READ(MT_DET_1_PIN) && !MT_DET_PIN_INVERTING)
+      fil_det_count_1++;
+    else if (READ(MT_DET_1_PIN) && MT_DET_PIN_INVERTING)
+      fil_det_count_1++;
+    else if (fil_det_count_1 > 0)
+      fil_det_count_1--;
+
+    if (!READ(MT_DET_1_PIN) && !MT_DET_PIN_INVERTING)
+      fil_det_count_1++;
+    else if (READ(MT_DET_1_PIN) && MT_DET_PIN_INVERTING)
       fil_det_count_1++;
     else if (fil_det_count_1 > 0)
       fil_det_count_1--;
@@ -190,7 +217,16 @@ void filament_check() {
 
   #if PIN_EXISTS(MT_DET_2)
     static int fil_det_count_2 = 0;
-    if (READ(MT_DET_2_PIN) == MT_DET_PIN_STATE)
+    if (!READ(MT_DET_2_PIN) && !MT_DET_PIN_INVERTING)
+      fil_det_count_2++;
+    else if (READ(MT_DET_2_PIN) && MT_DET_PIN_INVERTING)
+      fil_det_count_2++;
+    else if (fil_det_count_2 > 0)
+      fil_det_count_2--;
+
+    if (!READ(MT_DET_2_PIN) && !MT_DET_PIN_INVERTING)
+      fil_det_count_2++;
+    else if (READ(MT_DET_2_PIN) && MT_DET_PIN_INVERTING)
       fil_det_count_2++;
     else if (fil_det_count_2 > 0)
       fil_det_count_2--;
@@ -198,7 +234,16 @@ void filament_check() {
 
   #if PIN_EXISTS(MT_DET_3)
     static int fil_det_count_3 = 0;
-    if (READ(MT_DET_3_PIN) == MT_DET_PIN_STATE)
+    if (!READ(MT_DET_3_PIN) && !MT_DET_PIN_INVERTING)
+      fil_det_count_3++;
+    else if (READ(MT_DET_3_PIN) && MT_DET_PIN_INVERTING)
+      fil_det_count_3++;
+    else if (fil_det_count_3 > 0)
+      fil_det_count_3--;
+
+    if (!READ(MT_DET_3_PIN) && !MT_DET_PIN_INVERTING)
+      fil_det_count_3++;
+    else if (READ(MT_DET_3_PIN) && MT_DET_PIN_INVERTING)
       fil_det_count_3++;
     else if (fil_det_count_3 > 0)
       fil_det_count_3--;
@@ -215,8 +260,8 @@ void filament_check() {
       || fil_det_count_3 >= FIL_DELAY
     #endif
   ) {
-    clear_cur_ui();
-    card.pauseSDPrint();
+    lv_clear_cur_ui();
+    TERN_(SDSUPPORT, card.pauseSDPrint());
     stop_print_time();
     uiCfg.print_state = PAUSING;
 
@@ -229,27 +274,87 @@ void filament_check() {
   }
 }
 
+
 bool get_filemant_pins(void) {
 
   #if PIN_EXISTS(MT_DET_1)
-    if(READ(MT_DET_1_PIN) == MT_DET_PIN_STATE) {
+    if(READ(MT_DET_1_PIN) == MT_DET_PIN_INVERTING) {
       return false;
     }
   #endif
 
   #if PIN_EXISTS(MT_DET_2)
-    if(READ(MT_DET_2_PIN) == MT_DET_PIN_STATE) {
+    if(READ(MT_DET_2_PIN) == MT_DET_PIN_INVERTING) {
        return false;
     }
   #endif
 
   #if PIN_EXISTS(MT_DET_3)
-    if(READ(MT_DET_3_PIN) == MT_DET_PIN_STATE) {
+    if(READ(MT_DET_3_PIN) == MT_DET_PIN_INVERTING) {
        return false;
     }
   #endif
 
   return true;
+}
+
+void filament_check_2() {
+
+  switch(filament_c.status) {
+
+    case F_STATUS_CHECK:
+
+      if(get_filemant_pins() == false) {
+        filament_c.status = F_STATUS_WAIT;
+        filament_c.tick_start = millis(); 
+      }
+
+    break;
+
+    case F_STATUS_WAIT:
+      filament_c.tick_end = millis(); 
+
+      if(get_filemant_pins() == false) {
+
+          if(filament_c.tick_end - filament_c.tick_start > filament_c.tick_delay) {  
+              filament_c.status = F_STATUS_RUN;
+          }
+      }else {
+        filament_c.status = F_STATUS_END;
+      }
+    break;
+
+    case F_STATUS_RUN:
+      lv_clear_cur_ui();
+      TERN_(SDSUPPORT, card.pauseSDPrint());
+      stop_print_time();
+      uiCfg.print_state = PAUSING;
+
+      if (gCfgItems.from_flash_pic)
+        flash_preview_begin = true;
+      else
+        default_preview_flg = true;
+
+      lv_draw_printing();
+      filament_c.status = F_STATUS_WAIT_UP;
+    break;
+
+    case F_STATUS_WAIT_UP:
+      if(get_filemant_pins() == true) {
+        filament_c.status = F_STATUS_END;
+      }
+    break;
+
+    case F_STATUS_END:
+      filament_c.tick_start = 0;
+      filament_c.tick_end  = 0;
+      filament_c.status = F_STATUS_CHECK;
+    break;
+  }
+}
+
+void filament_set_status (filament_status_t status) {
+  filament_c.status = status;
 }
 
 #endif // HAS_TFT_LVGL_UI

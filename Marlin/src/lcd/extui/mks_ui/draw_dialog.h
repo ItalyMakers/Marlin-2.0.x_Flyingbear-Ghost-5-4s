@@ -54,7 +54,7 @@ enum {
 
   DIALOG_WIFI_ENABLE_TIPS,
 
-  DIALOG_PAUSE_MESSAGE_PARKING,
+  DIALOG_PAUSE_MESSAGE_PAUSING,
   DIALOG_PAUSE_MESSAGE_CHANGING,
   DIALOG_PAUSE_MESSAGE_UNLOAD,
   DIALOG_PAUSE_MESSAGE_WAITING,
@@ -72,16 +72,21 @@ enum {
 
   DIALOG_WIFI_CONFIG_TIPS,
   DIALOG_TRANSFER_NO_DEVICE,
-
+  DIALOG_TYPE_MACHINE_PAUSING_TIPS,
   DIALOG_TYPE_AUTO_LEVELING_TIPS
 };
 
-void lv_draw_dialog(uint8_t type);
-void lv_clear_dialog();
-void filament_sprayer_temp();
-void filament_dialog_handle();
-void disp_dialog_temp_offset_value();
-void lv_filament_setbar();
+#define BTN_OK_X      100
+#define BTN_OK_Y      180
+#define BTN_CANCEL_X  280
+#define BTN_CANCEL_Y  180
+
+extern void lv_draw_dialog(uint8_t type);
+extern void lv_clear_dialog();
+extern void filament_sprayer_temp();
+extern void filament_dialog_handle();
+extern void lv_filament_setbar();
+extern void disp_dialog_temp_offset_value();
 
 #ifdef __cplusplus
   } /* C-declarations for C++ */

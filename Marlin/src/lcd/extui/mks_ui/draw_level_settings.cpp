@@ -19,15 +19,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
 
 #include "draw_ui.h"
 #include <lv_conf.h>
 
-#include "../../../inc/MarlinConfig.h"
+#include "../../../../inc/MarlinConfig.h"
 
 extern lv_group_t *g;
 static lv_obj_t *scr;
@@ -37,25 +36,29 @@ enum {
   ID_LEVEL_POSITION,
   ID_LEVEL_COMMAND,
   ID_LEVEL_ZOFFSET,
-  ID_LEVEL_BLTOUCH
+  ID_LEVEL_BLTOUCH,
+  ID_LEVEL_TOUCHMI         
 };
 
 static void event_handler(lv_obj_t *obj, lv_event_t event) {
   if (event != LV_EVENT_RELEASED) return;
-  lv_clear_level_settings();
   switch (obj->mks_obj_id) {
     case ID_LEVEL_RETURN:
-      draw_return_ui();
+      lv_clear_level_settings();
+      lv_draw_return_ui();
       break;
     case ID_LEVEL_POSITION:
-      lv_draw_tramming_pos_settings();
+      lv_clear_level_settings();
+      lv_draw_manual_level_pos_settings();
       break;
     case ID_LEVEL_COMMAND:
       keyboard_value = autoLevelGcodeCommand;
+      lv_clear_level_settings();
       lv_draw_keyboard();
       break;
     #if HAS_BED_PROBE
       case ID_LEVEL_ZOFFSET:
+        lv_clear_level_settings();
         lv_draw_auto_level_offset_settings();
         break;
     #endif
@@ -67,19 +70,30 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
         lv_draw_zoffset_settings();
         break;
     #endif
+    #if ENABLED(TOUCH_MI_PROBE)
+      case ID_LEVEL_TOUCHMI:
+        lv_clear_level_settings();
+        lv_draw_touchmi_settings();
+        break;
+    #endif
   }
 }
 
-void lv_draw_level_settings() {
+void lv_draw_level_settings(void) {
+ 
   scr = lv_screen_create(LEVELING_PARA_UI, machine_menu.LevelingParaConfTitle);
-  lv_screen_menu_item(scr, machine_menu.TrammingPosConf, PARA_UI_POS_X, PARA_UI_POS_Y, event_handler, ID_LEVEL_POSITION, 0);
+  lv_screen_menu_item(scr, machine_menu.LevelingManuPosConf, PARA_UI_POS_X, PARA_UI_POS_Y, event_handler, ID_LEVEL_POSITION, 0);
   lv_screen_menu_item(scr, machine_menu.LevelingAutoCommandConf, PARA_UI_POS_X, PARA_UI_POS_Y * 2, event_handler, ID_LEVEL_COMMAND, 1);
   #if HAS_BED_PROBE
     lv_screen_menu_item(scr, machine_menu.LevelingAutoZoffsetConf, PARA_UI_POS_X, PARA_UI_POS_Y * 3, event_handler, ID_LEVEL_ZOFFSET, 2);
   #endif
-  // lv_big_button_create(scr, "F:/bmp_back70x40.bin", common_menu.text_back, PARA_UI_BACL_POS_X + 10, PARA_UI_BACL_POS_Y, event_handler, ID_LEVEL_RETURN, true);
-    lv_screen_menu_item_return(scr, event_handler, ID_LEVEL_RETURN);
-
+  #if ENABLED(BLTOUCH)
+    lv_screen_menu_item(scr, machine_menu.BLTouchLevelingConf, PARA_UI_POS_X, PARA_UI_POS_Y * 4, event_handler, ID_LEVEL_BLTOUCH, 3);
+  #endif
+  #if ENABLED(TOUCH_MI_PROBE)
+    lv_screen_menu_item(scr, machine_menu.LevelingTouchmiConf, PARA_UI_POS_X, PARA_UI_POS_Y * 4, event_handler, ID_LEVEL_TOUCHMI, 3);
+  #endif
+  lv_screen_menu_item_return(scr, event_handler, ID_LEVEL_RETURN);
 }
 
 void lv_clear_level_settings() {

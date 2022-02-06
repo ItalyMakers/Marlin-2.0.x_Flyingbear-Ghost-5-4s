@@ -25,13 +25,14 @@
   extern "C" { /* C-declarations for C++ */
 #endif
 
-void lv_draw_preHeat();
-void lv_clear_preHeat();
-void disp_temp_type();
-void disp_step_heat();
-void disp_desire_temp();
-void disp_ext_heart();
-void disp_add_dec();
+extern void lv_draw_preHeat(void);
+extern void lv_clear_preHeat();
+extern void disp_temp_type();
+extern void disp_step_heat();
+extern void disp_desire_temp();
+extern void disp_ext_heart();
+extern void disp_add_dec();
+extern void dis_ext_heart_change(uint8_t mode);
 
 #ifdef __cplusplus
   } /* C-declarations for C++ */

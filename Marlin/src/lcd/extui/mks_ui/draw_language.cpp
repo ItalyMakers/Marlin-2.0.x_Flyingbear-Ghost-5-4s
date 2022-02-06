@@ -19,15 +19,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
 
 #include "draw_ui.h"
 #include <lv_conf.h>
 
-#include "../../../inc/MarlinConfig.h"
+#include "../../../../inc/MarlinConfig.h"
 #include <string.h>
 
 enum {
@@ -184,7 +183,7 @@ static void disp_language(uint8_t language, uint8_t state) {
   if (state == UNSELECTED) lv_obj_refresh_ext_draw_pad(obj);
 }
 
-void lv_draw_language() {
+void lv_draw_language(void) {
   scr = lv_screen_create(LANGUAGE_UI);
   // Create image buttons
   buttonCN = lv_big_button_create(scr, "F:/bmp_simplified_cn.bin", language_menu.chinese_s, INTERVAL_V, titleHeight, event_handler, ID_CN);

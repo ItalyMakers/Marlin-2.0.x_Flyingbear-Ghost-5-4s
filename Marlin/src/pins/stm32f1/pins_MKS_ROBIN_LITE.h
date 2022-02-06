@@ -112,11 +112,16 @@
 
   #endif // !MKS_MINI_12864
 
-  // Alter timing for graphical display
-  #if ENABLED(U8GLIB_ST7920)
-    #define BOARD_ST7920_DELAY_1             125
-    #define BOARD_ST7920_DELAY_2             125
-    #define BOARD_ST7920_DELAY_3             125
+  #if HAS_MARLINUI_U8GLIB
+    #ifndef BOARD_ST7920_DELAY_1
+      #define BOARD_ST7920_DELAY_1 DELAY_NS(125)
+    #endif
+    #ifndef BOARD_ST7920_DELAY_2
+      #define BOARD_ST7920_DELAY_2 DELAY_NS(125)
+    #endif
+    #ifndef BOARD_ST7920_DELAY_3
+      #define BOARD_ST7920_DELAY_3 DELAY_NS(125)
+    #endif
   #endif
 
 #endif // HAS_WIRED_LCD
@@ -138,6 +143,6 @@
 //
 #define SPI_DEVICE                             2
 #define SD_SCK_PIN                          PB13
-#define SD_MISO_PIN                         PB14
-#define SD_MOSI_PIN                         PB15
+#define SD_MISO_PIN                         P1B4
+#define SD_MOSI_PIN                         P1B5
 #define SD_SS_PIN                           PA15

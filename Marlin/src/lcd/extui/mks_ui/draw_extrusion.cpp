@@ -19,25 +19,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
 
 #include "draw_ui.h"
 #include <lv_conf.h>
 
-#include "../../../module/temperature.h"
-#include "../../../gcode/queue.h"
-#include "../../../inc/MarlinConfig.h"
+#include "../../../../module/temperature.h"
+#include "../../../../gcode/queue.h"
+#include "../../../../inc/MarlinConfig.h"
+#include "../../../../module/planner.h"
 
-
-extern lv_group_t *g;
-
-#ifndef USE_NEW_LVGL_CONF
 static lv_obj_t *scr;
-#endif
-
+extern lv_group_t *g;
 static lv_obj_t *buttonType, *buttonStep, *buttonSpeed;
 static lv_obj_t *labelType;
 static lv_obj_t *labelStep;
@@ -60,7 +55,15 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
   if (event != LV_EVENT_RELEASED) return;
   switch (obj->mks_obj_id) {
     case ID_E_ADD:
-      if (thermalManager.degHotend(uiCfg.extruderIndex) >= EXTRUDE_MINTEMP) {
+    #if HAS_HOTEND
+      #if ENABLED(SINGLENOZZLE)
+      if ((thermalManager.temp_hotend[0].celsius >= EXTRUDE_MINTEMP) && (!queue.ring_buffer.full(3))) {
+      #else
+      if ((thermalManager.temp_hotend[uiCfg.curSprayerChoose].celsius >= EXTRUDE_MINTEMP) && (!queue.ring_buffer.full(3))) {
+      #endif
+    #else
+      if (queue.length <= (BUFSIZE - 3)) {
+    #endif
         sprintf_P((char *)public_buf_l, PSTR("G91\nG1 E%d F%d\nG90"), uiCfg.extruStep, 60 * uiCfg.extruSpeed);
         queue.inject(public_buf_l);
         extrudeAmount += uiCfg.extruStep;
@@ -68,77 +71,79 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
       }
       break;
     case ID_E_DEC:
-      if (thermalManager.degHotend(uiCfg.extruderIndex) >= EXTRUDE_MINTEMP) {
+    #if HAS_HOTEND
+      #if ENABLED(SINGLENOZZLE)
+      if ((thermalManager.temp_hotend[0].celsius >= EXTRUDE_MINTEMP) && (!queue.ring_buffer.full(3))) {
+      #else
+      if ((thermalManager.temp_hotend[uiCfg.curSprayerChoose].celsius >= EXTRUDE_MINTEMP) && (!queue.ring_buffer.full(3))) {
+      #endif
+    #else
+      if (queue.length <= (BUFSIZE - 3)) {
+    #endif
         sprintf_P((char *)public_buf_l, PSTR("G91\nG1 E%d F%d\nG90"), 0 - uiCfg.extruStep, 60 * uiCfg.extruSpeed);
-        // queue.enqueue_one_now(public_buf_l);
         queue.inject(public_buf_l);
         extrudeAmount -= uiCfg.extruStep;
         disp_extru_amount();
       }
       break;
     case ID_E_TYPE:
-      #ifdef HAS_MULTI_EXTRUDER
-        if (uiCfg.extruderIndex == 0) {
-          uiCfg.extruderIndex = 1;
+      if (ENABLED(HAS_MULTI_EXTRUDER)) {
+        if (uiCfg.curSprayerChoose == 0) {
+          uiCfg.curSprayerChoose = 1;
           queue.inject_P(PSTR("T1"));
         }
         else {
-          uiCfg.extruderIndex = 0;
+          uiCfg.curSprayerChoose = 0;
           queue.inject_P(PSTR("T0"));
         }
+      }
+      else
+        uiCfg.curSprayerChoose = 0;
 
-        extrudeAmount = 0;
-        disp_hotend_temp();
-        disp_ext_type();
-        disp_extru_amount();
-      #endif
+      extrudeAmount = 0;
+      disp_hotend_temp();
+      disp_ext_type();
+      disp_extru_amount();
       break;
     case ID_E_STEP:
-      switch (uiCfg.extruStep) {
-        case uiCfg.eStepMin: uiCfg.extruStep = uiCfg.eStepMed; break;
-        case uiCfg.eStepMed: uiCfg.extruStep = uiCfg.eStepMax; break;
-        case uiCfg.eStepMax: uiCfg.extruStep = uiCfg.eStepMin; break;
+      switch (abs(uiCfg.extruStep)) {
+        case  1: uiCfg.extruStep = 5; break;
+        case  5: uiCfg.extruStep = 10; break;
+        case 10: uiCfg.extruStep = 1; break;
+        default: break;
       }
       disp_ext_step();
       break;
     case ID_E_SPEED:
       switch (uiCfg.extruSpeed) {
-        case uiCfg.eSpeedL: uiCfg.extruSpeed = uiCfg.eSpeedN; break;
-        case uiCfg.eSpeedN: uiCfg.extruSpeed = uiCfg.eSpeedH; break;
-        case uiCfg.eSpeedH: uiCfg.extruSpeed = uiCfg.eSpeedL; break;
+        case  1: uiCfg.extruSpeed = 10; break;
+        case 10: uiCfg.extruSpeed = 20; break;
+        case 20: uiCfg.extruSpeed = 1; break;
+        default: break;
       }
       disp_ext_speed();
       break;
     case ID_E_RETURN:
-      clear_cur_ui();
-      // lv_draw_tool();
-      draw_return_ui();
+      feedrate_mm_s = (float)uiCfg.moveSpeed_bak;
+      if(uiCfg.print_state == PAUSED)
+        planner.set_e_position_mm((destination.e = current_position.e = uiCfg.current_e_position_bak));
+      lv_clear_cur_ui();
+      lv_draw_return_ui();
       break;
   }
 }
 
-void lv_draw_extrusion() {
-
-#ifdef USE_NEW_LVGL_CONF
-  mks_ui.src_main = lv_set_scr_id_title(mks_ui.src_main, TOOL_UI, "");
-  lv_obj_t *buttonAdd = lv_big_button_create(mks_ui.src_main, "F:/bmp_in.bin", extrude_menu.in, INTERVAL_V, titleHeight, event_handler, ID_E_ADD);
-  lv_obj_clear_protect(buttonAdd, LV_PROTECT_FOLLOW);
-  lv_big_button_create(mks_ui.src_main, "F:/bmp_out.bin", extrude_menu.out, BTN_X_PIXEL * 3 + INTERVAL_V * 4, titleHeight, event_handler, ID_E_DEC);
-  buttonType = lv_imgbtn_create(mks_ui.src_main, nullptr, INTERVAL_V, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_E_TYPE);
-  buttonStep = lv_imgbtn_create(mks_ui.src_main, nullptr, BTN_X_PIXEL + INTERVAL_V * 2, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_E_STEP);
-  buttonSpeed = lv_imgbtn_create(mks_ui.src_main, nullptr, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_E_SPEED);
-#else 
+void lv_draw_extrusion(void) {
   scr = lv_screen_create(EXTRUSION_UI);
+  // Create image buttons
   lv_obj_t *buttonAdd = lv_big_button_create(scr, "F:/bmp_in.bin", extrude_menu.in, INTERVAL_V, titleHeight, event_handler, ID_E_ADD);
   lv_obj_clear_protect(buttonAdd, LV_PROTECT_FOLLOW);
   lv_big_button_create(scr, "F:/bmp_out.bin", extrude_menu.out, BTN_X_PIXEL * 3 + INTERVAL_V * 4, titleHeight, event_handler, ID_E_DEC);
+
   buttonType = lv_imgbtn_create(scr, nullptr, INTERVAL_V, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_E_TYPE);
   buttonStep = lv_imgbtn_create(scr, nullptr, BTN_X_PIXEL + INTERVAL_V * 2, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_E_STEP);
   buttonSpeed = lv_imgbtn_create(scr, nullptr, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_E_SPEED);
-#endif
 
-
-  // Create image buttons
   #if HAS_ROTARY_ENCODER
     if (gCfgItems.encoder_enable) {
       lv_group_add_obj(g, buttonType);
@@ -146,11 +151,8 @@ void lv_draw_extrusion() {
       lv_group_add_obj(g, buttonSpeed);
     }
   #endif
-#ifdef USE_NEW_LVGL_CONF
-  lv_big_button_create(mks_ui.src_main, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_E_RETURN);
-#else 
+
   lv_big_button_create(scr, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_E_RETURN);
-#endif
 
   // Create labels on the image buttons
   labelType = lv_label_create_empty(buttonType);
@@ -161,57 +163,65 @@ void lv_draw_extrusion() {
   disp_ext_step();
   disp_ext_speed();
 
-#ifdef USE_NEW_LVGL_CONF
-  tempText = lv_label_create_empty(mks_ui.src_main);
-#else 
   tempText = lv_label_create_empty(scr);
-#endif  
   lv_obj_set_style(tempText, &tft_style_label_rel);
   disp_hotend_temp();
 
-#ifdef USE_NEW_LVGL_CONF
-  ExtruText = lv_label_create_empty(mks_ui.src_main);
-#else
   ExtruText = lv_label_create_empty(scr);
-#endif
   lv_obj_set_style(ExtruText, &tft_style_label_rel);
-
   disp_extru_amount();
 }
 
 void disp_ext_type() {
-  if (uiCfg.extruderIndex == 1) {
+  if (uiCfg.curSprayerChoose == 1) {
     lv_imgbtn_set_src_both(buttonType, "F:/bmp_extru2.bin");
-    if (gCfgItems.multiple_language) lv_label_set_text(labelType, extrude_menu.ext2);
+    if (gCfgItems.multiple_language) {
+      lv_label_set_text(labelType, extrude_menu.ext2);
+      lv_obj_align(labelType, buttonType, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
+    }
   }
   else {
     lv_imgbtn_set_src_both(buttonType, "F:/bmp_extru1.bin");
-    if (gCfgItems.multiple_language) lv_label_set_text(labelType, extrude_menu.ext1);
+    if (gCfgItems.multiple_language) {
+      lv_label_set_text(labelType, extrude_menu.ext1);
+      lv_obj_align(labelType, buttonType, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
+    }
   }
-  if (gCfgItems.multiple_language)
-    lv_obj_align(labelType, buttonType, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
 }
 
 void disp_ext_speed() {
-  switch (uiCfg.extruSpeed) {
-    case uiCfg.eSpeedH: lv_imgbtn_set_src_both(buttonSpeed, "F:/bmp_speed_high.bin");   break;
-    case uiCfg.eSpeedL: lv_imgbtn_set_src_both(buttonSpeed, "F:/bmp_speed_slow.bin");   break;
-    case uiCfg.eSpeedN: lv_imgbtn_set_src_both(buttonSpeed, "F:/bmp_speed_normal.bin"); break;
-  }
+  if (uiCfg.extruSpeed == 20)
+    lv_imgbtn_set_src_both(buttonSpeed, "F:/bmp_speed_high.bin");
+  else if (uiCfg.extruSpeed == 1)
+    lv_imgbtn_set_src_both(buttonSpeed, "F:/bmp_speed_slow.bin");
+  else
+    lv_imgbtn_set_src_both(buttonSpeed, "F:/bmp_speed_normal.bin");
 
   if (gCfgItems.multiple_language) {
-    switch (uiCfg.extruSpeed) {
-      case uiCfg.eSpeedH: lv_label_set_text(labelSpeed, extrude_menu.high);   break;
-      case uiCfg.eSpeedL: lv_label_set_text(labelSpeed, extrude_menu.low);    break;
-      case uiCfg.eSpeedN: lv_label_set_text(labelSpeed, extrude_menu.normal); break;
+    if (uiCfg.extruSpeed == 20) {
+      lv_label_set_text(labelSpeed, extrude_menu.high);
+      lv_obj_align(labelSpeed, buttonSpeed, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
     }
-    lv_obj_align(labelSpeed, buttonSpeed, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
+    else if (uiCfg.extruSpeed == 1) {
+      lv_label_set_text(labelSpeed, extrude_menu.low);
+      lv_obj_align(labelSpeed, buttonSpeed, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
+    }
+    else {
+      lv_label_set_text(labelSpeed, extrude_menu.normal);
+      lv_obj_align(labelSpeed, buttonSpeed, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
+    }
   }
 }
 
 void disp_hotend_temp() {
   char buf[20] = {0};
-  sprintf(buf, extrude_menu.temp_value, thermalManager.wholeDegHotend(uiCfg.extruderIndex), thermalManager.degTargetHotend(uiCfg.extruderIndex));
+  #if HAS_HOTEND
+    #if ENABLED(SINGLENOZZLE)
+      sprintf(buf, extrude_menu.temp_value, (int)thermalManager.temp_hotend[0].celsius,  (int)thermalManager.temp_hotend[0].target);
+    #else
+      sprintf(buf, extrude_menu.temp_value, (int)thermalManager.temp_hotend[uiCfg.curSprayerChoose].celsius,  (int)thermalManager.temp_hotend[uiCfg.curSprayerChoose].target);
+    #endif
+  #endif
   strcpy(public_buf_l, extrude_menu.temper_text);
   strcat(public_buf_l, buf);
   lv_label_set_text(tempText, public_buf_l);
@@ -229,7 +239,7 @@ void disp_extru_amount() {
     sprintf(buf1, extrude_menu.count_value_cm, extrudeAmount / 10);
   else
     sprintf(buf1, extrude_menu.count_value_m, extrudeAmount / 1000);
-  strcat(public_buf_l, uiCfg.extruderIndex == 0 ? extrude_menu.ext1 : extrude_menu.ext2);
+  strcat(public_buf_l, uiCfg.curSprayerChoose < 1 ? extrude_menu.ext1 : extrude_menu.ext2);
   strcat(public_buf_l, buf1);
 
   lv_label_set_text(ExtruText, public_buf_l);
@@ -237,34 +247,34 @@ void disp_extru_amount() {
 }
 
 void disp_ext_step() {
-  char buf3[12];
-  sprintf_P(buf3, PSTR("%dmm"), uiCfg.extruStep);
-
-  switch (uiCfg.extruStep) {
-    case uiCfg.eStepMin: lv_imgbtn_set_src_both(buttonStep, "F:/bmp_step1_mm.bin");  break;
-    case uiCfg.eStepMed: lv_imgbtn_set_src_both(buttonStep, "F:/bmp_step5_mm.bin");  break;
-    case uiCfg.eStepMax: lv_imgbtn_set_src_both(buttonStep, "F:/bmp_step10_mm.bin"); break;
-  }
+  if (uiCfg.extruStep == 1)
+    lv_imgbtn_set_src_both(buttonStep, "F:/bmp_step1_mm.bin");
+  else if (uiCfg.extruStep == 5)
+    lv_imgbtn_set_src_both(buttonStep, "F:/bmp_step5_mm.bin");
+  else if (uiCfg.extruStep == 10)
+    lv_imgbtn_set_src_both(buttonStep, "F:/bmp_step10_mm.bin");
 
   if (gCfgItems.multiple_language) {
-    switch (uiCfg.extruStep) {
-      case uiCfg.eStepMin: lv_label_set_text(labelStep, buf3); break;
-      case uiCfg.eStepMed: lv_label_set_text(labelStep, buf3); break;
-      case uiCfg.eStepMax: lv_label_set_text(labelStep, buf3); break;
+    if (uiCfg.extruStep == 1) {
+      lv_label_set_text(labelStep, extrude_menu.step_1mm);
+      lv_obj_align(labelStep, buttonStep, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
     }
-    lv_obj_align(labelStep, buttonStep, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
+    else if (uiCfg.extruStep == 5) {
+      lv_label_set_text(labelStep, extrude_menu.step_5mm);
+      lv_obj_align(labelStep, buttonStep, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
+    }
+    else if (uiCfg.extruStep == 10) {
+      lv_label_set_text(labelStep, extrude_menu.step_10mm);
+      lv_obj_align(labelStep, buttonStep, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
+    }
   }
 }
 
 void lv_clear_extrusion() {
-  if (TERN0(HAS_ROTARY_ENCODER, gCfgItems.encoder_enable))
-    lv_group_remove_all_objs(g);
-
-#ifdef USE_NEW_LVGL_CONF 
-  lv_obj_del(mks_ui.src_main); 
-#else 
+  #if HAS_ROTARY_ENCODER
+    if (gCfgItems.encoder_enable) lv_group_remove_all_objs(g);
+  #endif
   lv_obj_del(scr);
-#endif
 }
 
 #endif // HAS_TFT_LVGL_UI

@@ -19,8 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
 
@@ -42,7 +41,7 @@ enum {
 
 static void event_handler(lv_obj_t *obj, lv_event_t event) {
   if (event != LV_EVENT_RELEASED) return;
-  clear_cur_ui();
+  lv_clear_cur_ui();
   switch (obj->mks_obj_id) {
     case ID_W_RETURN:
       lv_draw_set();
@@ -60,7 +59,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
   }
 }
 
-void lv_draw_wifi() {
+void lv_draw_wifi(void) {
   scr = lv_screen_create(WIFI_UI);
 
   lv_obj_t *buttonReconnect = nullptr, *label_Reconnect = nullptr;

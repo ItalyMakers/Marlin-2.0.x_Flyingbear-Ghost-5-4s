@@ -28,6 +28,10 @@
 
 CaseLight caselight;
 
+#if CASE_LIGHT_IS_COLOR_LED
+  #include "leds/leds.h"
+#endif
+
 #if CASELIGHT_USES_BRIGHTNESS && !defined(CASE_LIGHT_DEFAULT_BRIGHTNESS)
   #define CASE_LIGHT_DEFAULT_BRIGHTNESS 0 // For use on PWM pin as non-PWM just sets a default
 #endif
@@ -39,9 +43,17 @@ CaseLight caselight;
 bool CaseLight::on = CASE_LIGHT_DEFAULT_ON;
 
 #if CASE_LIGHT_IS_COLOR_LED
-  #include "leds/leds.h"
-  constexpr uint8_t init_case_light[] = CASE_LIGHT_DEFAULT_COLOR;
-  LEDColor CaseLight::color = { init_case_light[0], init_case_light[1], init_case_light[2] OPTARG(HAS_WHITE_LED, init_case_light[3]) };
+  LEDColor CaseLight::color =
+    #ifdef CASE_LIGHT_DEFAULT_COLOR
+      CASE_LIGHT_DEFAULT_COLOR
+    #else
+      { 255, 255, 255, 255 }
+    #endif
+  ;
+#endif
+
+#ifndef INVERT_CASE_LIGHT
+  #define INVERT_CASE_LIGHT false
 #endif
 
 void CaseLight::update(const bool sflag) {
@@ -60,12 +72,16 @@ void CaseLight::update(const bool sflag) {
     if (sflag && on)
       brightness = brightness_sav;  // Restore last brightness for M355 S1
 
-    const uint8_t i = on ? brightness : 0, n10ct = ENABLED(INVERT_CASE_LIGHT) ? 255 - i : i;
-    UNUSED(n10ct);
+    const uint8_t i = on ? brightness : 0, n10ct = INVERT_CASE_LIGHT ? 255 - i : i;
   #endif
 
   #if CASE_LIGHT_IS_COLOR_LED
-    leds.set_color(LEDColor(color.r, color.g, color.b OPTARG(HAS_WHITE_LED, color.w), n10ct));
+
+    leds.set_color(
+      MakeLEDColor(color.r, color.g, color.b, color.w, n10ct),
+      false
+    );
+
   #else // !CASE_LIGHT_IS_COLOR_LED
 
     #if CASELIGHT_USES_BRIGHTNESS
@@ -80,7 +96,7 @@ void CaseLight::update(const bool sflag) {
       else
     #endif
       {
-        const bool s = on ? TERN(INVERT_CASE_LIGHT, LOW, HIGH) : TERN(INVERT_CASE_LIGHT, HIGH, LOW);
+        const bool s = on ? !INVERT_CASE_LIGHT : INVERT_CASE_LIGHT;
         WRITE(CASE_LIGHT_PIN, s ? HIGH : LOW);
       }
 

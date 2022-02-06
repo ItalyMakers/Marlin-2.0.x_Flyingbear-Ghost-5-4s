@@ -19,8 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
 
@@ -31,19 +30,17 @@
 //#include "../lvgl/src/lv_core/lv_disp.h"
 //#include "../lvgl/src/lv_core/lv_refr.h"
 
-#include "../../../sd/cardreader.h"
-#include "../../../inc/MarlinConfig.h"
+#include "../../../../sd/cardreader.h"
+#include "../../../../inc/MarlinConfig.h"
 
-#ifndef USE_NEW_LVGL_CONF
 static lv_obj_t *scr;
-#endif
-extern lv_group_t*  g;
+extern lv_group_t* g;
 
 static lv_obj_t *buttonPageUp, *buttonPageDown, *buttonBack,
                 *buttonGcode[FILE_BTN_CNT], *labelPageUp[FILE_BTN_CNT], *buttonText[FILE_BTN_CNT];
 
 enum {
-  ID_P_UP = 7,
+  ID_P_UP = (FILE_BTN_CNT + 1),
   ID_P_DOWN,
   ID_P_RETURN
 };
@@ -56,9 +53,7 @@ extern uint8_t public_buf[513];
 extern char public_buf_m[100];
 
 uint8_t sel_id = 0;
-
-// fix wang
-uint16_t lv_longFilename[FILENAME_LENGTH * MAX_VFAT_ENTRIES + 1];
+uint16_t lv_longFilename[FILENAME_LENGTH * MAX_VFAT_ENTRIES + 1]; // fix wang
 /*
 Unicode      		|        UTF-8
 Hexadecimal      	|        Binary
@@ -75,27 +70,27 @@ void unicode_2_utf8(char *des, uint16_t *source, uint8_t Len) {
 		if(0 <= source[i] && source[i] <= 0x7F) {
 			// 0xxxxxxx
 			*des = (source[i] & 0x7F);
-			des++;
+			des++;  
 		}
 		else if(0X80 <= source[i] && source[i] <= 0x7FF) {
 			// 110xxxxx 10xxxxxx
-			*(des+1) = (source[i] & 0x3F) | 0x80;
+			*(des+1) = (source[i] & 0x3F) | 0x80;  
         	*des     = ((source[i] >> 6) & 0x1F) | 0xC0;
 			des 	 += 2;
 		}
 		else if(0X800 <= source[i] && source[i] <= 0xFFFF) {
 			// 1110xxxx 10xxxxxx 10xxxxxx
-			*(des+2) = (source[i] & 0x3F) | 0x80;
-        	*(des+1) = ((source[i] >>  6) & 0x3F) | 0x80;
+			*(des+2) = (source[i] & 0x3F) | 0x80;  
+        	*(des+1) = ((source[i] >>  6) & 0x3F) | 0x80;  
         	*des     = ((source[i] >> 12) & 0x0F) | 0xE0;
 			des 	 += 3;
 		}
 		else if(0X10000 <= source[i] && source[i] <= 0x10FFFF) {
 			// 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
-			*(des+3) = (source[i] & 0x3F) | 0x80;
-			*(des+2) = ((source[i] >>  6) & 0x3F) | 0x80;
-			*(des+1) = ((source[i] >> 12) & 0x3F) | 0x80;
-			*des     = ((source[i] >> 18) & 0x07) | 0xF0;
+			*(des+3) = (source[i] & 0x3F) | 0x80;  
+			*(des+2) = ((source[i] >>  6) & 0x3F) | 0x80;  
+			*(des+1) = ((source[i] >> 12) & 0x3F) | 0x80;  
+			*des     = ((source[i] >> 18) & 0x07) | 0xF0; 
       		des 	 += 4;
 		}
 		else {
@@ -103,9 +98,6 @@ void unicode_2_utf8(char *des, uint16_t *source, uint8_t Len) {
 		}
 	}
 }
-
-
-
 
 #if ENABLED(SDSUPPORT)
 
@@ -119,14 +111,13 @@ void unicode_2_utf8(char *des, uint16_t *source, uint8_t Len) {
     //root2.rewind();
     //SERIAL_ECHOLN(list_file.curDirPath);
 
-    if (curDirLever != 0)
-      card.cd(list_file.curDirPath);
-    else
-      card.cdroot();
+    if (curDirLever != 0) card.cd(list_file.curDirPath);
+    else card.cdroot(); // while(card.cdup());
 
     const uint16_t fileCnt = card.get_num_Files();
 
     for (uint16_t i = 0; i < fileCnt; i++) {
+
       if (list_file.Sd_file_cnt == list_file.Sd_file_offset) {
 
         card.getfilename_sorted(SD_ORDER(i, fileCnt));
@@ -143,7 +134,7 @@ void unicode_2_utf8(char *des, uint16_t *source, uint8_t Len) {
         // strcpy(list_file.long_name[valid_name_cnt], card.longest_filename());
 
         ZERO(list_file.long_name[valid_name_cnt]);
-        if (lv_longFilename[0] == 0)
+				if (lv_longFilename[0] == 0)
 				  strncpy(list_file.long_name[valid_name_cnt], card.filename, strlen(card.filename));
 				else {
 					//chinese is 3 byte, ascii is 1 byte
@@ -173,14 +164,14 @@ void unicode_2_utf8(char *des, uint16_t *source, uint8_t Len) {
 
 bool have_pre_pic(char *path) {
   #if ENABLED(SDSUPPORT)
-    char *ps1, *ps2, *cur_name = strrchr(path, '/');
-    card.openFileRead(cur_name);
-    card.read(public_buf, 512);
+    char *ps1;//, *ps2;//, *cur_name = strrchr(path, '/');
+    card.openFileRead(path);
+    card.read(public_buf, 256);
     ps1 = strstr((char *)public_buf, ";simage:");
-    card.read(public_buf, 512);
-    ps2 = strstr((char *)public_buf, ";simage:");
+    //card.read(public_buf, 512);
+    //ps2 = strstr((char *)public_buf, ";simage:");
     card.closefile();
-    if (ps1 || ps2) return true;
+    if (ps1) return true;
   #endif
 
   return false;
@@ -202,6 +193,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
       #if ENABLED(SDSUPPORT)
         file_count = search_file();
       #endif
+      
       if (file_count != 0) {
         dir_offset[curDirLever].curPage--;
         lv_clear_print_file();
@@ -280,8 +272,8 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
   }
 }
 
-void lv_draw_print_file() {
-
+void lv_draw_print_file(void) {
+  //uint8_t i;
   uint8_t file_count;
 
   curDirLever = 0;
@@ -301,29 +293,18 @@ void lv_draw_print_file() {
   #endif
   disp_gcode_icon(file_count);
 }
-// static char test_public_buf_l[40];
+
 static char test_public_buf_l[(SHORT_NAME_LEN + 1) * MAX_DIR_LEVEL + strlen("S:/") + 1];
 
 void disp_gcode_icon(uint8_t file_num) {
   uint8_t i;
 
-  // TODO: set current media title?!
-#ifndef USE_NEW_LVGL_CONF
   scr = lv_screen_create(PRINT_FILE_UI, "");
-#else
-  mks_ui.src_main = lv_set_scr_id_title(mks_ui.src_main, PRINT_FILE_UI, "");
-#endif
 
   // Create image buttons
-#ifndef USE_NEW_LVGL_CONF
   buttonPageUp   = lv_imgbtn_create(scr, "F:/bmp_pageUp.bin", OTHER_BTN_XPIEL * 3 + INTERVAL_V * 4, titleHeight, event_handler, ID_P_UP);
   buttonPageDown = lv_imgbtn_create(scr, "F:/bmp_pageDown.bin", OTHER_BTN_XPIEL * 3 + INTERVAL_V * 4, titleHeight + OTHER_BTN_YPIEL + INTERVAL_H, event_handler, ID_P_DOWN);
   buttonBack     = lv_imgbtn_create(scr, "F:/bmp_back.bin", OTHER_BTN_XPIEL * 3 + INTERVAL_V * 4, titleHeight + OTHER_BTN_YPIEL * 2 + INTERVAL_H * 2, event_handler, ID_P_RETURN);
-#else
-  buttonPageUp   = lv_imgbtn_create(mks_ui.src_main, "F:/bmp_pageUp.bin", OTHER_BTN_XPIEL * 3 + INTERVAL_V * 4, titleHeight, event_handler, ID_P_UP);
-  buttonPageDown = lv_imgbtn_create(mks_ui.src_main, "F:/bmp_pageDown.bin", OTHER_BTN_XPIEL * 3 + INTERVAL_V * 4, titleHeight + OTHER_BTN_YPIEL + INTERVAL_H, event_handler, ID_P_DOWN);
-  buttonBack     = lv_imgbtn_create(mks_ui.src_main, "F:/bmp_back.bin", OTHER_BTN_XPIEL * 3 + INTERVAL_V * 4, titleHeight + OTHER_BTN_YPIEL * 2 + INTERVAL_H * 2, event_handler, ID_P_RETURN);
-#endif
 
   // Create labels on the image buttons
   for (i = 0; i < FILE_BTN_CNT; i++) {
@@ -338,13 +319,10 @@ void disp_gcode_icon(uint8_t file_num) {
     }
     */
     if (i >= file_num) break;
+    watchdog_refresh();
 
     #ifdef TFT35
-  #ifndef USE_NEW_LVGL_CONF
       buttonGcode[i] = lv_imgbtn_create(scr, nullptr);
-  #else
-      buttonGcode[i] = lv_imgbtn_create(mks_ui.src_main, nullptr);
-  #endif
 
       lv_imgbtn_use_label_style(buttonGcode[i]);
       lv_obj_clear_protect(buttonGcode[i], LV_PROTECT_FOLLOW);
@@ -367,12 +345,10 @@ void disp_gcode_icon(uint8_t file_num) {
       else {
         if (have_pre_pic((char *)list_file.file_name[i])) {
           //lv_obj_set_event_cb_mks(buttonGcode[i], event_handler, (i + 1), list_file.file_name[i], 1);
-          memset(test_public_buf_l, 0, sizeof(test_public_buf_l));
-          memset(buttonGcode[i]->mks_pic_name, 0, sizeof(buttonGcode[i]->mks_pic_name));
 
           memset(test_public_buf_l, 0, sizeof(test_public_buf_l));
           memset(buttonGcode[i]->mks_pic_name, 0, sizeof(buttonGcode[i]->mks_pic_name));
-
+          
           strcpy(test_public_buf_l, "S:");
 
           strcat(test_public_buf_l, list_file.file_name[i]);
@@ -387,11 +363,7 @@ void disp_gcode_icon(uint8_t file_num) {
 
           if (i < 3) {
             lv_obj_set_pos(buttonGcode[i], BTN_X_PIXEL * i + INTERVAL_V * (i + 1) + FILE_PRE_PIC_X_OFFSET, titleHeight + FILE_PRE_PIC_Y_OFFSET);
-#ifndef USE_NEW_LVGL_CONF
             buttonText[i] = lv_btn_create(scr, nullptr);
-#else
-            buttonText[i] = lv_btn_create(mks_ui.src_main, nullptr);
-#endif
             //lv_obj_set_event_cb(buttonText[i], event_handler);
 
             lv_btn_use_label_style(buttonText[i]);
@@ -403,11 +375,7 @@ void disp_gcode_icon(uint8_t file_num) {
           }
           else {
             lv_obj_set_pos(buttonGcode[i], BTN_X_PIXEL * (i - 3) + INTERVAL_V * ((i - 3) + 1) + FILE_PRE_PIC_X_OFFSET, BTN_Y_PIXEL + INTERVAL_H + titleHeight + FILE_PRE_PIC_Y_OFFSET);
-#ifndef USE_NEW_LVGL_CONF
             buttonText[i] = lv_btn_create(scr, nullptr);
-#else
-            buttonText[i] = lv_btn_create(mks_ui.src_main, nullptr);
-#endif
             //lv_obj_set_event_cb(buttonText[i], event_handler);
 
             lv_btn_use_label_style(buttonText[i]);
@@ -458,7 +426,7 @@ void disp_gcode_icon(uint8_t file_num) {
         lv_imgbtn_set_src_both(buttonGcode[0], buttonGcode[0]->mks_pic_name);
     }
   }
-
+  
   #if HAS_ROTARY_ENCODER
     if (gCfgItems.encoder_enable) {
       lv_group_add_obj(g, buttonPageUp);
@@ -471,17 +439,17 @@ void disp_gcode_icon(uint8_t file_num) {
 uint32_t lv_open_gcode_file(char *path) {
   #if ENABLED(SDSUPPORT)
     uint32_t *ps4;
-    uintptr_t pre_sread_cnt = UINTPTR_MAX;
-    char *cur_name;
+    uint32_t pre_sread_cnt = UINT32_MAX;
+    //char *cur_name;
 
-    cur_name = strrchr(path, '/');
+    //cur_name = strrchr(path, '/');
 
-    card.openFileRead(cur_name);
-    card.read(public_buf, 512);
+    card.openFileRead(path);
+    card.read(public_buf, 256);
     ps4 = (uint32_t *)strstr((char *)public_buf, ";simage:");
     // Ignore the beginning message of gcode file
     if (ps4) {
-      pre_sread_cnt = (uintptr_t)ps4 - (uintptr_t)((uint32_t *)(&public_buf[0]));
+      pre_sread_cnt = (uint32_t)ps4 - (uint32_t)((uint32_t *)(&public_buf[0]));
       card.setIndex(pre_sread_cnt);
     }
     return pre_sread_cnt;
@@ -570,7 +538,7 @@ void lv_gcode_file_read(uint8_t *data_buf) {
 void lv_close_gcode_file() {TERN_(SDSUPPORT, card.closefile());}
 
 void lv_gcode_file_seek(uint32_t pos) {
-  card.setIndex(pos);
+  TERN_(SDSUPPORT, card.setIndex(pos));
 }
 
 void cutFileName(char *path, int len, int bytePerLine, char *outStr) {
@@ -659,12 +627,7 @@ void lv_clear_print_file() {
   #if HAS_ROTARY_ENCODER
     if (gCfgItems.encoder_enable) lv_group_remove_all_objs(g);
   #endif
-
-#ifndef USE_NEW_LVGL_CONF
   lv_obj_del(scr);
-#else
-  lv_obj_clean(mks_ui.src_main);
-#endif
 }
 
 #endif // HAS_TFT_LVGL_UI

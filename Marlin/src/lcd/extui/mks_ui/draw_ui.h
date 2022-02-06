@@ -69,7 +69,7 @@
 #include "draw_max_feedrate_settings.h"
 #include "draw_tmc_step_mode_settings.h"
 #include "draw_level_settings.h"
-#include "draw_tramming_pos_settings.h"
+#include "draw_manual_level_pos_settings.h"
 #include "draw_auto_level_offset_settings.h"
 #include "draw_filament_change.h"
 #include "draw_filament_settings.h"
@@ -78,10 +78,14 @@
 #include "draw_keyboard.h"
 #include "draw_media_select.h"
 #include "draw_encoder_settings.h"
+#include "draw_touchmi_settings.h"
 // #include "draw_bltouch_settings.h"
 #include "draw_zoffset.h"
-
-#include "../../../inc/MarlinConfigPre.h"
+#if ENABLED(DUAL_X_CARRIAGE)
+  #include "draw_dual_x_carriage_mode.h"
+  #include "draw_hotend_offset_settings.h"
+#endif
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if ENABLED(MKS_WIFI_MODULE)
   #include "wifiSerial.h"
@@ -143,7 +147,9 @@
   #define PARA_UI_SIZE_X            450
   #define PARA_UI_SIZE_Y            40
 
-  #define PARA_UI_ARROW_V          12
+  #define PARA_UI_ARROW_V           12
+  #define PARA_UI_ITEM_TEXT_V       10
+  #define PARA_UI_ITEM_TEXT_H       10
 
   #define PARA_UI_BACL_POS_X        400
   #define PARA_UI_BACL_POS_Y        270
@@ -165,15 +171,15 @@
   #define PARA_UI_VALUE_BTN_X_SIZE  70
   #define PARA_UI_VALUE_BTN_Y_SIZE  28
 
+  #define PARA_UI_TURN_BTN_X_SIZE   70
+  #define PARA_UI_TURN_BTN_Y_SIZE   40
+
   #define PARA_UI_BACK_BTN_X_SIZE   70
   #define PARA_UI_BACK_BTN_Y_SIZE   40
 
   #define QRCODE_X                  20
   #define QRCODE_Y                  40
   #define QRCODE_WIDTH              160
-
-  #define PARA_UI_TURN_BTN_X_SIZE   70
-  #define PARA_UI_TURN_BTN_Y_SIZE   40
 
 #else // ifdef TFT35
 
@@ -203,7 +209,7 @@ typedef struct {
   uint8_t   wifi_type;
   bool      cloud_enable,
             encoder_enable;
-  xy_int_t  trammingPos[5];
+  int   levelingPos[5][2];
   int       filamentchange_load_length,
             filamentchange_load_speed,
             filamentchange_unload_length,
@@ -213,11 +219,10 @@ typedef struct {
   uint32_t  curFilesize;
 } CFG_ITMES;
 
-typedef struct UI_Config_Struct {
+typedef struct {
   uint8_t curTempType:1,
-          extruderIndex:3,
-          stepHeat:4,
-          extruderIndexBak:4;
+          curSprayerChoose:3,
+          stepHeat:4;
   bool    leveling_first_time:1,
           para_ui_page:1,
           configWifi:1,
@@ -229,41 +234,36 @@ typedef struct UI_Config_Struct {
           filament_loading_completed:1,
           filament_unloading_completed:1,
           filament_loading_time_flg:1,
+          filament_unloading_time_flg:1,
+          curSprayerChoose_bak:1,
+          tmc_connect_state:1,
           autoLeveling:1,
-          filament_unloading_time_flg:1;
+          adjustZoffset:1;
   uint8_t wifi_name[32];
   uint8_t wifi_key[64];
   uint8_t cloud_hostUrl[96];
-  // Extruder Steps distances (mm)
   uint8_t extruStep;
-  static constexpr uint8_t eStepMin =  1,
-                           eStepMed =  5,
-                           eStepMax = 10;
-  // Extruder speed (mm/s)
   uint8_t extruSpeed;
-  static constexpr uint8_t eSpeedH = 20,
-                           eSpeedN = 10,
-                           eSpeedL = 1;
   uint8_t print_state;
   uint8_t stepPrintSpeed;
   uint8_t waitEndMoves;
   uint8_t dialogType;
-  uint8_t F[4];
   uint8_t filament_rate;
   uint16_t moveSpeed;
   uint16_t cloud_port;
   uint16_t moveSpeed_bak;
-  uint32_t print_progress;
+  uint32_t totalSend;
   uint32_t filament_loading_time,
            filament_unloading_time,
            filament_loading_time_cnt,
            filament_unloading_time_cnt;
   float move_dist;
-  celsius_t hotendTargetTempBak;
+  float desireSprayerTempBak;
   float current_x_position_bak,
         current_y_position_bak,
         current_z_position_bak,
-        current_e_position_bak;
+        current_e_position_bak,
+        babyStepZoffsetDiff;
 } UI_CFG;
 
 typedef enum {
@@ -282,6 +282,7 @@ typedef enum {
   SET_UI,
   ZERO_UI,
   ZOFFSET_UI,
+  TOUCHMI_UI,
   SPRAYER_UI,
   MACHINE_UI,
   LANGUAGE_UI,
@@ -344,6 +345,11 @@ typedef enum {
   TOUCH_CALIBRATION_UI,
   GCODE_UI,
   MEDIA_SELECT_UI,
+  #if ENABLED(DUAL_X_CARRIAGE)
+    ,
+    DUAL_X_CARRIAGE_MODE_UI,
+    HOTEND_OFFSET_UI
+  #endif
 } DISP_STATE;
 
 typedef struct {
@@ -423,6 +429,13 @@ typedef enum {
   y_sensitivity,
   z_sensitivity,
   z2_sensitivity
+
+  #if ENABLED(DUAL_X_CARRIAGE)
+    ,
+    x_hotend_offset,
+    y_hotend_offset,
+    z_hotend_offset
+  #endif
 } num_key_value_state;
 extern num_key_value_state value;
 
@@ -456,31 +469,33 @@ extern lv_style_t style_para_back;
 extern lv_style_t lv_bar_style_indic;
 extern lv_style_t style_btn_pr;
 extern lv_style_t style_btn_rel;
+extern lv_style_t style_check_box_selected;
+extern lv_style_t style_check_box_unselected;
 
 extern lv_point_t line_points[4][2];
 
-void gCfgItems_init();
-void ui_cfg_init();
-void tft_style_init();
-extern char *creat_title_text();
-void preview_gcode_prehandle(char *path);
-void update_spi_flash();
-void update_gcode_command(int addr, uint8_t *s);
-void get_gcode_command(int addr, uint8_t *d);
-void lv_serial_capt_hook(void *, uint8_t);
-void lv_eom_hook(void *);
+extern void gCfgItems_init();
+extern void ui_cfg_init();
+extern void tft_style_init();
+extern char *creat_title_text(void);
+extern void preview_gcode_prehandle(char *path);
+extern void update_spi_flash();
+extern void update_gcode_command(int addr,uint8_t *s);
+extern void get_gcode_command(int addr,uint8_t *d);
+extern void lv_serial_capt_hook(void *, uint8_t);
+extern void lv_eom_hook(void *);
 #if HAS_GCODE_PREVIEW
-  void disp_pre_gcode(int xpos_pixel, int ypos_pixel);
+  extern void disp_pre_gcode(int xpos_pixel, int ypos_pixel);
 #endif
-void GUI_RefreshPage();
-void clear_cur_ui();
-void draw_return_ui();
-void sd_detection();
-void gCfg_to_spiFlah();
-void print_time_count();
+extern void GUI_RefreshPage();
+extern void lv_clear_cur_ui();
+extern void lv_draw_return_ui();
+extern void sd_detection();
+extern void gCfg_to_spiFlah();
+extern void print_time_count();
 
-void LV_TASK_HANDLER();
-void lv_ex_line(lv_obj_t *line, lv_point_t *points);
+extern void LV_TASK_HANDLER();
+extern void lv_ex_line(lv_obj_t *line, lv_point_t *points);
 
 #ifdef __cplusplus
   } /* C-declarations for C++ */
@@ -548,18 +563,14 @@ lv_obj_t* lv_big_button_create(lv_obj_t *par, const char *img, const char *text,
 
 // Create a menu item, follow the LVGL UI standard.
 lv_obj_t* lv_screen_menu_item(lv_obj_t *par, const char *text, lv_coord_t x, lv_coord_t y, lv_event_cb_t cb, const int id, const int index, bool drawArrow = true);
-lv_obj_t* lv_screen_menu_item_1_edit(lv_obj_t *par, const char *text, lv_coord_t x, lv_coord_t y, lv_event_cb_t cb, const int id, const int index, const char *editValue);
-lv_obj_t* lv_screen_menu_item_2_edit(lv_obj_t *par, const char *text, lv_coord_t x, lv_coord_t y, lv_event_cb_t cb, const int id, const int index, const char *editValue, const int idEdit2, const char *editValue2);
-lv_obj_t* lv_screen_menu_item_onoff(lv_obj_t *par, const char *text, lv_coord_t x, lv_coord_t y, lv_event_cb_t cb, const int id, const int index, const bool curValue);
-void lv_screen_menu_item_onoff_update(lv_obj_t *btn, const bool curValue);
 
+lv_obj_t*  lv_screen_menu_item_onoff(lv_obj_t *par, const char *text, lv_coord_t x, lv_coord_t y, lv_event_cb_t cb, const int id, const int index, const bool curValue);
+
+void lv_screen_menu_item_1_edit(lv_obj_t *par, const char *text, lv_coord_t x, lv_coord_t y, lv_event_cb_t cb, const int id, const int index, const char *editValue);
+void lv_screen_menu_item_2_edit(lv_obj_t *par, const char *text, lv_coord_t x, lv_coord_t y, lv_event_cb_t cb, const int id, const int index, const char *editValue, const int idEdit2, const char *editValue2);
+void lv_screen_menu_item_onoff_update(lv_obj_t *btn, const bool curValue);
 void lv_screen_menu_item_turn_page(lv_obj_t *par, const char *text, lv_event_cb_t cb, const int id);
 void lv_screen_menu_item_return(lv_obj_t *par, lv_event_cb_t cb, const int id);
-
-// set scr id and title
-#ifdef USE_NEW_LVGL_CONF
-lv_obj_t* lv_set_scr_id_title(lv_obj_t *scr ,DISP_STATE newScreenType, const char *title);
-#endif
 
 #define _DIA_1(T)       (uiCfg.dialogType == DIALOG_##T)
 #define DIALOG_IS(V...) DO(DIA,||,V)

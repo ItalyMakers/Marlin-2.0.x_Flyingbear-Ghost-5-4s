@@ -19,8 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
 
@@ -31,29 +30,26 @@
 #include "pic_manager.h"
 
 #include "draw_ui.h"
+#include "mks_hardware_test.h"
 
 #include <SPI.h>
 
-#include "../../../MarlinCore.h" // for marlin_state
-#include "../../../sd/cardreader.h"
-#include "../../../module/motion.h"
-#include "../../../module/planner.h"
-#include "../../../inc/MarlinConfig.h"
+#include "../../../../MarlinCore.h" // for marlin_state
+#include "../../../../sd/cardreader.h"
+#include "../../../../module/motion.h"
+#include "../../../../module/planner.h"
+#include "../../../../inc/MarlinConfig.h"
 
 #if ENABLED(POWER_LOSS_RECOVERY)
-  #include "../../../feature/powerloss.h"
+  #include "../../../../feature/powerloss.h"
 #endif
 
 #if ENABLED(PARK_HEAD_ON_PAUSE)
-  #include "../../../feature/pause.h"
+  #include "../../../../feature/pause.h"
 #endif
 
 #if ENABLED(TOUCH_SCREEN_CALIBRATION)
   #include "draw_touch_calibration.h"
-#endif
-
-#if ENABLED(MKS_TEST)
-  #include "mks_hardware.h"
 #endif
 
 CFG_ITMES gCfgItems;
@@ -76,10 +72,13 @@ extern bool once_flag;
 extern uint8_t sel_id;
 extern lv_group_t *g;
 
-void LCD_IO_WriteData(uint16_t RegValue);
+extern uint8_t bmp_public_buf[14 * 1024];
+extern uint8_t public_buf[513];
+
+extern void LCD_IO_WriteData(uint16_t RegValue);
 
 static const char custom_gcode_command[][100] = {
-  "G29N\nM500",
+  "G28\nG29\nM500",
   "G28",
   "G28",
   "G28",
@@ -129,16 +128,16 @@ void gCfgItems_init() {
   gCfgItems.pausePosX         = X_PAUSE_POS;
   gCfgItems.pausePosY         = Y_PAUSE_POS;
   gCfgItems.pausePosZ         = Z_PAUSE_POS;
-  gCfgItems.trammingPos[0].x  = X_MIN_POS + 30;
-  gCfgItems.trammingPos[0].y  = Y_MIN_POS + 30;
-  gCfgItems.trammingPos[1].x  = X_MAX_POS - 30;
-  gCfgItems.trammingPos[1].y  = Y_MIN_POS + 30;
-  gCfgItems.trammingPos[2].x  = X_MAX_POS - 30;
-  gCfgItems.trammingPos[2].y  = Y_MAX_POS - 30;
-  gCfgItems.trammingPos[3].x  = X_MIN_POS + 30;
-  gCfgItems.trammingPos[3].y  = Y_MAX_POS - 30;
-  gCfgItems.trammingPos[4].x  = X_BED_SIZE / 2;
-  gCfgItems.trammingPos[4].y  = Y_BED_SIZE / 2;
+  gCfgItems.levelingPos[0][0] = X_MIN_POS + 30;
+  gCfgItems.levelingPos[0][1] = Y_MIN_POS + 30;
+  gCfgItems.levelingPos[1][0] = X_MAX_POS - 30;
+  gCfgItems.levelingPos[1][1] = Y_MIN_POS + 30;
+  gCfgItems.levelingPos[2][0] = X_MAX_POS - 30;
+  gCfgItems.levelingPos[2][1] = Y_MAX_POS - 30;
+  gCfgItems.levelingPos[3][0] = X_MIN_POS + 30;
+  gCfgItems.levelingPos[3][1] = Y_MAX_POS - 30;
+  gCfgItems.levelingPos[4][0] = X_BED_SIZE / 2;
+  gCfgItems.levelingPos[4][1] = Y_BED_SIZE / 2;
   gCfgItems.cloud_enable      = false;
   gCfgItems.wifi_mode_sel = STA_MODEL;
   gCfgItems.fileSysType   = FILE_SYS_SD;
@@ -159,7 +158,7 @@ void gCfgItems_init() {
     gCfgItems.spi_flash_flag = FLASH_INF_VALID_FLAG;
     W25QXX.SPI_FLASH_SectorErase(VAR_INF_ADDR);
     W25QXX.SPI_FLASH_BufferWrite((uint8_t *)&gCfgItems, VAR_INF_ADDR, sizeof(gCfgItems));
-    // init gcode command
+    //init gcode command
     W25QXX.SPI_FLASH_BufferWrite((uint8_t *)&custom_gcode_command[0], AUTO_LEVELING_COMMAND_ADDR, 100);
     W25QXX.SPI_FLASH_BufferWrite((uint8_t *)&custom_gcode_command[1], OTHERS_COMMAND_ADDR_1, 100);
     W25QXX.SPI_FLASH_BufferWrite((uint8_t *)&custom_gcode_command[2], OTHERS_COMMAND_ADDR_2, 100);
@@ -172,25 +171,18 @@ void gCfgItems_init() {
     gCfgItems.disp_rotation_180 = rot;
     update_spi_flash();
   }
-
-  uiCfg.F[0] = 'N';
-  uiCfg.F[1] = 'A';
-  uiCfg.F[2] = 'N';
-  uiCfg.F[3] = 'O';
-  W25QXX.SPI_FLASH_BlockErase(REFLSHE_FLGA_ADD + 32 - 64*1024);
-  W25QXX.SPI_FLASH_BufferWrite(uiCfg.F,REFLSHE_FLGA_ADD,4);
 }
 
 void ui_cfg_init() {
   uiCfg.curTempType         = 0;
-  uiCfg.extruderIndex       = 0;
+  uiCfg.curSprayerChoose    = 0;
   uiCfg.stepHeat            = 10;
   uiCfg.leveling_first_time = false;
   uiCfg.para_ui_page        = false;
-  uiCfg.extruStep           = uiCfg.eStepMed;
-  uiCfg.extruSpeed          = uiCfg.eSpeedN;
+  uiCfg.extruStep           = 5;
+  uiCfg.extruSpeed          = 10;
   uiCfg.move_dist           = 1;
-  uiCfg.moveSpeed           = 1000;
+  uiCfg.moveSpeed           = 3000;
   uiCfg.stepPrintSpeed      = 10;
   uiCfg.command_send        = false;
   uiCfg.dialogType          = 0;
@@ -206,66 +198,69 @@ void ui_cfg_init() {
   #if ENABLED(MKS_WIFI_MODULE)
     memset(&wifiPara, 0, sizeof(wifiPara));
     memset(&ipPara, 0, sizeof(ipPara));
-    strcpy_P(wifiPara.ap_name, PSTR(WIFI_AP_NAME));
-    strcpy_P(wifiPara.keyCode, PSTR(WIFI_KEY_CODE));
-    // client
-    strcpy_P(ipPara.ip_addr, PSTR(IP_ADDR));
-    strcpy_P(ipPara.mask, PSTR(IP_MASK));
-    strcpy_P(ipPara.gate, PSTR(IP_GATE));
-    strcpy_P(ipPara.dns, PSTR(IP_DNS));
+    strcpy(wifiPara.ap_name, WIFI_AP_NAME);
+    strcpy(wifiPara.keyCode, WIFI_KEY_CODE);
+    //client
+    strcpy(ipPara.ip_addr, IP_ADDR);
+    strcpy(ipPara.mask, IP_MASK);
+    strcpy(ipPara.gate, IP_GATE);
+    strcpy(ipPara.dns, IP_DNS);
 
     ipPara.dhcp_flag = IP_DHCP_FLAG;
 
-    // AP
-    strcpy_P(ipPara.dhcpd_ip, PSTR(AP_IP_ADDR));
-    strcpy_P(ipPara.dhcpd_mask, PSTR(AP_IP_MASK));
-    strcpy_P(ipPara.dhcpd_gate, PSTR(AP_IP_GATE));
-    strcpy_P(ipPara.dhcpd_dns, PSTR(AP_IP_DNS));
-    strcpy_P(ipPara.start_ip_addr, PSTR(IP_START_IP));
-    strcpy_P(ipPara.end_ip_addr, PSTR(IP_END_IP));
+    //AP
+    strcpy(ipPara.dhcpd_ip, AP_IP_ADDR);
+    strcpy(ipPara.dhcpd_mask, AP_IP_MASK);
+    strcpy(ipPara.dhcpd_gate, AP_IP_GATE);
+    strcpy(ipPara.dhcpd_dns, AP_IP_DNS);
+    strcpy(ipPara.start_ip_addr, IP_START_IP);
+    strcpy(ipPara.end_ip_addr, IP_END_IP);
 
     ipPara.dhcpd_flag = AP_IP_DHCP_FLAG;
 
-    strcpy_P((char*)uiCfg.cloud_hostUrl, PSTR("baizhongyun.cn"));
+    strcpy((char*)uiCfg.cloud_hostUrl, "baizhongyun.cn");
     uiCfg.cloud_port = 10086;
   #endif
 
-  uiCfg.filament_loading_time = (uint32_t)((gCfgItems.filamentchange_load_length * 60.0f / gCfgItems.filamentchange_load_speed) + 0.5f);
-  uiCfg.filament_unloading_time = (uint32_t)((gCfgItems.filamentchange_unload_length * 60.0f / gCfgItems.filamentchange_unload_speed) + 0.5f);
+  uiCfg.babyStepZoffsetDiff = 0;
+  uiCfg.adjustZoffset       = false;
+
+  uiCfg.filament_loading_time = (uint32_t)((gCfgItems.filamentchange_load_length * 60.0 / gCfgItems.filamentchange_load_speed) + 0.5);
+  uiCfg.filament_unloading_time = (uint32_t)((gCfgItems.filamentchange_unload_length * 60.0 / gCfgItems.filamentchange_unload_speed) + 0.5);
 }
 
 void update_spi_flash() {
   uint8_t command_buf[512];
 
-  W25QXX.init(SPI_FULL_SPEED);
-  // read back the gcode command before erase spi flash
+  W25QXX.init(SPI_QUARTER_SPEED);
+  //read back the gcode command befor erase spi flash
   W25QXX.SPI_FLASH_BufferRead((uint8_t *)&command_buf, GCODE_COMMAND_ADDR, sizeof(command_buf));
   W25QXX.SPI_FLASH_SectorErase(VAR_INF_ADDR);
   W25QXX.SPI_FLASH_BufferWrite((uint8_t *)&gCfgItems, VAR_INF_ADDR, sizeof(gCfgItems));
   W25QXX.SPI_FLASH_BufferWrite((uint8_t *)&command_buf, GCODE_COMMAND_ADDR, sizeof(command_buf));
 }
 
-void update_gcode_command(int addr, uint8_t *s) {
+void update_gcode_command(int addr,uint8_t *s) {
   uint8_t command_buf[512];
 
-  W25QXX.init(SPI_FULL_SPEED);
-  // read back the gcode command before erase spi flash
+  W25QXX.init(SPI_QUARTER_SPEED);
+  //read back the gcode command befor erase spi flash
   W25QXX.SPI_FLASH_BufferRead((uint8_t *)&command_buf, GCODE_COMMAND_ADDR, sizeof(command_buf));
   W25QXX.SPI_FLASH_SectorErase(VAR_INF_ADDR);
   W25QXX.SPI_FLASH_BufferWrite((uint8_t *)&gCfgItems, VAR_INF_ADDR, sizeof(gCfgItems));
   switch (addr) {
-    case AUTO_LEVELING_COMMAND_ADDR: memcpy(&command_buf[0 * 100], s, 100); break;
-    case OTHERS_COMMAND_ADDR_1: memcpy(&command_buf[1 * 100], s, 100); break;
-    case OTHERS_COMMAND_ADDR_2: memcpy(&command_buf[2 * 100], s, 100); break;
-    case OTHERS_COMMAND_ADDR_3: memcpy(&command_buf[3 * 100], s, 100); break;
-    case OTHERS_COMMAND_ADDR_4: memcpy(&command_buf[4 * 100], s, 100); break;
+    case AUTO_LEVELING_COMMAND_ADDR: memcpy(&command_buf[0*100], s, 100); break;
+    case OTHERS_COMMAND_ADDR_1: memcpy(&command_buf[1*100], s, 100); break;
+    case OTHERS_COMMAND_ADDR_2: memcpy(&command_buf[2*100], s, 100); break;
+    case OTHERS_COMMAND_ADDR_3: memcpy(&command_buf[3*100], s, 100); break;
+    case OTHERS_COMMAND_ADDR_4: memcpy(&command_buf[4*100], s, 100); break;
     default: break;
   }
   W25QXX.SPI_FLASH_BufferWrite((uint8_t *)&command_buf, GCODE_COMMAND_ADDR, sizeof(command_buf));
 }
 
-void get_gcode_command(int addr, uint8_t *d) {
-  W25QXX.init(SPI_FULL_SPEED);
+void get_gcode_command(int addr,uint8_t *d) {
+  W25QXX.init(SPI_QUARTER_SPEED);
   W25QXX.SPI_FLASH_BufferRead((uint8_t *)d, addr, 100);
 }
 
@@ -320,8 +315,8 @@ void tft_style_init() {
   tft_style_label_rel.line.width        = 0;
   tft_style_label_pre.text.letter_space = 0;
   tft_style_label_rel.text.letter_space = 0;
-  tft_style_label_pre.text.line_space   = -5;
-  tft_style_label_rel.text.line_space   = -5;
+  tft_style_label_pre.text.line_space   = 0;
+  tft_style_label_rel.text.line_space   = 0;
 
   lv_style_copy(&style_para_value_pre, &lv_style_scr);
   lv_style_copy(&style_para_value_rel, &lv_style_scr);
@@ -339,8 +334,8 @@ void tft_style_init() {
   style_para_value_rel.line.width        = 0;
   style_para_value_pre.text.letter_space = 0;
   style_para_value_rel.text.letter_space = 0;
-  style_para_value_pre.text.line_space   = -5;
-  style_para_value_rel.text.line_space   = -5;
+  style_para_value_pre.text.line_space   = 0;
+  style_para_value_rel.text.line_space   = 0;
 
   lv_style_copy(&style_num_key_pre, &lv_style_scr);
   lv_style_copy(&style_num_key_rel, &lv_style_scr);
@@ -359,10 +354,10 @@ void tft_style_init() {
   style_num_key_rel.line.width        = 0;
   style_num_key_pre.text.letter_space = 0;
   style_num_key_rel.text.letter_space = 0;
-  style_num_key_pre.text.line_space   = -5;
-  style_num_key_rel.text.line_space   = -5;
-  lv_style_copy(&style_num_text, &lv_style_scr);
+  style_num_key_pre.text.line_space   = 0;
+  style_num_key_rel.text.line_space   = 0;
 
+  lv_style_copy(&style_num_text, &lv_style_scr);
   style_num_text.body.main_color   = LV_COLOR_WHITE;
   style_num_text.body.grad_color   = LV_COLOR_WHITE;
   style_num_text.text.color        = LV_COLOR_BLACK;
@@ -370,17 +365,17 @@ void tft_style_init() {
   style_num_text.text.font         = TERN(HAS_SPI_FLASH_FONT, &gb2312_puhui32, LV_FONT_DEFAULT);
   style_num_text.line.width        = 0;
   style_num_text.text.letter_space = 0;
-  style_num_text.text.line_space   = -5;
+  style_num_text.text.line_space   = 0;
 
   lv_style_copy(&style_sel_text, &lv_style_scr);
-  style_sel_text.body.main_color   = LV_COLOR_BACKGROUND;
-  style_sel_text.body.grad_color   = LV_COLOR_BACKGROUND;
-  style_sel_text.text.color        = LV_COLOR_YELLOW;
-  style_sel_text.text.sel_color    = LV_COLOR_YELLOW;
-  style_sel_text.text.font         = TERN(HAS_SPI_FLASH_FONT, &gb2312_puhui32, LV_FONT_DEFAULT);
-  style_sel_text.line.width        = 0;
-  style_sel_text.text.letter_space = 0;
-  style_sel_text.text.line_space   = -5;
+  style_sel_text.body.main_color  = LV_COLOR_BACKGROUND;
+  style_sel_text.body.grad_color  = LV_COLOR_BACKGROUND;
+  style_sel_text.text.color       = LV_COLOR_YELLOW;
+  style_sel_text.text.sel_color   = LV_COLOR_YELLOW;
+  style_sel_text.text.font        = &gb2312_puhui32;
+  style_sel_text.line.width       = 0;
+  style_sel_text.text.letter_space  = 0;
+  style_sel_text.text.line_space    = 0;
   lv_style_copy(&style_line, &lv_style_plain);
   style_line.line.color   = LV_COLOR_MAKE(0x49, 0x54, 0xFF);
   style_line.line.width   = 1;
@@ -461,7 +456,7 @@ void tft_style_init() {
 
 char public_buf_m[100] = {0};
 char public_buf_l[30];
-
+char public_buf_t[40];
 void titleText_cat(char *str, int strSize, char *addPart) {
   if (str == 0 || addPart == 0) return;
   if ((int)(strlen(str) + strlen(addPart)) >= strSize) return;
@@ -531,8 +526,6 @@ char *getDispText(int index) {
     case WIFI_LIST_UI:        TERN_(MKS_WIFI_MODULE, strcpy(public_buf_l, list_menu.title)); break;
     case MACHINE_PARA_UI:     strcpy(public_buf_l, MachinePara_menu.title); break;
     case BABY_STEP_UI:        strcpy(public_buf_l, operation_menu.babystep); break;
-
-
     case EEPROM_SETTINGS_UI:  strcpy(public_buf_l, eeprom_menu.title); break;
     case MEDIA_SELECT_UI:     strcpy(public_buf_l, media_select_menu.title); break;
     default: break;
@@ -588,22 +581,22 @@ char *creat_title_text() {
 
 #if HAS_GCODE_PREVIEW
 
-  uintptr_t gPicturePreviewStart = 0;
+  uint32_t gPicturePreviewStart = 0;
 
   void preview_gcode_prehandle(char *path) {
     #if ENABLED(SDSUPPORT)
-      uintptr_t pre_read_cnt = 0;
+      uint32_t pre_read_cnt = 0;
       uint32_t *p1;
-      char *cur_name;
+      //char *cur_name;
 
       gPicturePreviewStart = 0;
-      cur_name             = strrchr(path, '/');
-      card.openFileRead(cur_name);
+      //cur_name             = strrchr(path, '/');
+      card.openFileRead(path);
       card.read(public_buf, 512);
       p1 = (uint32_t *)strstr((char *)public_buf, ";simage:");
 
       if (p1) {
-        pre_read_cnt = (uintptr_t)p1 - (uintptr_t)((uint32_t *)(&public_buf[0]));
+        pre_read_cnt = (uint32_t)p1 - (uint32_t)((uint32_t *)(&public_buf[0]));
 
         To_pre_view              = pre_read_cnt;
         gcode_preview_over       = true;
@@ -624,22 +617,22 @@ char *creat_title_text() {
     #if ENABLED(SDSUPPORT)
       volatile uint32_t i, j;
       volatile uint16_t *p_index;
-      char *cur_name;
+      //char *cur_name;
 
-      cur_name = strrchr(path, '/');
-      card.openFileRead(cur_name);
+      //cur_name = strrchr(path, '/');
+      card.openFileRead(path);
 
       if (gPicturePreviewStart <= 0) {
         while (1) {
           uint32_t br  = card.read(public_buf, 400);
-          uint32_t *p1 = (uint32_t *)strstr((char *)public_buf, ";gimage:");
+          uint32_t* p1 = (uint32_t *)strstr((char *)public_buf, ";gimage:");
           if (p1) {
-            gPicturePreviewStart += (uintptr_t)p1 - (uintptr_t)((uint32_t *)(&public_buf[0]));
+            gPicturePreviewStart += (uint32_t)p1 - (uint32_t)((uint32_t *)(&public_buf[0]));
             break;
           }
-          else
+          else {
             gPicturePreviewStart += br;
-
+          }
           if (br < 400) break;
         }
       }
@@ -651,65 +644,73 @@ char *creat_title_text() {
 
       while (1) {
         card.read(public_buf, 400);
-        for (i = 0; i < 400; i += 2, j++)
+        for (i = 0; i < 400;) {
           bmp_public_buf[j] = ascii2dec_test((char*)&public_buf[i]) << 4 | ascii2dec_test((char*)&public_buf[i + 1]);
+          i                += 2;
+          j++;
+        }
         if (j >= 400) break;
       }
-
       for (i = 0; i < 400; i += 2) {
-        p_index = (uint16_t *)(&bmp_public_buf[i]);
+        p_index  = (uint16_t *)(&bmp_public_buf[i]);
         if (*p_index == 0x0000) *p_index = LV_COLOR_BACKGROUND.full;
       }
-
       SPI_TFT.tftio.WriteSequence((uint16_t*)bmp_public_buf, 200);
-      
       #if HAS_BAK_VIEW_IN_FLASH
-        W25QXX.init(SPI_FULL_SPEED);
+        W25QXX.init(SPI_QUARTER_SPEED);
         if (row < 20) W25QXX.SPI_FLASH_SectorErase(BAK_VIEW_ADDR_TFT35 + row * 4096);
         W25QXX.SPI_FLASH_BufferWrite(bmp_public_buf, BAK_VIEW_ADDR_TFT35 + row * 400, 400);
       #endif
       row++;
-      card.abortFilePrintNow();
       if (row >= 200) {
         size = 809;
         row  = 0;
 
         gcode_preview_over = false;
 
-        char *cur_name = strrchr(list_file.file_name[sel_id], '/');
+        card.closefile();
+        //char *cur_name;
 
-        SdFile file;
-        SdFile *curDir;
-        const char * const fname = card.diveToFile(false, curDir, cur_name);
-        if (!fname) return;
-        if (file.open(curDir, fname, O_READ)) {
-          gCfgItems.curFilesize = file.fileSize();
-          file.close();
-          update_spi_flash();
-        }
+        //cur_name = strrchr(list_file.file_name[sel_id], '/');
 
-        card.openFileRead(cur_name);
+        //SdFile file;
+        //SdFile *curDir;
+        card.endFilePrint();
+        //const char * const fname = card.diveToFile(true, curDir, cur_name);
+        //if (!fname) return;
+        //if (file.open(curDir, fname, O_READ)) {
+          //gCfgItems.curFilesize = file.fileSize();
+          //file.close();
+          //update_spi_flash();
+        //}
+
+        card.openFileRead(list_file.file_name[sel_id]);
         if (card.isFileOpen()) {
+          gCfgItems.curFilesize = card.getFileSize();
+          update_spi_flash();
           feedrate_percentage = 100;
-          planner.flow_percentage[0] = 100;
-          planner.e_factor[0]        = planner.flow_percentage[0] * 0.01;
+          #if EXTRUDERS
+            planner.flow_percentage[0] = 100;
+            planner.e_factor[0]        = planner.flow_percentage[0] * 0.01;
+          #endif
           #if HAS_MULTI_EXTRUDER
             planner.flow_percentage[1] = 100;
             planner.e_factor[1]        = planner.flow_percentage[1] * 0.01;
           #endif
-          card.startOrResumeFilePrinting();
+          card.startFileprint();
           TERN_(POWER_LOSS_RECOVERY, recovery.prepare());
           once_flag = false;
         }
         return;
       }
+      card.closefile();
     #endif // SDSUPPORT
   }
 
   void draw_default_preview(int xpos_pixel, int ypos_pixel, uint8_t sel) {
     int index;
     int y_off = 0;
-    W25QXX.init(SPI_FULL_SPEED);
+    W25QXX.init(SPI_QUARTER_SPEED);
     for (index = 0; index < 10; index++) { // 200*200
       #if HAS_BAK_VIEW_IN_FLASH
         if (sel == 1) {
@@ -727,7 +728,7 @@ char *creat_title_text() {
 
       y_off++;
     }
-    W25QXX.init(SPI_FULL_SPEED);
+    W25QXX.init(SPI_QUARTER_SPEED);
   }
 
   void disp_pre_gcode(int xpos_pixel, int ypos_pixel) {
@@ -789,7 +790,6 @@ void GUI_RefreshPage() {
         lv_temp_refr();
       }
       break;
-
     case PRINT_FILE_UI: break;
 
     case PRINTING_UI:
@@ -903,7 +903,6 @@ void GUI_RefreshPage() {
           default: break;
         }
         break;
-
     #endif
 
     case BABY_STEP_UI:
@@ -922,13 +921,21 @@ void GUI_RefreshPage() {
         break;
     #endif
 
+    #if ENABLED(TOUCH_MI_PROBE)
+      case TOUCHMI_UI:
+        if (temps_update_flag) {
+          temps_update_flag = false;
+          disp_z_offset_value_TM();
+        }
+        break;
+    #endif
     default: break;
   }
 
   print_time_run();
 }
 
-void clear_cur_ui() {
+void lv_clear_cur_ui() {
   last_disp_state = disp_state_stack._disp_state[disp_state_stack._disp_index];
 
   switch (disp_state_stack._disp_state[disp_state_stack._disp_index]) {
@@ -988,7 +995,7 @@ void clear_cur_ui() {
     case LEVELING_SETTIGNS_UI:        break;
     case LEVELING_PARA_UI:            lv_clear_level_settings(); break;
     case DELTA_LEVELING_PARA_UI:      break;
-    case MANUAL_LEVELING_POSIGION_UI: lv_clear_tramming_pos_settings(); break;
+    case MANUAL_LEVELING_POSIGION_UI: lv_clear_manual_level_pos_settings(); break;
     case MAXFEEDRATE_UI:              lv_clear_max_feedrate_settings(); break;
     case STEPS_UI:                    lv_clear_step_settings(); break;
     case ACCELERATION_UI:             lv_clear_acceleration_settings(); break;
@@ -1004,6 +1011,8 @@ void clear_cur_ui() {
     case BABY_STEP_UI:                lv_clear_baby_stepping(); break;
     #if EITHER(MESH_BED_LEVELING, AUTO_BED_LEVELING_BILINEAR)
       case ZOFFSET_UI:                lv_clear_zoffset_settings(); break;
+    #if ENABLED(TOUCH_MI_PROBE)
+      case TOUCHMI_UI:                lv_clear_touchmi_settings(); break;
     #endif
     case PAUSE_POS_UI:                lv_clear_pause_position(); break;
     #if HAS_TRINAMIC_CONFIG
@@ -1028,13 +1037,15 @@ void clear_cur_ui() {
     #if ENABLED(MULTI_VOLUME)
       case MEDIA_SELECT_UI:           lv_clear_media_select(); break;
     #endif
+	#if ENABLED(DUAL_X_CARRIAGE)
+      case DUAL_X_CARRIAGE_MODE_UI:   lv_clear_dual_x_carriage_mode(); break;
+      case HOTEND_OFFSET_UI:          lv_clear_hotend_offset_settings(); break;
+    #endif
     default: break;
   }
 }
 
-
-
-void draw_return_ui() {
+void lv_draw_return_ui() {
   if (disp_state_stack._disp_index > 0) {
     disp_state_stack._disp_index--;
 
@@ -1101,7 +1112,7 @@ void draw_return_ui() {
       case LEVELING_SETTIGNS_UI:        break;
       case LEVELING_PARA_UI:            lv_draw_level_settings(); break;
       case DELTA_LEVELING_PARA_UI:      break;
-      case MANUAL_LEVELING_POSIGION_UI: lv_draw_tramming_pos_settings(); break;
+      case MANUAL_LEVELING_POSIGION_UI: lv_draw_manual_level_pos_settings(); break;
       case MAXFEEDRATE_UI:              lv_draw_max_feedrate_settings(); break;
       case STEPS_UI:                    lv_draw_step_settings(); break;
       case ACCELERATION_UI:             lv_draw_acceleration_settings(); break;
@@ -1116,7 +1127,7 @@ void draw_return_ui() {
       case DOUBLE_Z_UI:                 break;
       case ENABLE_INVERT_UI:            break;
       case NUMBER_KEY_UI:               lv_draw_number_key(); break;
-      case DIALOG_UI:                   draw_return_ui(); break;
+      case DIALOG_UI:                   break;
       case BABY_STEP_UI:                lv_draw_baby_stepping(); break;
       #if EITHER(MESH_BED_LEVELING, AUTO_BED_LEVELING_BILINEAR)
         case ZOFFSET_UI:                lv_draw_zoffset_settings(); break;
@@ -1138,6 +1149,11 @@ void draw_return_ui() {
       #endif
       #if HAS_ROTARY_ENCODER
         case ENCODER_SETTINGS_UI:       lv_draw_encoder_settings(); break;
+      #endif
+      case TOUCHMI_UI:                  lv_draw_touchmi_settings(); break;
+      #if ENABLED(DUAL_X_CARRIAGE)
+        case DUAL_X_CARRIAGE_MODE_UI:   lv_draw_dual_x_carriage_mode(); break;
+        case HOTEND_OFFSET_UI:          lv_draw_hotend_offset_settings(); break;
       #endif
       default: break;
     }
@@ -1173,32 +1189,6 @@ void lv_btn_set_style_both(lv_obj_t *btn, lv_style_t *style) {
   lv_btn_set_style(btn, LV_BTN_STYLE_REL, style);
   lv_btn_set_style(btn, LV_BTN_STYLE_PR,  style);
 }
-
-// set scr id and title
-#ifdef USE_NEW_LVGL_CONF
-lv_obj_t* lv_set_scr_id_title(lv_obj_t *scr ,DISP_STATE newScreenType, const char *title) {
-
-  // breadcrumbs
-  if (disp_state_stack._disp_state[disp_state_stack._disp_index] != newScreenType) {
-    disp_state_stack._disp_index++;
-    disp_state_stack._disp_state[disp_state_stack._disp_index] = newScreenType;
-  }
-  disp_state = newScreenType;
-
-  // title
-  lv_obj_t *titleLabel = nullptr;
-  if (!title)
-    titleLabel = lv_label_create(scr, TITLE_XPOS, TITLE_YPOS, creat_title_text());
-  else if (title[0] != '\0')
-    titleLabel = lv_label_create(scr, TITLE_XPOS, TITLE_YPOS, title);
-  if (titleLabel)
-    lv_obj_set_style(titleLabel, &tft_style_label_rel);
-
-  lv_refr_now(lv_refr_get_disp_refreshing());
-
-  return scr;
-}
-#endif
 
 // Create a screen
 lv_obj_t* lv_screen_create(DISP_STATE newScreenType, const char *title) {
@@ -1362,7 +1352,7 @@ lv_obj_t* lv_screen_menu_item(lv_obj_t *par, const char *text, lv_coord_t x, lv_
   lv_obj_t *label = lv_label_create_empty(btn);        /*Add a label to the button*/
   if (gCfgItems.multiple_language) {
     lv_label_set_text(label, text);
-    lv_obj_align(label, btn, LV_ALIGN_IN_LEFT_MID, 0, 0);
+    lv_obj_align(label, btn, LV_ALIGN_IN_LEFT_MID, PARA_UI_ITEM_TEXT_H, 0);
   }
   if (TERN0(HAS_ROTARY_ENCODER, gCfgItems.encoder_enable))
     lv_group_add_obj(g, btn);
@@ -1375,38 +1365,49 @@ lv_obj_t* lv_screen_menu_item(lv_obj_t *par, const char *text, lv_coord_t x, lv_
   return btn;
 }
 
-lv_obj_t* lv_screen_menu_item_1_edit(lv_obj_t *par, const char *text, lv_coord_t x, lv_coord_t y, lv_event_cb_t cb, const int id, const int index, const char *editValue) {
-  lv_obj_t *btn = lv_screen_menu_item(par, text, x, y, cb, -1, index, false);
-  lv_obj_t *btnValue = lv_btn_create(par, PARA_UI_VALUE_POS_X, y + PARA_UI_VALUE_V, PARA_UI_VALUE_BTN_X_SIZE, PARA_UI_VALUE_BTN_Y_SIZE, cb, id);
-  lv_obj_t *labelValue = lv_label_create_empty(btnValue);
-  lv_label_set_text(labelValue, editValue);
+lv_obj_t*  lv_screen_menu_item_onoff(lv_obj_t *par, const char *text, lv_coord_t x, lv_coord_t y, lv_event_cb_t cb, const int id, const int index, const bool curValue) {
+  lv_label_create(par, x + PARA_UI_ITEM_TEXT_H, y + PARA_UI_ITEM_TEXT_V, text);
+
+  lv_obj_t* btnValue = lv_imgbtn_create(par, curValue ? "F:/bmp_enable.bin" : "F:/bmp_disable.bin", PARA_UI_STATE_POS_X, y + PARA_UI_STATE_V, cb, id);
+  lv_obj_t* labelValue = lv_label_create_empty(btnValue);
+  lv_label_set_text(labelValue, curValue ? machine_menu.enable : machine_menu.disable);
   lv_obj_align(labelValue, btnValue, LV_ALIGN_CENTER, 0, 0);
-  return btn;
+  if (TERN0(HAS_ROTARY_ENCODER, gCfgItems.encoder_enable)) lv_group_add_obj(g, btnValue);
+  lv_obj_t *line1 = lv_line_create(par, nullptr);
+  lv_ex_line(line1, line_points[index]);
+  return btnValue;
 }
 
-lv_obj_t* lv_screen_menu_item_2_edit(lv_obj_t *par, const char *text, lv_coord_t x, lv_coord_t y, lv_event_cb_t cb, const int id, const int index, const char *editValue, const int idEdit2, const char *editValue2) {
-  lv_obj_t *btn = lv_screen_menu_item(par, text, x, y, cb, -1, index, false);
+void lv_screen_menu_item_1_edit(lv_obj_t *par, const char *text, lv_coord_t x, lv_coord_t y, lv_event_cb_t cb, const int id, const int index, const char *editValue) {
+  lv_label_create(par, x + PARA_UI_ITEM_TEXT_H, y + PARA_UI_ITEM_TEXT_V, text);
 
-  lv_obj_t *btnValue = lv_btn_create(par, PARA_UI_VALUE_POS_X_2, y + PARA_UI_VALUE_V_2, PARA_UI_VALUE_BTN_X_SIZE, PARA_UI_VALUE_BTN_Y_SIZE, cb, idEdit2);
-  lv_obj_t *labelValue = lv_label_create_empty(btnValue);
+  lv_obj_t* btnValue = lv_btn_create(par, PARA_UI_VALUE_POS_X, y + PARA_UI_VALUE_V, PARA_UI_VALUE_BTN_X_SIZE, PARA_UI_VALUE_BTN_Y_SIZE, cb, id);
+  lv_obj_t* labelValue = lv_label_create_empty(btnValue);
+  lv_label_set_text(labelValue, editValue);
+  lv_obj_align(labelValue, btnValue, LV_ALIGN_CENTER, 0, 0);
+  if (TERN0(HAS_ROTARY_ENCODER, gCfgItems.encoder_enable)) lv_group_add_obj(g, btnValue);
+
+  lv_obj_t *line1 = lv_line_create(par, nullptr);
+  lv_ex_line(line1, line_points[index]);
+}
+
+void lv_screen_menu_item_2_edit(lv_obj_t *par, const char *text, lv_coord_t x, lv_coord_t y, lv_event_cb_t cb, const int id, const int index, const char *editValue, const int idEdit2, const char *editValue2) {
+  lv_label_create(par, x + PARA_UI_ITEM_TEXT_H, y + PARA_UI_ITEM_TEXT_V, text);
+
+  lv_obj_t* btnValue = lv_btn_create(par, PARA_UI_VALUE_POS_X_2, y + PARA_UI_VALUE_V_2, PARA_UI_VALUE_BTN_X_SIZE, PARA_UI_VALUE_BTN_Y_SIZE, cb, idEdit2);
+  lv_obj_t* labelValue = lv_label_create_empty(btnValue);
   lv_label_set_text(labelValue, editValue2);
   lv_obj_align(labelValue, btnValue, LV_ALIGN_CENTER, 0, 0);
+  if (TERN0(HAS_ROTARY_ENCODER, gCfgItems.encoder_enable)) lv_group_add_obj(g, btnValue);
 
   btnValue = lv_btn_create(par, PARA_UI_VALUE_POS_X, y + PARA_UI_VALUE_V, PARA_UI_VALUE_BTN_X_SIZE, PARA_UI_VALUE_BTN_Y_SIZE, cb, id);
   labelValue = lv_label_create_empty(btnValue);
   lv_label_set_text(labelValue, editValue);
   lv_obj_align(labelValue, btnValue, LV_ALIGN_CENTER, 0, 0);
+  if (TERN0(HAS_ROTARY_ENCODER, gCfgItems.encoder_enable)) lv_group_add_obj(g, btnValue);
 
-  return btn;
-}
-
-lv_obj_t* lv_screen_menu_item_onoff(lv_obj_t *par, const char *text, lv_coord_t x, lv_coord_t y, lv_event_cb_t cb, const int id, const int index, const bool curValue) {
-  lv_screen_menu_item(par, text, x, y, cb, -1, index, false);
-  lv_obj_t *btnValue = lv_imgbtn_create(par, curValue ? "F:/bmp_enable.bin" : "F:/bmp_disable.bin", PARA_UI_STATE_POS_X, y + PARA_UI_STATE_V, cb, id);
-  lv_obj_t *labelValue = lv_label_create_empty(btnValue);
-  lv_label_set_text(labelValue, curValue ? machine_menu.enable : machine_menu.disable);
-  lv_obj_align(labelValue, btnValue, LV_ALIGN_CENTER, 0, 0);
-  return btnValue;
+  lv_obj_t *line1 = lv_line_create(par, nullptr);
+  lv_ex_line(line1, line_points[index]);
 }
 
 void lv_screen_menu_item_onoff_update(lv_obj_t *btn, const bool curValue) {
@@ -1414,6 +1415,25 @@ void lv_screen_menu_item_onoff_update(lv_obj_t *btn, const bool curValue) {
   lv_label_set_text((lv_obj_t*)btn->child_ll.head, curValue ? machine_menu.enable : machine_menu.disable);
 }
 
+void lv_screen_menu_item_turn_page(lv_obj_t *par, const char *text, lv_event_cb_t cb, const int id) {
+  lv_obj_t* btnTurnPage = lv_btn_create(par, PARA_UI_TURN_PAGE_POS_X, PARA_UI_TURN_PAGE_POS_Y, PARA_UI_TURN_BTN_X_SIZE, PARA_UI_TURN_BTN_Y_SIZE, cb, id);
+  lv_obj_t* labelTurnPage = lv_label_create_empty(btnTurnPage);
+  lv_btn_set_style_both(btnTurnPage, &style_para_back);
+  lv_label_set_text(labelTurnPage, text);
+  lv_obj_align(labelTurnPage, btnTurnPage, LV_ALIGN_CENTER, 0, 0);
+  if (TERN0(HAS_ROTARY_ENCODER, gCfgItems.encoder_enable))
+    lv_group_add_obj(g, btnTurnPage);
+}
+
+void lv_screen_menu_item_return(lv_obj_t *par, lv_event_cb_t cb, const int id) {
+  lv_obj_t* btnReturn = lv_btn_create(par, PARA_UI_BACL_POS_X, PARA_UI_BACL_POS_Y, PARA_UI_BACK_BTN_X_SIZE, PARA_UI_BACK_BTN_Y_SIZE, cb, id);
+  lv_obj_t* labelReturn = lv_label_create_empty(btnReturn);
+  lv_btn_set_style_both(btnReturn, &style_para_back);
+  lv_label_set_text(labelReturn, common_menu.text_back);
+  lv_obj_align(labelReturn, btnReturn, LV_ALIGN_CENTER, 0, 0);
+  if (TERN0(HAS_ROTARY_ENCODER, gCfgItems.encoder_enable))
+    lv_group_add_obj(g, btnReturn);
+}
 
 #if ENABLED(SDSUPPORT)
 
@@ -1448,7 +1468,7 @@ void lv_print_finished() {
 
     flash_preview_begin = false;
     default_preview_flg = false;
-    clear_cur_ui();
+    lv_clear_cur_ui();
     lv_draw_dialog(DIALOG_TYPE_FINISH_PRINT);
 
     once_flag = true;
@@ -1466,51 +1486,23 @@ void lv_print_finished() {
   }
 }
 
-// #define USE_DMA_FSMC_TC_INT
 void LV_TASK_HANDLER() {
 
-  // #ifdef USE_DMA_FSMC_TC_INT
-  #if EITHER(USE_DMA_FSMC_TC_INT, USE_SPI_DMA_TC)
-    if(!get_lcd_dma_lock()) lv_task_handler();
-  #else
-    lv_task_handler();
-  #endif
+  lv_task_handler();
 
-  #if BOTH(MKS_TEST, SDSUPPORT)
-    if (mks_test_flag == 0x1E) mks_hardware_test();
-  #endif
+  if (mks_test_flag == 0x1E) mks_hardware_test();
 
   TERN_(HAS_GCODE_PREVIEW, disp_pre_gcode(2, 36));
 
-  TERN_(MKS_WIFI_MODULE, get_wifi_commands());
-
   GUI_RefreshPage();
+
+  TERN_(MKS_WIFI_MODULE, get_wifi_commands());
 
   #if HAS_ROTARY_ENCODER
     if (gCfgItems.encoder_enable) lv_update_encoder();
   #endif
 
   if (marlin_state == MF_SD_COMPLETE) lv_print_finished();
-}
-
-void lv_screen_menu_item_turn_page(lv_obj_t *par, const char *text, lv_event_cb_t cb, const int id) {
-  lv_obj_t* btnTurnPage = lv_btn_create(par, PARA_UI_TURN_PAGE_POS_X, PARA_UI_TURN_PAGE_POS_Y, PARA_UI_TURN_BTN_X_SIZE, PARA_UI_TURN_BTN_Y_SIZE, cb, id);
-  lv_obj_t* labelTurnPage = lv_label_create_empty(btnTurnPage);
-  lv_btn_set_style_both(btnTurnPage, &style_para_back);
-  lv_label_set_text(labelTurnPage, text);
-  lv_obj_align(labelTurnPage, btnTurnPage, LV_ALIGN_CENTER, 0, 0);
-  if (TERN0(HAS_ROTARY_ENCODER, gCfgItems.encoder_enable))
-    lv_group_add_obj(g, btnTurnPage);
-}
-
-void lv_screen_menu_item_return(lv_obj_t *par, lv_event_cb_t cb, const int id) {
-  lv_obj_t* btnReturn = lv_btn_create(par, PARA_UI_BACL_POS_X, PARA_UI_BACL_POS_Y, PARA_UI_BACK_BTN_X_SIZE, PARA_UI_BACK_BTN_Y_SIZE, cb, id);
-  lv_obj_t* labelReturn = lv_label_create_empty(btnReturn);
-  lv_btn_set_style_both(btnReturn, &style_para_back);
-  lv_label_set_text(labelReturn, common_menu.text_back);
-  lv_obj_align(labelReturn, btnReturn, LV_ALIGN_CENTER, 0, 0);
-  if (TERN0(HAS_ROTARY_ENCODER, gCfgItems.encoder_enable))
-    lv_group_add_obj(g, btnReturn);
 }
 
 #endif // HAS_TFT_LVGL_UI

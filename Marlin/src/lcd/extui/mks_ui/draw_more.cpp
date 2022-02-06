@@ -19,27 +19,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
 
-#include "../../../MarlinCore.h"
+#include "../../../../MarlinCore.h"
+#include "../../../../gcode/queue.h"
+
 #include "draw_ready_print.h"
 #include "draw_set.h"
 #include "lv_conf.h"
 #include "draw_ui.h"
-#include "../../../gcode/queue.h"
 
 extern lv_group_t * g;
-
-#ifndef USE_NEW_LVGL_CONF
 static lv_obj_t * scr;
-#define MAIN_SCR   scr
-#else
-#define MAIN_SCR   mks_ui.src_main
-#endif
-
 
 enum {
   ID_GCODE = 1,
@@ -70,7 +63,7 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
     case ID_GCODE: lv_clear_more(); lv_draw_gcode(true); break;
     #if HAS_USER_ITEM(1)
       case ID_CUSTOM_1:
-      queue.inject_P(PSTR(MAIN_MENU_ITEM_1_GCODE));
+        queue.inject_P(PSTR(MAIN_MENU_ITEM_1_GCODE));
         #if ENABLED(MAIN_MENU_ITEM_1_BACK)
           lv_clear_more();
           lv_draw_tool();
@@ -146,123 +139,42 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
 }
 
 void lv_draw_more() {
-  MAIN_SCR = lv_screen_create(MORE_UI);
-  const bool enc_ena = TERN0(HAS_ROTARY_ENCODER, gCfgItems.encoder_enable);
+  scr = lv_screen_create(MORE_UI);
 
-  lv_obj_t *buttonGCode = lv_imgbtn_create(MAIN_SCR, "F:/bmp_gcode.bin", INTERVAL_V, titleHeight, event_handler, ID_GCODE);
-  // lv_big_button_create(scr, "F:/bmp_gcode.bin", more_menu.gcode, INTERVAL_V, titleHeight, event_handler, ID_GCODE);
-
-  if (enc_ena) lv_group_add_obj(g, buttonGCode);
-  lv_obj_t *labelGCode = lv_label_create_empty(buttonGCode);
+  lv_big_button_create(scr, "F:/bmp_gcode.bin", more_menu.gcode, INTERVAL_V, titleHeight, event_handler, ID_GCODE);
 
   #if HAS_USER_ITEM(1)
-    lv_obj_t *buttonCustom1 = lv_imgbtn_create(MAIN_SCR, "F:/bmp_custom1.bin", BTN_X_PIXEL + INTERVAL_V * 2, titleHeight, event_handler, ID_CUSTOM_1);
-    if (enc_ena) lv_group_add_obj(g, buttonCustom1);
-    lv_obj_t *labelCustom1 = lv_label_create_empty(buttonCustom1);
+    lv_big_button_create(scr, "F:/bmp_custom1.bin", more_menu.custom1, BTN_X_PIXEL + INTERVAL_V * 2, titleHeight, event_handler, ID_CUSTOM_1);
   #endif
 
   #if HAS_USER_ITEM(2)
-    lv_obj_t *buttonCustom2 = lv_imgbtn_create(MAIN_SCR, "F:/bmp_custom2.bin", BTN_X_PIXEL * 2 + INTERVAL_V * 3, titleHeight, event_handler, ID_CUSTOM_2);
-    if (enc_ena) lv_group_add_obj(g, buttonCustom2);
-    lv_obj_t *labelCustom2 = lv_label_create_empty(buttonCustom2);
+    lv_big_button_create(scr, "F:/bmp_custom2.bin", more_menu.custom2, BTN_X_PIXEL * 2 + INTERVAL_V * 3, titleHeight, event_handler, ID_CUSTOM_2);
   #endif
 
   #if HAS_USER_ITEM(3)
-    lv_obj_t *buttonCustom3 = lv_imgbtn_create(MAIN_SCR, "F:/bmp_custom3.bin", BTN_X_PIXEL * 3 + INTERVAL_V * 4, titleHeight, event_handler, ID_CUSTOM_3);
-    if (enc_ena) lv_group_add_obj(g, buttonCustom3);
-    lv_obj_t *labelCustom3 = lv_label_create_empty(buttonCustom3);
+    lv_big_button_create(scr, "F:/bmp_custom3.bin", more_menu.custom3, BTN_X_PIXEL * 3 + INTERVAL_V * 4, titleHeight, event_handler, ID_CUSTOM_3);
   #endif
 
   #if HAS_USER_ITEM(4)
-    lv_obj_t *buttonCustom4 = lv_imgbtn_create(MAIN_SCR, "F:/bmp_custom4.bin", INTERVAL_V, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_CUSTOM_4);
-    if (enc_ena) lv_group_add_obj(g, buttonCustom4);
-    lv_obj_t *labelCustom4 = lv_label_create_empty(buttonCustom4);
+    lv_big_button_create(scr, "F:/bmp_custom4.bin", more_menu.custom4, INTERVAL_V, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_CUSTOM_4);
   #endif
 
   #if HAS_USER_ITEM(5)
-    lv_obj_t *buttonCustom5 = lv_imgbtn_create(MAIN_SCR, "F:/bmp_custom5.bin", BTN_X_PIXEL + INTERVAL_V * 2, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_CUSTOM_5);
-    if (enc_ena) lv_group_add_obj(g, buttonCustom5);
-    lv_obj_t *labelCustom5 = lv_label_create_empty(buttonCustom5);
+    lv_big_button_create(scr, "F:/bmp_custom5.bin", more_menu.custom5, BTN_X_PIXEL + INTERVAL_V * 2, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_CUSTOM_5);
   #endif
 
   #if HAS_USER_ITEM(6)
-    lv_obj_t *buttonCustom6 = lv_imgbtn_create(MAIN_SCR, "F:/bmp_custom6.bin", BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_CUSTOM_6);
-    if (enc_ena) lv_group_add_obj(g, buttonCustom6);
-    lv_obj_t *labelCustom6 = lv_label_create_empty(buttonCustom6);
+    lv_big_button_create(scr, "F:/bmp_custom6.bin", more_menu.custom6, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_CUSTOM_6);
   #endif
 
-  lv_obj_t *buttonBack = lv_imgbtn_create(MAIN_SCR, "F:/bmp_return.bin", BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_RETURN);
-  if (enc_ena) lv_group_add_obj(g, buttonBack);
-  lv_obj_t *label_Back = lv_label_create_empty(buttonBack);
-
-  if (gCfgItems.multiple_language != 0) {
-    lv_label_set_text(labelGCode, more_menu.gcode);
-    lv_obj_align(labelGCode, buttonGCode, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
-
-    #if HAS_USER_ITEM(1)
-      lv_label_set_text(labelCustom1, more_menu.custom1);
-      lv_obj_align(labelCustom1, buttonCustom1, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
-    #endif
-    #if HAS_USER_ITEM(2)
-      lv_label_set_text(labelCustom2, more_menu.custom2);
-      lv_obj_align(labelCustom2, buttonCustom2, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
-    #endif
-    #if HAS_USER_ITEM(3)
-      lv_label_set_text(labelCustom3, more_menu.custom3);
-      lv_obj_align(labelCustom3, buttonCustom3, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
-    #endif
-    #if HAS_USER_ITEM(4)
-      lv_label_set_text(labelCustom4, more_menu.custom4);
-      lv_obj_align(labelCustom4, buttonCustom4, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
-    #endif
-    #if HAS_USER_ITEM(5)
-      lv_label_set_text(labelCustom5, more_menu.custom5);
-      lv_obj_align(labelCustom5, buttonCustom5, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
-    #endif
-    #if HAS_USER_ITEM(6)
-      lv_label_set_text(labelCustom6, more_menu.custom6);
-      lv_obj_align(labelCustom6, buttonCustom6, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
-    #endif
-    lv_label_set_text(label_Back, common_menu.text_back);
-    lv_obj_align(label_Back, buttonBack, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
-  }
-
-  #if BUTTONS_EXIST(EN1, EN2, ENC)
-    if (enc_ena) {
-      lv_group_add_obj(g, buttonGCode);
-      #if HAS_USER_ITEM(1)
-        lv_group_add_obj(g, buttonCustom1);
-      #endif
-      #if HAS_USER_ITEM(2)
-        lv_group_add_obj(g, buttonCustom2);
-      #endif
-      #if HAS_USER_ITEM(3)
-        lv_group_add_obj(g, buttonCustom3);
-      #endif
-      #if HAS_USER_ITEM(4)
-        lv_group_add_obj(g, buttonCustom4);
-      #endif
-      #if HAS_USER_ITEM(5)
-        lv_group_add_obj(g, buttonCustom5);
-      #endif
-      #if HAS_USER_ITEM(6)
-        lv_group_add_obj(g, buttonCustom6);
-      #endif
-      lv_group_add_obj(g, buttonBack);
-    }
-  #endif
+  lv_big_button_create(scr, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_RETURN);
 }
 
 void lv_clear_more() {
-  #if BUTTONS_EXIST(EN1, EN2, ENC)
+  #if HAS_ROTARY_ENCODER
     if (gCfgItems.encoder_enable) lv_group_remove_all_objs(g);
   #endif
-
-  #ifdef USE_NEW_LVGL_CONF
-    lv_obj_clean(MAIN_SCR);
-  #else
-    lv_obj_del(MAIN_SCR);
-  #endif
+  lv_obj_del(scr);
 }
 
 #endif // HAS_TFT_LVGL_UI

@@ -19,16 +19,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
 
 #include "draw_ui.h"
 #include <lv_conf.h>
 
-#include "../../../module/planner.h"
-#include "../../../inc/MarlinConfig.h"
+#include "../../../../module/planner.h"
+#include "../../../../inc/MarlinConfig.h"
 
 extern lv_group_t *g;
 static lv_obj_t *scr;
@@ -58,11 +57,13 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
           feedrate_percentage = MAX_EXT_SPEED_PERCENT;
       }
       else {
-        if (planner.flow_percentage[0] < MAX_EXT_SPEED_PERCENT - uiCfg.stepPrintSpeed)
-          planner.flow_percentage[0] += uiCfg.stepPrintSpeed;
-        else
-          planner.flow_percentage[0] = MAX_EXT_SPEED_PERCENT;
-        planner.refresh_e_factor(0);
+        #if EXTRUDERS
+          if (planner.flow_percentage[0] < MAX_EXT_SPEED_PERCENT - uiCfg.stepPrintSpeed)
+            planner.flow_percentage[0] += uiCfg.stepPrintSpeed;
+          else
+            planner.flow_percentage[0] = MAX_EXT_SPEED_PERCENT;
+          planner.refresh_e_factor(0);
+        #endif
         #if HAS_MULTI_EXTRUDER
           planner.flow_percentage[1] = planner.flow_percentage[0];
           planner.refresh_e_factor(1);
@@ -78,11 +79,13 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
           feedrate_percentage = MIN_EXT_SPEED_PERCENT;
       }
       else {
-        if (planner.flow_percentage[0] > MIN_EXT_SPEED_PERCENT + uiCfg.stepPrintSpeed)
-          planner.flow_percentage[0] -= uiCfg.stepPrintSpeed;
-        else
-          planner.flow_percentage[0] = MIN_EXT_SPEED_PERCENT;
-        planner.refresh_e_factor(0);
+        #if EXTRUDERS
+          if (planner.flow_percentage[0] > MIN_EXT_SPEED_PERCENT + uiCfg.stepPrintSpeed)
+            planner.flow_percentage[0] -= uiCfg.stepPrintSpeed;
+          else
+            planner.flow_percentage[0] = MIN_EXT_SPEED_PERCENT;
+          planner.refresh_e_factor(0);
+        #endif
         #if HAS_MULTI_EXTRUDER
           planner.flow_percentage[1] = planner.flow_percentage[0];
           planner.refresh_e_factor(1);
@@ -110,13 +113,13 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
       disp_speed_step();
       break;
     case ID_C_RETURN:
-      clear_cur_ui();
-      draw_return_ui();
+      lv_clear_cur_ui();
+      lv_draw_return_ui();
       break;
   }
 }
 
-void lv_draw_change_speed() {
+void lv_draw_change_speed(void) {
   scr = lv_screen_create(CHANGE_SPEED_UI);
   // Create an Image button
   lv_big_button_create(scr, "F:/bmp_Add.bin", speed_menu.add, INTERVAL_V, titleHeight, event_handler, ID_C_ADD);
@@ -187,7 +190,11 @@ void disp_print_speed() {
   const char *lbl;
   if (editingFlowrate) {
     lbl = speed_menu.extrude_speed;
-    val = planner.flow_percentage[0];
+    #if EXTRUDERS
+      val = planner.flow_percentage[0];
+    #else
+      val = 0;
+    #endif
   }
   else {
     lbl = speed_menu.move_speed;

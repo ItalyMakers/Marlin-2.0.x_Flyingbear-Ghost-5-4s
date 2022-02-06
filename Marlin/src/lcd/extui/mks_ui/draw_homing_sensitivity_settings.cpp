@@ -19,18 +19,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../../inc/MarlinConfig.h"
+#include "../../../../inc/MarlinConfig.h"
 
 #if HAS_TFT_LVGL_UI && USE_SENSORLESS
 
 #include "draw_ui.h"
 #include <lv_conf.h>
 
-#include "../../../module/planner.h"
-#include "../../../module/probe.h"
-#include "../../../module/stepper/indirection.h"
-#include "../../../feature/tmc_util.h"
+#include "../../../../module/planner.h"
+#include "../../../../module/probe.h"
+#include "../../../../module/stepper/indirection.h"
+#include "../../../../feature/tmc_util.h"
 
 extern lv_group_t *g;
 static lv_obj_t *scr;
@@ -48,7 +47,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
   switch (obj->mks_obj_id) {
     case ID_SENSITIVITY_RETURN:
       lv_clear_homing_sensitivity_settings();
-      draw_return_ui();
+      lv_draw_return_ui();
       break;
     case ID_SENSITIVITY_X:
       value = x_sensitivity;
@@ -67,15 +66,15 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
       break;
     #if Z2_SENSORLESS
       case ID_SENSITIVITY_Z2:
-        value = z2_sensitivity;
-        lv_clear_homing_sensitivity_settings();
-        lv_draw_number_key();
-        break;
+      value = z2_sensitivity;
+      lv_clear_homing_sensitivity_settings();
+      lv_draw_number_key();
+      break;
     #endif
   }
 }
 
-void lv_draw_homing_sensitivity_settings() {
+void lv_draw_homing_sensitivity_settings(void) {
   scr = lv_screen_create(HOMING_SENSITIVITY_UI, machine_menu.HomingSensitivityConfTitle);
 
   itoa(TERN(X_SENSORLESS, stepperX.homing_threshold(), 0), public_buf_l, 10);
@@ -92,9 +91,7 @@ void lv_draw_homing_sensitivity_settings() {
     lv_screen_menu_item_1_edit(scr, machine_menu.Z2_Sensitivity, PARA_UI_POS_X, PARA_UI_POS_Y * 4, event_handler, ID_SENSITIVITY_Z2, 3, public_buf_l);
   #endif
 
-  // lv_big_button_create(scr, "F:/bmp_back70x40.bin", common_menu.text_back, PARA_UI_BACL_POS_X, PARA_UI_BACL_POS_Y, event_handler, ID_SENSITIVITY_RETURN, true);
-    lv_screen_menu_item_return(scr, event_handler, ID_SENSITIVITY_RETURN);
-
+  lv_screen_menu_item_return(scr, event_handler, ID_SENSITIVITY_RETURN);
 }
 
 void lv_clear_homing_sensitivity_settings() {

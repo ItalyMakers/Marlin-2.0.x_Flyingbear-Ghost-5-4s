@@ -19,16 +19,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
 
 #include "draw_ui.h"
 #include <lv_conf.h>
 
-#include "../../../module/planner.h"
-#include "../../../inc/MarlinConfig.h"
+#include "../../../../module/planner.h"
+#include "../../../../inc/MarlinConfig.h"
 
 extern lv_group_t *g;
 static lv_obj_t *scr;
@@ -51,7 +50,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
   switch (obj->mks_obj_id) {
     case ID_FEED_RETURN:
       uiCfg.para_ui_page = false;
-      draw_return_ui();
+      lv_draw_return_ui();
       return;
     case ID_FEED_X:
       value = XMaxFeedRate;
@@ -78,9 +77,10 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
       return;
   }
   lv_draw_number_key();
+
 }
 
-void lv_draw_max_feedrate_settings() {
+void lv_draw_max_feedrate_settings(void) {
   scr = lv_screen_create(MAXFEEDRATE_UI, machine_menu.MaxFeedRateConfTitle);
 
   if (!uiCfg.para_ui_page) {
@@ -96,21 +96,16 @@ void lv_draw_max_feedrate_settings() {
     dtostrf(planner.settings.max_feedrate_mm_s[E_AXIS], 1, 1, public_buf_l);
     lv_screen_menu_item_1_edit(scr, machine_menu.E0MaxFeedRate, PARA_UI_POS_X, PARA_UI_POS_Y * 4, event_handler, ID_FEED_E0, 3, public_buf_l);
 
-    // lv_big_button_create(scr, "F:/bmp_back70x40.bin", machine_menu.next, PARA_UI_TURN_PAGE_POS_X, PARA_UI_TURN_PAGE_POS_Y, event_handler, ID_FEED_DOWN, true);
     lv_screen_menu_item_turn_page(scr, machine_menu.next, event_handler, ID_FEED_DOWN);
   }
   else {
     dtostrf(planner.settings.max_feedrate_mm_s[E_AXIS_N(1)], 1, 1, public_buf_l);
     lv_screen_menu_item_1_edit(scr, machine_menu.E1MaxFeedRate, PARA_UI_POS_X, PARA_UI_POS_Y, event_handler, ID_FEED_E1, 0, public_buf_l);
 
-    // lv_big_button_create(scr, "F:/bmp_back70x40.bin", machine_menu.previous, PARA_UI_TURN_PAGE_POS_X, PARA_UI_TURN_PAGE_POS_Y, event_handler, ID_FEED_UP, true);
-        lv_screen_menu_item_turn_page(scr, machine_menu.previous, event_handler, ID_FEED_UP);
-
+    lv_screen_menu_item_turn_page(scr, machine_menu.previous, event_handler, ID_FEED_UP);
   }
 
-  // lv_big_button_create(scr, "F:/bmp_back70x40.bin", common_menu.text_back, PARA_UI_BACL_POS_X, PARA_UI_BACL_POS_Y, event_handler, ID_FEED_RETURN, true);
   lv_screen_menu_item_return(scr, event_handler, ID_FEED_RETURN);
-
 }
 
 void lv_clear_max_feedrate_settings() {

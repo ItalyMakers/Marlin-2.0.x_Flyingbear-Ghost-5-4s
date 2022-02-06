@@ -33,6 +33,7 @@
 #include "SdBaseFile.h"
 
 #include <stdint.h>
+#include <string.h>
 
 /**
  * \class SdFile

@@ -40,4 +40,7 @@ under the "MIT" license, as documented here:
 
 ==== MARLIN INTEGRATION WORK ====
 
-All additional work done to integrate USB into Marlin was performed by LulzBot and is licensed under the GPLv3.
+All additional work done to integrate USB into Marlin was performed by AlephObjects, Inc.
+and is licensed under the GPLv3.
+
+-- marcio@alephobjects.com

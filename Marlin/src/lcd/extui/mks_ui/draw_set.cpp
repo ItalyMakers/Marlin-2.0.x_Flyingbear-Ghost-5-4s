@@ -19,8 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
 
@@ -31,17 +30,14 @@
 
 #include "pic_manager.h"
 
-#include "../../../gcode/queue.h"
-#include "../../../inc/MarlinConfig.h"
+#include "../../../../gcode/queue.h"
+#include "../../../../inc/MarlinConfig.h"
 
 #if HAS_SUICIDE
-  #include "../../../MarlinCore.h"
+  #include "../../../../MarlinCore.h"
 #endif
 
-#ifndef USE_NEW_LVGL_CONF
-  static lv_obj_t *scr;
-#endif
-
+static lv_obj_t *scr;
 extern lv_group_t*  g;
 
 enum {
@@ -58,12 +54,7 @@ enum {
 
 static void event_handler(lv_obj_t *obj, lv_event_t event) {
   if (event != LV_EVENT_RELEASED) return;
-  if (obj->mks_obj_id == ID_S_CONTINUE) return;
-  if (obj->mks_obj_id == ID_S_MOTOR_OFF) {
-    TERN(HAS_SUICIDE, suicide(), queue.enqueue_now_P(PSTR("M84")));
-    return;
-  }
-  lv_clear_set();
+  if(obj->mks_obj_id != ID_S_MOTOR_OFF) lv_clear_set();
   switch (obj->mks_obj_id) {
     case ID_S_FAN:
       lv_draw_fan();
@@ -71,6 +62,10 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
     case ID_S_ABOUT:
       lv_draw_about();
       break;
+    case ID_S_CONTINUE: return;
+    case ID_S_MOTOR_OFF:
+      TERN(HAS_SUICIDE, suicide(), queue.enqueue_now_P(PSTR("M84")));
+      return;
     case ID_S_LANGUAGE:
       lv_draw_language();
       break;
@@ -92,7 +87,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
             lv_draw_wifi();
           }
           else {
-            if (uiCfg.command_send) {
+            if (uiCfg.command_send == 1) {
               uint8_t cmd_wifi_list[] = { 0xA5, 0x07, 0x00, 0x00, 0xFC };
               raw_send_to_wifi(cmd_wifi_list, COUNT(cmd_wifi_list));
               last_disp_state = SET_UI;
@@ -113,13 +108,8 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
   }
 }
 
-void lv_draw_set() {
-#ifdef USE_NEW_LVGL_CONF
-  mks_ui.src_main = lv_set_scr_id_title(mks_ui.src_main, SET_UI, "");
-#else
+void lv_draw_set(void) {
   scr = lv_screen_create(SET_UI);
-#endif
-#ifndef USE_NEW_LVGL_CONF
   lv_big_button_create(scr, "F:/bmp_eeprom_settings.bin", set_menu.eepromSet, INTERVAL_V, titleHeight, event_handler, ID_S_EEPROM_SET);
   lv_big_button_create(scr, "F:/bmp_fan.bin", set_menu.fan, BTN_X_PIXEL + INTERVAL_V * 2, titleHeight, event_handler, ID_S_FAN);
   lv_big_button_create(scr, "F:/bmp_about.bin", set_menu.about, BTN_X_PIXEL * 2 + INTERVAL_V * 3, titleHeight, event_handler, ID_S_ABOUT);
@@ -132,31 +122,13 @@ void lv_draw_set() {
     lv_big_button_create(scr, "F:/bmp_wifi.bin", set_menu.wifi, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_S_WIFI);
   #endif
   lv_big_button_create(scr, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_S_RETURN);
-#else
-  lv_big_button_create(mks_ui.src_main, "F:/bmp_eeprom_settings.bin", set_menu.eepromSet, INTERVAL_V, titleHeight, event_handler, ID_S_EEPROM_SET);
-  lv_big_button_create(mks_ui.src_main, "F:/bmp_fan.bin", set_menu.fan, BTN_X_PIXEL + INTERVAL_V * 2, titleHeight, event_handler, ID_S_FAN);
-  lv_big_button_create(mks_ui.src_main, "F:/bmp_about.bin", set_menu.about, BTN_X_PIXEL * 2 + INTERVAL_V * 3, titleHeight, event_handler, ID_S_ABOUT);
-  lv_big_button_create(mks_ui.src_main, ENABLED(HAS_SUICIDE) ? "F:/bmp_manual_off.bin" : "F:/bmp_function1.bin", set_menu.TERN(HAS_SUICIDE, shutdown, motoroff), BTN_X_PIXEL * 3 + INTERVAL_V * 4, titleHeight, event_handler, ID_S_MOTOR_OFF);
-  lv_big_button_create(mks_ui.src_main, "F:/bmp_machine_para.bin", set_menu.machine_para, INTERVAL_V, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_S_MACHINE_PARA);
-  #if HAS_LANG_SELECT_SCREEN
-    lv_big_button_create(mks_ui.src_main, "F:/bmp_language.bin", set_menu.language, BTN_X_PIXEL + INTERVAL_V * 2, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_S_LANGUAGE);
-  #endif
-  #if ENABLED(MKS_WIFI_MODULE)
-    lv_big_button_create(mks_ui.src_main, "F:/bmp_wifi.bin", set_menu.wifi, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_S_WIFI);
-  #endif
-  lv_big_button_create(mks_ui.src_main, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_S_RETURN);
-#endif
 }
 
 void lv_clear_set() {
   #if HAS_ROTARY_ENCODER
     if (gCfgItems.encoder_enable) lv_group_remove_all_objs(g);
   #endif
-#ifndef USE_NEW_LVGL_CONF
   lv_obj_del(scr);
-#else
-  lv_obj_clean(mks_ui.src_main);
-#endif
 }
 
 #endif // HAS_TFT_LVGL_UI

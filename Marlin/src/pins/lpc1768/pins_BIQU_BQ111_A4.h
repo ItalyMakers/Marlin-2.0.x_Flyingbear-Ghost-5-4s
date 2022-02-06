@@ -22,7 +22,11 @@
 #pragma once
 
 /**
- * BIQU BQ111-A4 pin assignments
+ * BIQU BQ111-A4
+ *
+ * Applies to the following boards:
+ *
+ *  BOARD_BIQU_BQ111_A4 (Hotend, Fan, Bed)
  */
 
 #include "env_validate.h"

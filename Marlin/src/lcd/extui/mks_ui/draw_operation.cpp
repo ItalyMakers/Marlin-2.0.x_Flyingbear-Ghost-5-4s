@@ -19,18 +19,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
 
 #include "draw_ui.h"
 #include <lv_conf.h>
 
-#include "../../../module/temperature.h"
-#include "../../../module/motion.h"
-#include "../../../sd/cardreader.h"
-#include "../../../inc/MarlinConfig.h"
+#include "../../../../module/temperature.h"
+#include "../../../../module/motion.h"
+#include "../../../../sd/cardreader.h"
+#include "../../../../inc/MarlinConfig.h"
 
 extern lv_group_t *g;
 static lv_obj_t *scr;
@@ -73,6 +72,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
       lv_draw_preHeat();
       break;
     case ID_O_EXTRUCT:
+      uiCfg.moveSpeed_bak = (uint16_t)feedrate_mm_s;
       lv_clear_operation();
       lv_draw_extrusion();
       break;
@@ -82,7 +82,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
       break;
     case ID_O_FILAMENT:
       #if HAS_MULTI_EXTRUDER
-        uiCfg.extruderIndexBak = active_extruder;
+        uiCfg.curSprayerChoose_bak = active_extruder;
       #endif
       if (uiCfg.print_state == WORKING) {
         #if ENABLED(SDSUPPORT)
@@ -92,7 +92,9 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
         #endif
       }
       uiCfg.moveSpeed_bak = (uint16_t)feedrate_mm_s;
-      uiCfg.hotendTargetTempBak = thermalManager.degTargetHotend(active_extruder);
+      #if HAS_HOTEND
+        uiCfg.desireSprayerTempBak = thermalManager.temp_hotend[active_extruder].target;
+      #endif
       lv_clear_operation();
       lv_draw_filament_change();
       break;
@@ -105,8 +107,8 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
       lv_draw_change_speed();
       break;
     case ID_O_RETURN:
-      clear_cur_ui();
-      draw_return_ui();
+      lv_clear_cur_ui();
+      lv_draw_return_ui();
       break;
     case ID_O_POWER_OFF:
       if (gCfgItems.finish_power_off) {
@@ -132,6 +134,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
 
 void lv_draw_operation() {
   scr = lv_screen_create(OPERATE_UI);
+
   // Create image buttons
   lv_obj_t *buttonPreHeat  = lv_imgbtn_create(scr, "F:/bmp_temp.bin", INTERVAL_V, titleHeight, event_handler, ID_O_PRE_HEAT);
   lv_obj_t *buttonFilament = lv_imgbtn_create(scr, "F:/bmp_filamentchange.bin", BTN_X_PIXEL + INTERVAL_V * 2, titleHeight, event_handler, ID_O_FILAMENT);

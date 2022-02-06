@@ -19,30 +19,30 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
 
 #include "draw_ui.h"
 #include <lv_conf.h>
 
-#include "../../../gcode/gcode.h"
-#include "../../../gcode/queue.h"
-#include "../../../module/planner.h"
-#include "../../../inc/MarlinConfig.h"
+#include "../../../../gcode/gcode.h"
+#include "../../../../gcode/queue.h"
+#include "../../../../module/planner.h"
+#include "../../../../module/temperature.h"
+#include "../../../../inc/MarlinConfig.h"
 
 #if ENABLED(POWER_LOSS_RECOVERY)
-  #include "../../../feature/powerloss.h"
+  #include "../../../../feature/powerloss.h"
 #endif
 
 #if HAS_TRINAMIC_CONFIG
-  #include "../../../module/stepper/indirection.h"
-  #include "../../../feature/tmc_util.h"
+  #include "../../../../module/stepper/indirection.h"
+  #include "../../../../feature/tmc_util.h"
 #endif
 
 #if HAS_BED_PROBE
-  #include "../../../module/probe.h"
+  #include "../../../../module/probe.h"
 #endif
 
 extern lv_group_t *g;
@@ -202,34 +202,34 @@ static void disp_key_value() {
       dtostrf(gCfgItems.pausePosZ, 1, 1, public_buf_m);
       break;
     case level_pos_x1:
-      itoa(gCfgItems.trammingPos[0].x, public_buf_m, 10);
+      itoa(gCfgItems.levelingPos[0][0], public_buf_m, 10);
       break;
     case level_pos_y1:
-      itoa(gCfgItems.trammingPos[0].y, public_buf_m, 10);
+      itoa(gCfgItems.levelingPos[0][1], public_buf_m, 10);
       break;
     case level_pos_x2:
-      itoa(gCfgItems.trammingPos[1].x, public_buf_m, 10);
+      itoa(gCfgItems.levelingPos[1][0], public_buf_m, 10);
       break;
     case level_pos_y2:
-      itoa(gCfgItems.trammingPos[1].y, public_buf_m, 10);
+      itoa(gCfgItems.levelingPos[1][1], public_buf_m, 10);
       break;
     case level_pos_x3:
-      itoa(gCfgItems.trammingPos[2].x, public_buf_m, 10);
+      itoa(gCfgItems.levelingPos[2][0], public_buf_m, 10);
       break;
     case level_pos_y3:
-      itoa(gCfgItems.trammingPos[2].y, public_buf_m, 10);
+      itoa(gCfgItems.levelingPos[2][1], public_buf_m, 10);
       break;
     case level_pos_x4:
-      itoa(gCfgItems.trammingPos[3].x, public_buf_m, 10);
+      itoa(gCfgItems.levelingPos[3][0], public_buf_m, 10);
       break;
     case level_pos_y4:
-      itoa(gCfgItems.trammingPos[3].y, public_buf_m, 10);
+      itoa(gCfgItems.levelingPos[3][1], public_buf_m, 10);
       break;
     case level_pos_x5:
-      itoa(gCfgItems.trammingPos[4].x, public_buf_m, 10);
+      itoa(gCfgItems.levelingPos[4][0], public_buf_m, 10);
       break;
     case level_pos_y5:
-      itoa(gCfgItems.trammingPos[4].y, public_buf_m, 10);
+      itoa(gCfgItems.levelingPos[4][1], public_buf_m, 10);
       break;
     #if HAS_BED_PROBE
       case x_offset:
@@ -281,6 +281,17 @@ static void disp_key_value() {
         itoa(TERN(Z2_SENSORLESS, stepperZ2.homing_threshold(), 0), public_buf_m, 10);
       #endif
       break;
+    #if ENABLED(DUAL_X_CARRIAGE)
+      case x_hotend_offset:
+        sprintf_P(public_buf_m, PSTR("%s"), dtostrf(hotend_offset[1].x, 1, 1, str_1));
+        break;
+      case y_hotend_offset:
+        sprintf_P(public_buf_m, PSTR("%s"), dtostrf(hotend_offset[1].y, 1, 1, str_1));
+        break;
+      case z_hotend_offset:
+        sprintf_P(public_buf_m, PSTR("%s"), dtostrf(hotend_offset[1].z, 1, 1, str_1));
+        break;
+    #endif
   }
 
   strcpy(key_value, public_buf_m);
@@ -344,16 +355,16 @@ static void set_value_confirm() {
     case pause_pos_x: gCfgItems.pausePosX = atof(key_value); update_spi_flash(); break;
     case pause_pos_y: gCfgItems.pausePosY = atof(key_value); update_spi_flash(); break;
     case pause_pos_z: gCfgItems.pausePosZ = atof(key_value); update_spi_flash(); break;
-    case level_pos_x1: gCfgItems.trammingPos[0].x = atoi(key_value); update_spi_flash(); break;
-    case level_pos_y1: gCfgItems.trammingPos[0].y = atoi(key_value); update_spi_flash(); break;
-    case level_pos_x2: gCfgItems.trammingPos[1].x = atoi(key_value); update_spi_flash(); break;
-    case level_pos_y2: gCfgItems.trammingPos[1].y = atoi(key_value); update_spi_flash(); break;
-    case level_pos_x3: gCfgItems.trammingPos[2].x = atoi(key_value); update_spi_flash(); break;
-    case level_pos_y3: gCfgItems.trammingPos[2].y = atoi(key_value); update_spi_flash(); break;
-    case level_pos_x4: gCfgItems.trammingPos[3].x = atoi(key_value); update_spi_flash(); break;
-    case level_pos_y4: gCfgItems.trammingPos[3].y = atoi(key_value); update_spi_flash(); break;
-    case level_pos_x5: gCfgItems.trammingPos[4].x = atoi(key_value); update_spi_flash(); break;
-    case level_pos_y5: gCfgItems.trammingPos[4].y = atoi(key_value); update_spi_flash(); break;
+    case level_pos_x1: gCfgItems.levelingPos[0][0] = atoi(key_value); update_spi_flash(); break;
+    case level_pos_y1: gCfgItems.levelingPos[0][1] = atoi(key_value); update_spi_flash(); break;
+    case level_pos_x2: gCfgItems.levelingPos[1][0] = atoi(key_value); update_spi_flash(); break;
+    case level_pos_y2: gCfgItems.levelingPos[1][1] = atoi(key_value); update_spi_flash(); break;
+    case level_pos_x3: gCfgItems.levelingPos[2][0] = atoi(key_value); update_spi_flash(); break;
+    case level_pos_y3: gCfgItems.levelingPos[2][1] = atoi(key_value); update_spi_flash(); break;
+    case level_pos_x4: gCfgItems.levelingPos[3][0] = atoi(key_value); update_spi_flash(); break;
+    case level_pos_y4: gCfgItems.levelingPos[3][1] = atoi(key_value); update_spi_flash(); break;
+    case level_pos_x5: gCfgItems.levelingPos[4][0] = atoi(key_value); update_spi_flash(); break;
+    case level_pos_y5: gCfgItems.levelingPos[4][1] = atoi(key_value); update_spi_flash(); break;
     #if HAS_BED_PROBE
       case x_offset: {
         #if HAS_PROBE_XY_OFFSET
@@ -403,7 +414,19 @@ static void set_value_confirm() {
     case y_sensitivity: TERN_(Y_SENSORLESS, stepperY.homing_threshold(atoi(key_value))); break;
     case z_sensitivity: TERN_(Z_SENSORLESS, stepperZ.homing_threshold(atoi(key_value))); break;
     case z2_sensitivity: TERN_(Z2_SENSORLESS, stepperZ2.homing_threshold(atoi(key_value))); break;
+    #if ENABLED(DUAL_X_CARRIAGE)
+      case x_hotend_offset:
+        hotend_offset[1].x = atof(key_value);
+        break;
+      case y_hotend_offset:
+        hotend_offset[1].y = atof(key_value);
+        break;
+      case z_hotend_offset:
+        hotend_offset[1].z = atof(key_value);
+        break;
+    #endif
   }
+  watchdog_refresh();
   gcode.process_subcommands_now_P(PSTR("M500"));
 }
 
@@ -454,7 +477,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
       last_disp_state = NUMBER_KEY_UI;
       if (strlen(key_value) != 0) set_value_confirm();
       lv_clear_number_key();
-      draw_return_ui();
+      lv_draw_return_ui();
       break;
   }
 }

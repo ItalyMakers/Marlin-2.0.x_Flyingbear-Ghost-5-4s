@@ -25,6 +25,7 @@
 #define TOOL_TEXT_IT                  "Strumento"
 #define PREHEAT_TEXT_IT               "Prerisc"
 #define MOVE_TEXT_IT                  "Muovi"
+#define TEXT_ZOFFSET_IT               "Z offset"
 #define HOME_TEXT_IT                  "Home"
 #define PRINT_TEXT_IT                 "Stampa"
 #define EXTRUDE_TEXT_IT               "Estrude"
@@ -235,7 +236,8 @@
 #define DIALOG_PRINT_TIME_IT              "Tempo di stampa: "
 #define DIALOG_REPRINT_IT                 "Print again"
 #define DIALOG_WIFI_ENABLE_TIPS_IT        "The wifi module is being configured,\nplease wait a moment....."
-#define DIALOG_AUTO_LEVELING_TIPS_IT      "Auto-leveling in corso, attendere..."
+#define DIALOG_PAUSING_TIPS_IT            "La macchina si ferma ..."
+#define DIALOG_AUTO_LEVELING_TIPS_IT      "Livellamento automatico, attendere ..."
 
 #define MESSAGE_PAUSING_IT                "Parcheggiando..."
 #define MESSAGE_CHANGING_IT               "Attendere avvio del cambio di filamento"
@@ -258,8 +260,6 @@
 #define EEPROM_STORE_TIPS_IT              "Memorizzare le impostazioni su EEPROM?"
 #define EEPROM_READ_TIPS_IT               "Leggi le impostazioni dalla EEPROM?"
 #define EEPROM_REVERT_TIPS_IT             "Ripristinare le impostazioni predefinite?"
-
-
 
 #define MORE_CUSTOM1_TEXT_IT  MAIN_MENU_ITEM_1_DESC
 #define MORE_CUSTOM2_TEXT_IT  MAIN_MENU_ITEM_2_DESC

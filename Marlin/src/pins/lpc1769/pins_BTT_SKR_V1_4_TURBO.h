@@ -21,10 +21,6 @@
  */
 #pragma once
 
-/**
- * BigTreeTech SKR 1.4 Turbo pin assignments
- */
-
 #define BOARD_INFO_NAME "BTT SKR V1.4 TURBO"
 
 //

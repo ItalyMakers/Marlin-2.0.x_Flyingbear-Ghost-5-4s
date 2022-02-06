@@ -19,16 +19,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if BOTH(HAS_TFT_LVGL_UI, HAS_CLASSIC_JERK)
 
 #include "draw_ui.h"
 #include <lv_conf.h>
 
-#include "../../../module/planner.h"
-#include "../../../inc/MarlinConfig.h"
+#include "../../../../module/planner.h"
+#include "../../../../inc/MarlinConfig.h"
 
 extern lv_group_t *g;
 static lv_obj_t *scr;
@@ -46,7 +45,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
   switch (obj->mks_obj_id) {
     case ID_JERK_RETURN:
       lv_clear_jerk_settings();
-      draw_return_ui();
+      lv_draw_return_ui();
       break;
     case ID_JERK_X:
       value = XJerk;
@@ -71,7 +70,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
   }
 }
 
-void lv_draw_jerk_settings() {
+void lv_draw_jerk_settings(void) {
   scr = lv_screen_create(JERK_UI, machine_menu.JerkConfTitle);
 
   dtostrf(planner.max_jerk[X_AXIS], 1, 1, public_buf_l);
@@ -86,7 +85,6 @@ void lv_draw_jerk_settings() {
   dtostrf(planner.max_jerk[E_AXIS], 1, 1, public_buf_l);
   lv_screen_menu_item_1_edit(scr, machine_menu.E_Jerk, PARA_UI_POS_X, PARA_UI_POS_Y * 4, event_handler, ID_JERK_E, 3, public_buf_l);
 
-  // lv_big_button_create(scr, "F:/bmp_back70x40.bin", common_menu.text_back, PARA_UI_BACL_POS_X, PARA_UI_BACL_POS_Y, event_handler, ID_JERK_RETURN, true);
   lv_screen_menu_item_return(scr, event_handler, ID_JERK_RETURN);
 }
 
