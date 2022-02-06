@@ -17,8 +17,12 @@ def getList():
         parser.read(file)
         envName = 'env:' + envs
         if envName in parser:
-            list.append(parser[envName]['board_build.encrypt'])
+            if 'board_build.firmware' in parser[envName]:
+                list.append(parser[envName]['board_build.firmware'])
+            else:
+                list.append('Robin_nano35.bin')
             return list
+
     return list
 
 

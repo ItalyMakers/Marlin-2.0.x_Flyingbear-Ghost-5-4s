@@ -244,7 +244,7 @@ void disp_zoffset_value() {
   char buf[20];
   char str_1[16];
   if(saved){
-    sprintf_P(buf, PSTR(machine_menu.MeshblSaved));
+    sprintf_P(buf, PSTR(machine_menu.MeshblSaved), "none");
   }
   else{
     #ifdef MESH_BED_LEVELING
@@ -275,7 +275,6 @@ void disp_zoffset_value() {
 
 void zoffset_do_init(bool resetZoffset) {
 
-  char str_1[50];
   TERN_(HAS_BED_PROBE, probe.offset.z = 0);
   TERN_(HAS_SOFTWARE_ENDSTOPS, soft_endstop._enabled = false);
   // TERN_(HAS_LEVELING, reset_bed_level());
@@ -288,6 +287,7 @@ void zoffset_do_init(bool resetZoffset) {
 
    queue.enqueue_now_P(PSTR("G28\nG29 S1"));
   #else
+    char str_1[50];
 
     if (resetZoffset)
     {
