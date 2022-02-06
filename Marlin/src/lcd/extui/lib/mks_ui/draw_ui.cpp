@@ -125,9 +125,9 @@ void gCfgItems_init() {
   gCfgItems.curFilesize       = 0;
   gCfgItems.finish_power_off  = false;
   gCfgItems.pause_reprint     = false;
-  gCfgItems.pausePosX         = -1;
-  gCfgItems.pausePosY         = -1;
-  gCfgItems.pausePosZ         = 5;
+  gCfgItems.pausePosX         = X_PAUSE_POS;
+  gCfgItems.pausePosY         = Y_PAUSE_POS;
+  gCfgItems.pausePosZ         = Z_PAUSE_POS;
   gCfgItems.levelingPos[0][0] = X_MIN_POS + 30;
   gCfgItems.levelingPos[0][1] = Y_MIN_POS + 30;
   gCfgItems.levelingPos[1][0] = X_MAX_POS - 30;
@@ -281,6 +281,7 @@ lv_style_t style_para_value;
 lv_style_t style_para_back;
 
 lv_style_t lv_bar_style_indic;
+lv_style_t lv_bar_style_text;
 
 lv_style_t style_btn_pr;
 lv_style_t style_btn_rel;
@@ -338,21 +339,17 @@ void tft_style_init() {
 
   lv_style_copy(&style_num_key_pre, &lv_style_scr);
   lv_style_copy(&style_num_key_rel, &lv_style_scr);
-  style_num_key_pre.body.main_color = LV_COLOR_KEY_BACKGROUND;
-  style_num_key_pre.body.grad_color = LV_COLOR_KEY_BACKGROUND;
-  style_num_key_pre.text.color      = LV_COLOR_TEXT;
-  style_num_key_pre.text.sel_color  = LV_COLOR_TEXT;
-  style_num_key_rel.body.main_color = LV_COLOR_KEY_BACKGROUND;
-  style_num_key_rel.body.grad_color = LV_COLOR_KEY_BACKGROUND;
-  style_num_key_rel.text.color      = LV_COLOR_TEXT;
-  style_num_key_rel.text.sel_color  = LV_COLOR_TEXT;
-  #if HAS_SPI_FLASH_FONT
-    style_num_key_pre.text.font = &gb2312_puhui32;
-    style_num_key_rel.text.font = &gb2312_puhui32;
-  #else
-    style_num_key_pre.text.font = LV_FONT_DEFAULT;
-    style_num_key_rel.text.font = LV_FONT_DEFAULT;
-  #endif
+  style_num_key_pre.body.main_color = LV_COLOR_MAKE(0xFB, 0xB3, 0x51);
+  style_num_key_pre.body.grad_color = LV_COLOR_MAKE(0xFB, 0xB3, 0x51);
+  style_num_key_pre.text.color      = LV_COLOR_BLACK;
+  style_num_key_pre.text.sel_color  = LV_COLOR_BLACK;
+  style_num_key_rel.body.main_color = LV_COLOR_MAKE(0xFB, 0xB3, 0x51);
+  style_num_key_rel.body.grad_color = LV_COLOR_MAKE(0xFB, 0xB3, 0x51);
+  style_num_key_rel.text.color      = LV_COLOR_BLACK;
+  style_num_key_rel.text.sel_color  = LV_COLOR_BLACK;
+  style_num_key_pre.text.font       = TERN(HAS_SPI_FLASH_FONT, &gb2312_puhui32, LV_FONT_DEFAULT);
+  style_num_key_rel.text.font       = TERN(HAS_SPI_FLASH_FONT, &gb2312_puhui32, LV_FONT_DEFAULT);
+
   style_num_key_pre.line.width        = 0;
   style_num_key_rel.line.width        = 0;
   style_num_key_pre.text.letter_space = 0;
@@ -395,41 +392,46 @@ void tft_style_init() {
   style_para_value.text.font         = &TERN(HAS_SPI_FLASH_FONT, gb2312_puhui32, lv_font_roboto_22);
 
   lv_style_copy(&style_para_back, &lv_style_plain);
-  style_para_back.body.border.color = LV_COLOR_BACKGROUND;
+  style_para_back.body.border.color = lv_color_hex3(0xFFF);
   style_para_back.body.border.width = 1;
-  style_para_back.body.main_color   = TFT_LV_PARA_BACK_BODY_COLOR;
-  style_para_back.body.grad_color   = TFT_LV_PARA_BACK_BODY_COLOR;
+  style_para_back.body.main_color   = LV_COLOR_MAKE(0xFB, 0xB3, 0x51);
+  style_para_back.body.grad_color   = LV_COLOR_MAKE(0xFB, 0xB3, 0x51);
   style_para_back.body.shadow.width = 0;
   style_para_back.body.radius       = 3;
-  style_para_back.text.color        = LV_COLOR_WHITE;
+  style_para_back.text.color        = lv_color_hex3(0x000);
   style_para_back.text.font         = &TERN(HAS_SPI_FLASH_FONT, gb2312_puhui32, lv_font_roboto_22);
 
   lv_style_copy(&style_btn_rel, &lv_style_plain);
-  style_btn_rel.body.border.color = lv_color_hex3(0x269);
+  style_btn_rel.body.border.color = lv_color_hex3(0x000);
   style_btn_rel.body.border.width = 1;
-  style_btn_rel.body.main_color   = lv_color_hex3(0xADF);
-  style_btn_rel.body.grad_color   = lv_color_hex3(0x46B);
-  style_btn_rel.body.shadow.width = 4;
-  style_btn_rel.body.shadow.type  = LV_SHADOW_BOTTOM;
+  style_btn_rel.body.main_color   = LV_COLOR_MAKE(0xFB, 0xB3, 0x51);
+  style_btn_rel.body.grad_color   = LV_COLOR_MAKE(0xFB, 0xB3, 0x51);
+  // style_btn_rel.body.shadow.width = 4;
+  // style_btn_rel.body.shadow.type  = LV_SHADOW_BOTTOM;
   style_btn_rel.body.radius       = LV_RADIUS_CIRCLE;
-  style_btn_rel.text.color        = lv_color_hex3(0xDEF);
+  style_btn_rel.text.color        = lv_color_hex3(0x000);
   style_btn_rel.text.font         = &TERN(HAS_SPI_FLASH_FONT, gb2312_puhui32, lv_font_roboto_22);
 
   lv_style_copy(&style_btn_pr, &style_btn_rel);
-  style_btn_pr.body.border.color = lv_color_hex3(0x46B);
-  style_btn_pr.body.main_color   = lv_color_hex3(0x8BD);
-  style_btn_pr.body.grad_color   = lv_color_hex3(0x24A);
-  style_btn_pr.body.shadow.width = 2;
-  style_btn_pr.text.color        = lv_color_hex3(0xBCD);
+  style_btn_pr.body.border.color = lv_color_hex3(0xFFF);
+  style_btn_pr.body.main_color   = LV_COLOR_MAKE(0xFB, 0xB3, 0x51);
+  style_btn_pr.body.grad_color   = LV_COLOR_MAKE(0xFB, 0xB3, 0x51);
+  // style_btn_pr.body.shadow.width = 2;
+  style_btn_pr.text.color        = lv_color_hex3(0x000);
   style_btn_pr.text.font         = &TERN(HAS_SPI_FLASH_FONT, gb2312_puhui32, lv_font_roboto_22);
 
   lv_style_copy(&lv_bar_style_indic, &lv_style_pretty_color);
-  lv_bar_style_indic.text.color        = lv_color_hex3(0xADF);
-  lv_bar_style_indic.image.color       = lv_color_hex3(0xADF);
-  lv_bar_style_indic.line.color        = lv_color_hex3(0xADF);
-  lv_bar_style_indic.body.main_color   = lv_color_hex3(0xADF);
-  lv_bar_style_indic.body.grad_color   = lv_color_hex3(0xADF);
-  lv_bar_style_indic.body.border.color = lv_color_hex3(0xADF);
+  lv_bar_style_indic.text.color        = LV_COLOR_MAKE(0xFB, 0xB3, 0x51);
+  lv_bar_style_indic.text.sel_color    = LV_COLOR_MAKE(0xFF, 0x00, 0x00);
+  lv_bar_style_indic.image.color       = LV_COLOR_MAKE(0xFB, 0xB3, 0x51);
+  lv_bar_style_indic.line.color        = LV_COLOR_MAKE(0xFB, 0xB3, 0x51);
+  lv_bar_style_indic.body.main_color   = LV_COLOR_MAKE(0xFB, 0xB3, 0x51);
+  lv_bar_style_indic.body.grad_color   = LV_COLOR_MAKE(0xFB, 0xB3, 0x51);
+  lv_bar_style_indic.body.shadow.width = 0;
+  lv_bar_style_indic.body.border.color = LV_COLOR_MAKE(0xFB, 0xB3, 0x51);
+  lv_bar_style_indic.body.radius       = 0;
+
+
 
   lv_style_copy(&style_check_box_selected, &lv_style_btn_pr);
 	style_check_box_selected.body.main_color   = LV_COLOR_YELLOW;
@@ -515,8 +517,11 @@ char *getDispText(int index) {
     case PRINT_MORE_UI:       strcpy(public_buf_l, more_menu.title); break;
     case FILAMENTCHANGE_UI:   strcpy(public_buf_l, filament_menu.title); break;
     case LEVELING_UI:
+    #if EITHER(MESH_BED_LEVELING, AUTO_BED_LEVELING_BILINEAR)
+      case ZOFFSET_UI:        strcpy(public_buf_l, leveling_menu.title); break;
+    #endif
     case MESHLEVELING_UI:     strcpy(public_buf_l, leveling_menu.title); break;
-    case BIND_UI:             strcpy(public_buf_l, cloud_menu.title); break;
+    // case BIND_UI:             strcpy(public_buf_l, cloud_menu.title); break;
     case TOOL_UI:             strcpy(public_buf_l, tool_menu.title); break;
     case WIFI_LIST_UI:        TERN_(MKS_WIFI_MODULE, strcpy(public_buf_l, list_menu.title)); break;
     case MACHINE_PARA_UI:     strcpy(public_buf_l, MachinePara_menu.title); break;
@@ -823,7 +828,7 @@ void GUI_RefreshPage() {
         }
         break;
 
-      case BIND_UI: refresh_bind_ui(); break;
+      // case BIND_UI: refresh_bind_ui(); break;
     #endif
 
     case FILAMENTCHANGE_UI:
@@ -835,7 +840,13 @@ void GUI_RefreshPage() {
     case DIALOG_UI:
       filament_dialog_handle();
       TERN_(MKS_WIFI_MODULE, wifi_scan_handle());
-      break;
+      #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
+          disp_dialog_temp_offset_value();
+        // if (temps_update_flag) {
+        //   temps_update_flag = false;
+        // }
+      #endif
+    break;
     case MESHLEVELING_UI: break;
     case HARDWARE_TEST_UI: break;
     case WIFI_LIST_UI:
@@ -901,11 +912,11 @@ void GUI_RefreshPage() {
       }
       break;
 
-    #if ENABLED(BLTOUCH)
-      case BLTOUCH_UI:
+    #if EITHER(MESH_BED_LEVELING, AUTO_BED_LEVELING_BILINEAR)
+      case ZOFFSET_UI:
         if (temps_update_flag) {
           temps_update_flag = false;
-          disp_bltouch_z_offset_value();
+          disp_zoffset_value();
         }
         break;
     #endif
@@ -957,7 +968,7 @@ void lv_clear_cur_ui() {
     case FILAMENTCHANGE_UI:           lv_clear_filament_change(); break;
     case LEVELING_UI:                 lv_clear_manualLevel(); break;
     #if ENABLED(MKS_WIFI_MODULE)
-      case BIND_UI:                   lv_clear_cloud_bind(); break;
+      // case BIND_UI:                   lv_clear_cloud_bind(); break;
     #endif
     #if HAS_BED_PROBE
       case NOZZLE_PROBE_OFFSET_UI:    lv_clear_auto_level_offset_settings(); break;
@@ -998,9 +1009,8 @@ void lv_clear_cur_ui() {
     case ENABLE_INVERT_UI:            break;
     case NUMBER_KEY_UI:               lv_clear_number_key(); break;
     case BABY_STEP_UI:                lv_clear_baby_stepping(); break;
-    #if ENABLED(BLTOUCH)
-      case BLTOUCH_UI:                lv_clear_bltouch_settings(); break;
-    #endif
+    #if EITHER(MESH_BED_LEVELING, AUTO_BED_LEVELING_BILINEAR)
+      case ZOFFSET_UI:                lv_clear_zoffset_settings(); break;
     #if ENABLED(TOUCH_MI_PROBE)
       case TOUCHMI_UI:                lv_clear_touchmi_settings(); break;
     #endif
@@ -1074,7 +1084,7 @@ void lv_draw_return_ui() {
       case FILAMENTCHANGE_UI:           lv_draw_filament_change(); break;
       case LEVELING_UI:                 lv_draw_manualLevel(); break;
       #if ENABLED(MKS_WIFI_MODULE)
-        case BIND_UI:                   lv_draw_cloud_bind(); break;
+        // case BIND_UI:                   lv_draw_cloud_bind(); break;
       #endif
       #if HAS_BED_PROBE
         case NOZZLE_PROBE_OFFSET_UI:    lv_draw_auto_level_offset_settings(); break;
@@ -1119,6 +1129,10 @@ void lv_draw_return_ui() {
       case NUMBER_KEY_UI:               lv_draw_number_key(); break;
       case DIALOG_UI:                   break;
       case BABY_STEP_UI:                lv_draw_baby_stepping(); break;
+      #if EITHER(MESH_BED_LEVELING, AUTO_BED_LEVELING_BILINEAR)
+        case ZOFFSET_UI:                lv_draw_zoffset_settings(); break;
+      #endif
+
       case PAUSE_POS_UI:                lv_draw_pause_position(); break;
       #if HAS_TRINAMIC_CONFIG
         case TMC_CURRENT_UI:            lv_draw_tmc_current_settings(); break;
@@ -1468,7 +1482,7 @@ void lv_print_finished() {
     //     marlin_state = MF_RUNNING;
     //   }
     // #endif
-    
+
   }
 }
 
@@ -1487,7 +1501,7 @@ void LV_TASK_HANDLER() {
   #if HAS_ROTARY_ENCODER
     if (gCfgItems.encoder_enable) lv_update_encoder();
   #endif
-  
+
   if (marlin_state == MF_SD_COMPLETE) lv_print_finished();
 }
 

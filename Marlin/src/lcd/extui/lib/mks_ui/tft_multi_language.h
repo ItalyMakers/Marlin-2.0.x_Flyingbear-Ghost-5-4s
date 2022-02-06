@@ -121,6 +121,13 @@ typedef struct machine_common_disp{
   const char *BLTouchSave;
   const char *BLTouchTest;
 
+  const char *MeshBLConfTitle;
+  const char *ZoffsetConfTitle;
+  const char *MeshblSaved;
+  const char *MeshBLSettings;
+  const char *MeshblNext;
+
+
   const char *LevelingSubConfTitle;
   const char *AutoLevelEnable;
   const char *BLtouchEnable;
@@ -387,6 +394,7 @@ typedef struct move_menu_disp {
   const char *step_1mm;
   const char *step_10mm;
   const char *zoffset;
+  const char *currPoint;
   const char *back;
 } move_menu_def;
 
@@ -397,6 +405,7 @@ typedef struct home_menu_disp {
   const char *home_all;
   const char *home_x;
   const char *home_y;
+  const char *home_xy;
   const char *home_z;
   const char *stopmove;
   const char *back;
@@ -801,6 +810,7 @@ extern eeprom_def eeprom_menu;
 /*****************************************/
 //
 #define TEXT_VALUE          "%d/%d"
+#define TEXT_VALUE_TARGET   "%d / %d"
 
 #define TEXT_VALUE_T        ": %d℃"
 #define TEXT_VALUE_mm       ": %dmm"
@@ -825,7 +835,8 @@ extern eeprom_def eeprom_menu;
 #define TEXT_01MM           "0.1 mm"
 #define TEXT_1MM            "1 mm"
 #define TEXT_10MM           "10 mm"
-#define TEXT_ZOFFSET        "Z offset"
+#define TEXT_ZOFFSET        "Z Offset"
+#define TEXT_CURRENT_POINT  "Pos"
 
 #define EXTRUDE_1MM_TEXT    "1 mm"
 #define EXTRUDE_5MM_TEXT    "5 mm"
@@ -850,6 +861,7 @@ extern eeprom_def eeprom_menu;
 
 #define HOME_X_TEXT         "X"
 #define HOME_Y_TEXT         "Y"
+#define HOME_XY_TEXT        "X-Y"
 #define HOME_Z_TEXT         "Z"
 #define HOME_ALL_TEXT       "All"
 

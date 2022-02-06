@@ -52,7 +52,7 @@ enum {
   ID_P_OFF,
   ID_P_RETURN, 
   ID_P_ABS,
-  ID_P_PLA,
+  ID_P_PLA
 };
 
 static void event_handler(lv_obj_t *obj, lv_event_t event) {
@@ -204,7 +204,7 @@ void lv_draw_preHeat(void) {
     }
   #endif
 
-  lv_big_button_create(scr, "F:/bmp_speed0.bin", preheat_menu.off, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_P_OFF);
+  lv_big_button_create(scr, "F:/bmp_zero_temp.bin", preheat_menu.off, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_P_OFF);
   lv_big_button_create(scr, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_P_RETURN);
 
   if(uiCfg.curTempType == 0) {

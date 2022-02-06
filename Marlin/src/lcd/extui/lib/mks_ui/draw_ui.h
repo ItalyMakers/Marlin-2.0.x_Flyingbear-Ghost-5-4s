@@ -28,7 +28,7 @@
 
 // the colors of the last MKS Ui
 #undef LV_COLOR_BACKGROUND
-#define LV_COLOR_BACKGROUND LV_COLOR_MAKE(0x1A, 0x1A, 0x1A)
+#define LV_COLOR_BACKGROUND LV_COLOR_MAKE(0x10, 0x20, 0x31)
 
 #define TFT_LV_PARA_BACK_BODY_COLOR  LV_COLOR_MAKE(0x4A, 0x52, 0xFF)
 
@@ -79,7 +79,8 @@
 #include "draw_media_select.h"
 #include "draw_encoder_settings.h"
 #include "draw_touchmi_settings.h"
-#include "draw_bltouch_settings.h"
+// #include "draw_bltouch_settings.h"
+#include "draw_zoffset.h"
 #if ENABLED(DUAL_X_CARRIAGE)
   #include "draw_dual_x_carriage_mode.h"
   #include "draw_hotend_offset_settings.h"
@@ -94,7 +95,7 @@
   #include "draw_wifi.h"
   #include "draw_wifi_list.h"
   #include "draw_wifi_tips.h"
-  #include "draw_cloud_bind.h"
+  // #include "draw_cloud_bind.h"
 #endif
 
 #define ESP_WIFI          0x02
@@ -280,7 +281,7 @@ typedef enum {
   TEMP_UI,
   SET_UI,
   ZERO_UI,
-  BLTOUCH_UI,
+  ZOFFSET_UI,
   TOUCHMI_UI,
   SPRAYER_UI,
   MACHINE_UI,

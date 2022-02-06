@@ -213,11 +213,11 @@ static void btn_ok_event_cb(lv_obj_t *btn, lv_event_t event) {
     lv_draw_return_ui();
   }
   #if ENABLED(MKS_WIFI_MODULE)
-    else if (DIALOG_IS(TYPE_UNBIND)) {
-      cloud_unbind();
-      lv_clear_cur_ui();
-      lv_draw_return_ui();
-    }
+    // else if (DIALOG_IS(TYPE_UNBIND)) {
+    //   cloud_unbind();
+    //   lv_clear_cur_ui();
+    //   lv_draw_return_ui();
+    // }
   #endif
   else {
     lv_clear_cur_ui();
@@ -227,7 +227,7 @@ static void btn_ok_event_cb(lv_obj_t *btn, lv_event_t event) {
 
 static void btn_cancel_event_cb(lv_obj_t *btn, lv_event_t event) {
   if (event != LV_EVENT_RELEASED) return;
-  
+
   if (DIALOG_IS(PAUSE_MESSAGE_OPTION)) {
     // TERN_(ADVANCED_PAUSE_FEATURE, pause_menu_response = PAUSE_RESPONSE_RESUME_PRINT);
   }
@@ -326,6 +326,14 @@ void lv_draw_dialog(uint8_t type) {
     lv_obj_t *labelOk = lv_label_create_empty(btnOk);
     lv_label_set_text(labelOk, print_file_dialog_menu.confirm);
   }
+  else if(DIALOG_IS(TYPE_FILAMENT_NO_PRESS)) {
+    btnCancel = lv_button_btn_create(scr, BTN_CANCEL_X + 90, BTN_OK_Y, 100, 50, btn_cancel_event_cb);
+    lv_obj_t *labelCancel = lv_label_create_empty(btnCancel);
+    lv_label_set_text(labelCancel, print_file_dialog_menu.cancel);
+
+    lv_label_set_text(labelDialog, print_file_dialog_menu.filament_no_press);
+    lv_obj_align(labelDialog, nullptr, LV_ALIGN_CENTER, 0, -20);
+  }
   else if (DIALOG_IS(TYPE_FILAMENT_LOADING, TYPE_FILAMENT_UNLOADING)) {
     btnCancel = lv_button_btn_create(scr, BTN_OK_X + 90, BTN_OK_Y, 100, 50, btn_cancel_event_cb);
     lv_obj_t *labelCancel = lv_label_create_empty(btnCancel);
@@ -343,7 +351,19 @@ void lv_draw_dialog(uint8_t type) {
   }
   #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
     else if (DIALOG_IS(TYPE_AUTO_LEVELING_TIPS)) {
-      //nothing to do
+      // #if ENABLED(PREHEAT_BEFORE_LEVELING)
+       buttonExt1 = lv_img_create(scr, nullptr);
+      lv_img_set_src(buttonExt1, "F:/bmp_ext1_state.bin");
+      lv_obj_set_pos(buttonExt1, BTN_CANCEL_X + 20, BTN_CANCEL_Y);
+
+      buttonBed = lv_img_create(scr, nullptr);
+      lv_img_set_src(buttonBed, "F:/bmp_bed_state.bin");
+      lv_obj_set_pos(buttonBed, BTN_OK_X, BTN_OK_Y);
+
+      labelExt1 = lv_label_create(scr, BTN_CANCEL_X, BTN_CANCEL_Y + 65, nullptr);
+      labelBed  = lv_label_create(scr, BTN_OK_X - 20, BTN_OK_Y + 65, nullptr);
+      disp_dialog_temp_offset_value();
+      // #endif
     }
   #endif
   else {
@@ -542,7 +562,7 @@ void lv_draw_dialog(uint8_t type) {
   #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
     else if (DIALOG_IS(TYPE_AUTO_LEVELING_TIPS)) {
       lv_label_set_text(labelDialog, print_file_dialog_menu.autolevelingTips);
-      lv_obj_align(labelDialog, NULL, LV_ALIGN_CENTER, 0, 0);
+      lv_obj_align(labelDialog, NULL, LV_ALIGN_CENTER, 0, -30);
     }
   #endif
   #if HAS_ROTARY_ENCODER
@@ -551,6 +571,25 @@ void lv_draw_dialog(uint8_t type) {
       if (btnCancel) lv_group_add_obj(g, btnCancel);
     }
   #endif
+}
+
+void disp_dialog_temp_offset_value(){
+  if (temps_update_flag && (DIALOG_IS(TYPE_AUTO_LEVELING_TIPS))) {
+    temps_update_flag = false;
+    #if HAS_HOTEND
+      sprintf(public_buf_l, printing_menu.temp1, (int)thermalManager.temp_hotend[0].celsius, (int)thermalManager.temp_hotend[0].target);
+      lv_label_set_text(labelExt1, public_buf_l);
+      lv_obj_align(labelExt1, buttonExt1, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+    #endif
+
+    #if HAS_HEATED_BED
+
+      sprintf(public_buf_l, printing_menu.bed_temp, (int)thermalManager.temp_bed.celsius, (int)thermalManager.temp_bed.target);
+      lv_label_set_text(labelBed, public_buf_l);
+      lv_obj_align(labelBed, buttonBed, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+    #endif
+  }
+
 }
 
 void filament_sprayer_temp() {
@@ -613,7 +652,7 @@ void filament_dialog_handle() {
       lv_clear_dialog();
       lv_draw_dialog(DIALOG_TYPE_FILAMENT_HEAT_LOAD_COMPLETED);
     }
-  
+
   if (uiCfg.filament_loading_completed) {
     uiCfg.filament_rate = 0;
     uiCfg.filament_loading_completed = false;

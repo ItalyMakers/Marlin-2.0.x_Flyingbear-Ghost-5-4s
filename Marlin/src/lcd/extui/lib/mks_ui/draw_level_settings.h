@@ -29,6 +29,7 @@ extern void lv_draw_level_settings(void);
 extern void lv_draw_bltouch_settings(void);
 extern void lv_draw_touchmi_settings(void);
 extern void lv_clear_level_settings();
+void lv_draw_zoffset_settings(void);
 
 #ifdef __cplusplus
   } /* C-declarations for C++ */

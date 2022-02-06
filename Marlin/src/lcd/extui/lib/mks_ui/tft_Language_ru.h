@@ -69,6 +69,7 @@
 
 #define HOME_X_TEXT_RU                  "X"
 #define HOME_Y_TEXT_RU                  "Y"
+#define HOME_XY_TEXT_RU               "X-Y"
 #define HOME_Z_TEXT_RU                  "Z"
 #define HOME_ALL_TEXT_RU                "Home"
 #define HOME_STOPMOVE_RU                "Quickstop"
@@ -217,7 +218,7 @@
 #define AUTO_SHUTDOWN_RU                    "авто-откл"
 #define MANUAL_SHUTDOWN_RU                  "ручн-откл"
 
-#define DIALOG_CONFIRM_RU                   "да"//"подтвердить"
+#define DIALOG_CONFIRM_RU                   "да" // "подтвердить"
 #define DIALOG_CANCLE_RU                    "отмена"
 #define DIALOG_OK_RU                        "да"
 #define DIALOG_RESET_RU                     "сброс"

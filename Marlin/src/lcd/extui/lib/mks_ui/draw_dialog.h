@@ -86,6 +86,7 @@ extern void lv_clear_dialog();
 extern void filament_sprayer_temp();
 extern void filament_dialog_handle();
 extern void lv_filament_setbar();
+extern void disp_dialog_temp_offset_value();
 
 #ifdef __cplusplus
   } /* C-declarations for C++ */

@@ -50,15 +50,16 @@ static const char assets[][LONG_FILENAME_LENGTH] = {
   "bmp_zeroZ.bin",
   "bmp_manual_off.bin",
 
-  //tool screen
+  // Tool screen
   "bmp_preHeat.bin",
   "bmp_extruct.bin",
   "bmp_mov.bin",
   "bmp_leveling.bin",
+  "bmp_autoleveling.bin",
   "bmp_filamentchange.bin",
   "bmp_more.bin",
 
-  //fan screen
+  // Fan screen
   "bmp_Add.bin",
   "bmp_Dec.bin",
   "bmp_speed255.bin",
@@ -70,11 +71,13 @@ static const char assets[][LONG_FILENAME_LENGTH] = {
   "bmp_step5_degree.bin",
   "bmp_step10_degree.bin",
 
-  //extrusion screen
+  // Extrusion screen
   "bmp_in.bin",
   "bmp_out.bin",
   "bmp_extru1.bin",
-  "bmp_extru2.bin",
+  #if HAS_MULTI_EXTRUDER
+    "bmp_extru2.bin",
+  #endif
   "bmp_speed_high.bin",
   "bmp_speed_slow.bin",
   "bmp_speed_normal.bin",
@@ -82,15 +85,15 @@ static const char assets[][LONG_FILENAME_LENGTH] = {
   "bmp_step5_mm.bin",
   "bmp_step10_mm.bin",
 
-  //select file screen
+  // Select file screen
   "bmp_pageUp.bin",
   "bmp_pageDown.bin",
   "bmp_back.bin", //TODO: why two back buttons? Why not just one? (return / back)
   "bmp_dir.bin",
   "bmp_file.bin",
 
-  //move motor screen
-  //TODO: 6 equal icons, just in diffenct rotation... it may be optimized too
+  // Move motor screen
+  // TODO: 6 equal icons, just in diffenct rotation... it may be optimized too
   "bmp_xAdd.bin",
   "bmp_xDec.bin",
   "bmp_yAdd.bin",
@@ -101,7 +104,7 @@ static const char assets[][LONG_FILENAME_LENGTH] = {
   "bmp_step_move1.bin",
   "bmp_step_move10.bin",
 
-  //operation screen
+  // Operation screen
   "bmp_auto_off.bin",
   "bmp_speed.bin",
   "bmp_fan.bin",
@@ -109,7 +112,7 @@ static const char assets[][LONG_FILENAME_LENGTH] = {
   "bmp_extrude_opr.bin",
   "bmp_move_opr.bin",
 
-  //change speed screen
+  // Change speed screen
   "bmp_step1_percent.bin",
   "bmp_step5_percent.bin",
   "bmp_step10_percent.bin",
@@ -118,59 +121,66 @@ static const char assets[][LONG_FILENAME_LENGTH] = {
   "bmp_mov_sel.bin",
   "bmp_speed_extruct.bin",
 
-  //printing screen
+  // Printing screen
   "bmp_pause.bin",
   "bmp_resume.bin",
   "bmp_stop.bin",
   "bmp_ext1_state.bin",
-  "bmp_ext2_state.bin",
+  #if HAS_MULTI_EXTRUDER
+    "bmp_ext2_state.bin",
+  #endif
   "bmp_bed_state.bin",
   "bmp_fan_state.bin",
   "bmp_time_state.bin",
   "bmp_zpos_state.bin",
   "bmp_operate.bin",
-
-  //manual leval screen (only if disabled auto level)
   "bmp_leveling1.bin",
   "bmp_leveling2.bin",
   "bmp_leveling3.bin",
   "bmp_leveling4.bin",
   "bmp_leveling5.bin",
 
-  //lang select screen
-  "bmp_language.bin",
-  "bmp_simplified_cn.bin",
-  "bmp_simplified_cn_sel.bin",
-  "bmp_traditional_cn.bin",
-  "bmp_traditional_cn_sel.bin",
-  "bmp_english.bin",
-  "bmp_english_sel.bin",
-  "bmp_russian.bin",
-  "bmp_russian_sel.bin",
-  "bmp_spanish.bin",
-  "bmp_spanish_sel.bin",
-  "bmp_french.bin",
-  "bmp_french_sel.bin",
-  "bmp_italy.bin",
-  "bmp_italy_sel.bin",
 
-  // gcode preview
-  "bmp_preview.bin",
+  // Language Select screen
+  #if HAS_LANG_SELECT_SCREEN
+    "bmp_language.bin",
+    "bmp_simplified_cn.bin",
+    "bmp_simplified_cn_sel.bin",
+    "bmp_traditional_cn.bin",
+    "bmp_traditional_cn_sel.bin",
+    "bmp_english.bin",
+    "bmp_english_sel.bin",
+    "bmp_russian.bin",
+    "bmp_russian_sel.bin",
+    "bmp_spanish.bin",
+    "bmp_spanish_sel.bin",
+    "bmp_french.bin",
+    "bmp_french_sel.bin",
+    "bmp_italy.bin",
+    "bmp_italy_sel.bin",
+  #endif // HAS_LANG_SELECT_SCREEN
 
-  "bmp_logo.bin",
+  // G-code preview
+  #if HAS_GCODE_DEFAULT_VIEW_IN_FLASH
+    "bmp_preview.bin",
+  #endif
 
-  // settings screen
+  #if HAS_LOGO_IN_FLASH
+    "bmp_logo.bin",
+  #endif
+
+  // Settings screen
   "bmp_about.bin",
   "bmp_eeprom_settings.bin",
   "bmp_machine_para.bin",
   "bmp_function1.bin",
 
-  //start screen
+  // Start screen
   "bmp_printing.bin",
   "bmp_set.bin",
   "bmp_tool.bin",
 
-  // base icons
+  // Base icons
   "bmp_arrow.bin",
   "bmp_back70x40.bin",
   "bmp_value_blank.bin",
@@ -179,20 +189,25 @@ static const char assets[][LONG_FILENAME_LENGTH] = {
   "bmp_enable.bin",
   "bmp_return.bin",
 
-  // wifi screen
-  "bmp_wifi.bin",
-  "bmp_cloud.bin",
-  
-  // multi volume selected
-  "bmp_usb_disk.bin",
-  "bmp_sd.bin",
+  #if ENABLED(MKS_WIFI_MODULE)
+    // Wifi screen
+    "bmp_wifi.bin",
+    "bmp_cloud.bin",
+  #endif
 
-  // Babystep screen
+  #if ENABLED(MULTI_VOLUME)
+    "bmp_usb_disk.bin",
+    // "bmp_usb_disk_sel.bin",
+    "bmp_sd.bin",
+    // "bmp_sd_sel.bin",
+  #endif
+
+  // babystep screen
   "bmp_baby_move0_01.bin",
   "bmp_baby_move0_05.bin",
   "bmp_baby_move0_1.bin",
 
-  // More screen
+  // more screen
   "bmp_custom1.bin",
   "bmp_custom2.bin",
   "bmp_custom3.bin",
@@ -203,10 +218,19 @@ static const char assets[][LONG_FILENAME_LENGTH] = {
 
   // bltouch settings screen
   "bmp_init_state.bin",
-  
-  // media select
-  "bmp_sd.bin",
-  "bmp_usb_disk.bin"
+
+  //custom icons
+  "bmp_save.bin",
+  "bmp_zero_temp.bin",
+  "bmp_reconnect.bin",
+  "bmp_power_on_custom.bin",
+  "bmp_test.bin",
+  "bmp_gcode.bin",
+  "bmp_temp_mini.bin",
+  "bmp_mini_emergency_stop.bin",
+  "bmp_mini_temp0.bin",
+  "bmp_mbl_next.bin",
+  "bmp_credits.bin"
 };
 
 #if HAS_SPI_FLASH_FONT

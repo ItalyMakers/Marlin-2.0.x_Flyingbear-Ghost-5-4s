@@ -21,12 +21,15 @@
  */
 #pragma once
 
+#include "../../FlyingBearGhost_Custom_config.h"
 /**
  * Release version. Leave the Marlin version or apply a custom scheme.
  */
 #ifndef SHORT_BUILD_VERSION
   #define SHORT_BUILD_VERSION "bugfix-2.0.x"
 #endif
+
+
 
 /**
  * Verbose version identifier containing a unique identifier, such as the
@@ -42,7 +45,7 @@
  * version was tagged.
  */
 #ifndef STRING_DISTRIBUTION_DATE
-  #define STRING_DISTRIBUTION_DATE "2021-04-30"
+  #define STRING_DISTRIBUTION_DATE "2021-11-15"
 #endif
 
 /**
@@ -82,7 +85,7 @@
  * providing the source code to your customers.)
  */
 #ifndef SOURCE_CODE_URL
-  #define SOURCE_CODE_URL "github.com/MarlinFirmware/Marlin"
+  #define SOURCE_CODE_URL "github.com/ItalyMakers/Mks-Robin-Nano-Marlin2.0-Firmware"
 #endif
 
 /**
