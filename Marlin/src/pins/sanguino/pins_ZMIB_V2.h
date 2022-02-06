@@ -189,9 +189,10 @@
   #endif
   #define LCD_PINS_D4                         10  // ST7920_CLK_PIN LCD_PIN_ENABLE (PIN6 of LCD module)
 
-  #define BOARD_ST7920_DELAY_1       DELAY_2_NOP
-  #define BOARD_ST7920_DELAY_2       DELAY_2_NOP
-  #define BOARD_ST7920_DELAY_3       DELAY_2_NOP
+  // Alter timing for graphical display
+  #define ST7920_DELAY_1             DELAY_2_NOP
+  #define ST7920_DELAY_2             DELAY_2_NOP
+  #define ST7920_DELAY_3             DELAY_2_NOP
 
 #elif EITHER(ZONESTAR_12864OLED, ZONESTAR_12864OLED_SSD1306)
   //
