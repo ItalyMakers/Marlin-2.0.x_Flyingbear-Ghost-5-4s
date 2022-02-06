@@ -1011,6 +1011,7 @@ void lv_clear_cur_ui() {
     case BABY_STEP_UI:                lv_clear_baby_stepping(); break;
     #if EITHER(MESH_BED_LEVELING, AUTO_BED_LEVELING_BILINEAR)
       case ZOFFSET_UI:                lv_clear_zoffset_settings(); break;
+    #endif
     #if ENABLED(TOUCH_MI_PROBE)
       case TOUCHMI_UI:                lv_clear_touchmi_settings(); break;
     #endif
@@ -1037,7 +1038,7 @@ void lv_clear_cur_ui() {
     #if ENABLED(MULTI_VOLUME)
       case MEDIA_SELECT_UI:           lv_clear_media_select(); break;
     #endif
-	#if ENABLED(DUAL_X_CARRIAGE)
+	  #if ENABLED(DUAL_X_CARRIAGE)
       case DUAL_X_CARRIAGE_MODE_UI:   lv_clear_dual_x_carriage_mode(); break;
       case HOTEND_OFFSET_UI:          lv_clear_hotend_offset_settings(); break;
     #endif

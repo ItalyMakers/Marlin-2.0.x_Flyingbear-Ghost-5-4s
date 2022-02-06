@@ -19,22 +19,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-#include "../../../inc/MarlinConfigPre.h"
+#include "../../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI && ANY(MESH_BED_LEVELING, AUTO_BED_LEVELING_BILINEAR)
 
-#include "../../../MarlinCore.h"
+#include "../../../../MarlinCore.h"
 #include "draw_ui.h"
 
-#include "../../../module/temperature.h"
-#include "../../../gcode/queue.h"
-#include "../../../gcode/gcode.h"
-#include "../../../module/probe.h"
+#include "../../../../module/temperature.h"
+#include "../../../../gcode/queue.h"
+#include "../../../../gcode/gcode.h"
+#include "../../../../module/probe.h"
 
-#include "../../../feature/bedlevel/bedlevel.h"
+#include "../../../../feature/bedlevel/bedlevel.h"
 
 #if ENABLED(EEPROM_SETTINGS)
-  #include "../../../module/settings.h"
+  #include "../../../../module/settings.h"
 #endif
 
 #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
@@ -146,13 +146,13 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
       // #ifdef MESH_BED_LEVELING
       //   lv_draw_manualLevel();
       // #else
-      //   draw_return_ui();
+      //   lv_draw_return_ui();
       // #endif
       if(!saved){
         queue.enqueue_now_P(PSTR("G28XY"));  // fix-wang
       }
-      clear_cur_ui();
-      draw_return_ui();
+      lv_clear_cur_ui();
+      lv_draw_return_ui();
       break;
   }
 }

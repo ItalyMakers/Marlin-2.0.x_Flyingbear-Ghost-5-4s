@@ -41,7 +41,7 @@
 #endif
 
 #include <stdio.h>
-#include "../../../gcode/queue.h"
+#include "../../../../gcode/queue.h"
 
 
 #define ICON_POS_Y          260
@@ -182,7 +182,7 @@ void lv_draw_ready_print(void) {
   lv_obj_t *buttonTool;
 
   disp_state_stack._disp_index = 0;
-  
+
   ZERO(disp_state_stack._disp_state);
 
   if (mks_test_flag == 0x1E) {
@@ -324,7 +324,7 @@ void lv_clear_ready_print() {
 }
 
 void disp_ext_heart_ready_print() {
-  
+
     lv_big_button_create(scr, "F:/bmp_temp_mini.bin"," ", ( 180), 210, event_handler, ID_P_PLA);
     lv_big_button_create(scr, "F:/bmp_temp_mini.bin"," ", ( 180), 260, event_handler, ID_P_ABS);
 

@@ -64,8 +64,7 @@
 #endif
 
 extern lv_group_t *g;
-static lv_obj_t *scr, *tempText1, *filament_bar;
-
+static lv_obj_t *scr, *tempText1, *labelExt1, *buttonExt1, *labelBed, *buttonBed, *filament_bar;
 extern uint8_t sel_id;
 extern bool once_flag, gcode_preview_over;
 extern int upload_result;
@@ -73,6 +72,7 @@ extern uint32_t upload_time;
 extern uint32_t upload_size;
 extern bool temps_update_flag;
 extern char public_buf_t[30];
+
 
 
 static void btn_ok_event_cb(lv_obj_t *btn, lv_event_t event) {
@@ -659,7 +659,7 @@ void filament_dialog_handle() {
     lv_clear_dialog();
     lv_draw_dialog(DIALOG_TYPE_FILAMENT_LOAD_COMPLETED);
   }
-  
+
   #if HAS_HOTEND
     #if ENABLED(SINGLENOZZLE)
     if (((abs((int)((int)thermalManager.temp_hotend[0].celsius - gCfgItems.filament_limit_temp)) <= 1)

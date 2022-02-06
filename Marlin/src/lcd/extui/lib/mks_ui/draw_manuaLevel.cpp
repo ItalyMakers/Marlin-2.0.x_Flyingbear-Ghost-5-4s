@@ -62,14 +62,14 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
       break;
     #if ENABLED(MESH_BED_LEVELING)
       case ID_M_ZOFFSET:
-        clear_cur_ui();
+        lv_clear_cur_ui();
         zoffset_do_init(true);
         lv_draw_zoffset_settings();
       break;
     #endif
     #if ENABLED(FBGHOST_ADD_5_POINTS)
       case ID_M_BLTOUCH:
-        clear_cur_ui();
+        lv_clear_cur_ui();
         lv_draw_dialog(DIALOG_TYPE_AUTO_LEVELING_TIPS);
         uiCfg.autoLeveling = true;
       break;
