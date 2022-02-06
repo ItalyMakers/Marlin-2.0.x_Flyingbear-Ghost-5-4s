@@ -19,12 +19,10 @@ def getList():
         if envName in parser:
             if 'board_build.firmware' in parser[envName]:
                 list.append(parser[envName]['board_build.firmware'])
-            else:
-                list.append('Robin_nano35.bin')
-            return list
-
+                return list
+	
+    list.append('Robin_nano35.bin')
     return list
-
 
 def removeFiles(source, target, env):
 	time.sleep(0.5)
