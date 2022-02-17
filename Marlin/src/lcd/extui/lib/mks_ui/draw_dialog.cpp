@@ -327,7 +327,7 @@ void lv_draw_dialog(uint8_t type) {
     lv_label_set_text(labelOk, print_file_dialog_menu.confirm);
   }
   else if(DIALOG_IS(TYPE_FILAMENT_NO_PRESS)) {
-    btnCancel = lv_button_btn_create(scr, BTN_CANCEL_X + 90, BTN_OK_Y, 100, 50, btn_cancel_event_cb);
+    btnCancel = lv_button_btn_create(scr, BTN_OK_X+90, BTN_OK_Y, 100, 50, btn_cancel_event_cb);
     lv_obj_t *labelCancel = lv_label_create_empty(btnCancel);
     lv_label_set_text(labelCancel, print_file_dialog_menu.cancel);
 

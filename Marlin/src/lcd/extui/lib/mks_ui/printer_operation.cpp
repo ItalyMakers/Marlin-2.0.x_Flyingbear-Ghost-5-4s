@@ -158,13 +158,9 @@ void printer_state_polling() {
 
   #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
     if (uiCfg.autoLeveling) {
-      #ifdef OCTOPRINT
-        gcode.process_subcommands_now_P(PSTR("G28\n@BEDLEVELVISUALIZER\nG29 T"));
-      #else
-        get_gcode_command(AUTO_LEVELING_COMMAND_ADDR, (uint8_t *)public_buf_m);
-        public_buf_m[sizeof(public_buf_m) - 1] = 0;
-        gcode.process_subcommands_now_P(PSTR(public_buf_m));
-      #endif
+      get_gcode_command(AUTO_LEVELING_COMMAND_ADDR, (uint8_t *)public_buf_m);
+      public_buf_m[sizeof(public_buf_m) - 1] = 0;
+      gcode.process_subcommands_now_P(PSTR(public_buf_m));
       lv_clear_cur_ui();
       #ifdef BLTOUCH
         zoffset_do_init(false);

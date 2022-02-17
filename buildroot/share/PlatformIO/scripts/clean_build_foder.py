@@ -24,6 +24,7 @@ def getList():
     list.append('Robin_nano35.bin')
     return list
 
+
 def removeFiles(source, target, env):
 	time.sleep(0.5)
 	print("*** Cleaning Folder *** ")
