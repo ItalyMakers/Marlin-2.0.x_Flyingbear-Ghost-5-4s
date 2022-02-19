@@ -2164,11 +2164,11 @@
 // The number of linear moves that can be in the planner at once.
 // The value of BLOCK_BUFFER_SIZE must be a power of 2 (e.g., 8, 16, 32)
 #if BOTH(SDSUPPORT, DIRECT_STEPPING)
-  #define  BLOCK_BUFFER_SIZE 16   //  8
+  #define  BLOCK_BUFFER_SIZE 32   //  8
 #elif ENABLED(SDSUPPORT)
-  #define BLOCK_BUFFER_SIZE 16
+  #define BLOCK_BUFFER_SIZE 32
 #else
-  #define BLOCK_BUFFER_SIZE 16
+  #define BLOCK_BUFFER_SIZE 32
 #endif
 
 // @section serial
@@ -2439,7 +2439,7 @@
   //#define FILAMENT_CHANGE_RESUME_ON_INSERT      // Automatically continue / load filament when runout sensor is triggered again.
   //#define PAUSE_REHEAT_FAST_RESUME              // Reduce number of waits by not prompting again post-timeout before continuing.
 
-  // #define PARK_HEAD_ON_PAUSE                    // Park the nozzle during pause and filament change.
+  #define PARK_HEAD_ON_PAUSE                    // Park the nozzle during pause and filament change.
   // #define HOME_BEFORE_FILAMENT_CHANGE           // If needed, home before parking for filament change
 
   #define FILAMENT_LOAD_UNLOAD_GCODES           // Add M701/M702 Load/Unload G-codes, plus Load/Unload in the LCD Prepare menu.
@@ -3773,14 +3773,14 @@
   // #define MAIN_MENU_ITEM_2_BACK
   #define MAIN_MENU_ITEM_2_BACK_HOME
 
-  #define MAIN_MENU_ITEM_3_DESC "COOL DOWN"
-  #define MAIN_MENU_ITEM_3_GCODE "M106 S0\nM104 S0\nM140 S0"
+  #define MAIN_MENU_ITEM_3_DESC "E0 PID tune"
+  #define MAIN_MENU_ITEM_3_GCODE "M303 E0 S" STRINGIFY(FBGHOST_PREHEAT_1_TEMP_HOTEND) " C8 U\nM500"
   // #define MAIN_MENU_ITEM_3_CONFIRM
   // #define MAIN_MENU_ITEM_3_BACK
   #define MAIN_MENU_ITEM_3_BACK_HOME
 
-  #define MAIN_MENU_ITEM_4_DESC "Touch Cal."
-  #define MAIN_MENU_ITEM_4_GCODE "M995"
+  #define MAIN_MENU_ITEM_4_DESC "BED PID tune"
+  #define MAIN_MENU_ITEM_4_GCODE "M303 E-1 S" STRINGIFY(PREHEAT_1_TEMP_BED) " C8 U\nM500"
   // #define MAIN_MENU_ITEM_4_CONFIRM
   // #define MAIN_MENU_ITEM_4_BACK
   #define MAIN_MENU_ITEM_4_BACK_HOME

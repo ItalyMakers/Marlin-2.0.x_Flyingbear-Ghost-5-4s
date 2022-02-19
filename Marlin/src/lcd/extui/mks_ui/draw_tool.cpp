@@ -32,9 +32,11 @@
 #include "../../../inc/MarlinConfig.h"
 
 extern lv_group_t *g;
+
 #ifndef USE_NEW_LVGL_CONF
 static lv_obj_t *scr;
 #endif
+
 enum {
   ID_T_PRE_HEAT = 1,
   ID_T_EXTRUCT,
@@ -52,7 +54,6 @@ enum {
 
 static void event_handler(lv_obj_t *obj, lv_event_t event) {
   if (event != LV_EVENT_RELEASED) return;
-  if (TERN1(AUTO_BED_LEVELING_BILINEAR, obj->mks_obj_id != ID_T_LEVELING))
     lv_clear_tool();
   switch (obj->mks_obj_id) {
     case ID_T_PRE_HEAT:
@@ -67,8 +68,13 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
         // get_gcode_command(AUTO_LEVELING_COMMAND_ADDR, (uint8_t *)public_buf_m);
         // public_buf_m[sizeof(public_buf_m) - 1] = 0;
         // queue.inject_P(PSTR(public_buf_m));
-        lv_draw_dialog(DIALOG_TYPE_AUTO_LEVELING_TIPS);
-        uiCfg.autoLeveling = true;
+        #ifdef FBGHOST_ADD_5_POINTS
+          uiCfg.leveling_first_time = true;
+          lv_draw_manualLevel();
+        #else
+          lv_draw_dialog(DIALOG_TYPE_AUTO_LEVELING_TIPS);
+          uiCfg.autoLeveling = true;
+        #endif
       #else
         uiCfg.leveling_first_time = true;
         lv_draw_manualLevel();
