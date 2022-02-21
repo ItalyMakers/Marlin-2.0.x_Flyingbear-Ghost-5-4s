@@ -36,8 +36,8 @@
 
 
 //  Choose your printer
-#define FBGHOST_IS_5
-// #define FBGHOST_IS_4S
+// #define FBGHOST_IS_5
+#define FBGHOST_IS_4S
 
 
 /*****************************************
@@ -332,14 +332,18 @@
  * decommentare per utilizzare LED collegati alla scheda madre
  */
 
-#define FBGHOST_RGB_LED
-// #define FBGHOST_RGBW_LED
+// #define FBGHOST_RGB_LED
+#define FBGHOST_RGBW_LED
 
 #if EITHER(FBGHOST_RGB_LED, FBGHOST_RGBW_LED)
-  #define FBGHOST_RGB_LED_R_PIN PA3
-  #define FBGHOST_RGB_LED_G_PIN PA6
-  #define FBGHOST_RGB_LED_B_PIN PA1
-  #define FBGHOST_RGB_LED_W_PIN -1
+
+  #define FBGHOST_RGB_LED_R_PIN 1
+  #define FBGHOST_RGB_LED_G_PIN 6
+  #define FBGHOST_RGB_LED_B_PIN 3
+  #define FBGHOST_RGB_LED_W_PIN 69
+
+
+  #define FBGHOST_COLOR_INIT
 
 #endif
 

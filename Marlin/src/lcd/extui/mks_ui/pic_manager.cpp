@@ -34,6 +34,10 @@
 #include "../../../sd/cardreader.h"
 #include "../../../MarlinCore.h"
 
+#ifdef FBGHOST_COLOR_INIT
+  #include "../../../feature/leds/leds.h"
+#endif
+
 extern uint16_t DeviceCode;
 
 #if ENABLED(SDSUPPORT)
@@ -504,6 +508,9 @@ uint32_t Pic_Info_Write(uint8_t *P_name, uint32_t P_size) {
     if (!card.isMounted()) return;
     SdFile dir, root = card.getroot();
     if (dir.open(&root, assetsPath, O_RDONLY)) {
+      #ifdef FBGHOST_COLOR_INIT
+        leds.set_color(LEDColor(255,147,0));
+      #endif
 
       disp_assets_update();
       disp_assets_update_progress("Erasing pics...");

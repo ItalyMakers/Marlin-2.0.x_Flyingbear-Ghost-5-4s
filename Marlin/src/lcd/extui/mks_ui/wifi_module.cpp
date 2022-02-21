@@ -50,6 +50,10 @@
   #include "../../../feature/pause.h"
 #endif
 
+#ifdef FBGHOST_COLOR_INIT
+  #include "../../../feature/leds/leds.h"
+#endif
+
 #define WIFI_SET()        WRITE(WIFI_RESET_PIN, HIGH);
 #define WIFI_RESET()      WRITE(WIFI_RESET_PIN, LOW);
 #define WIFI_IO1_SET()    WRITE(WIFI_IO1_PIN, HIGH);
@@ -1961,18 +1965,21 @@ void mks_wifi_firmware_update() {
     clear_cur_ui();
 
     lv_draw_dialog(DIALOG_TYPE_UPDATE_ESP_FIRMWARE);
+    #ifdef FBGHOST_COLOR_INIT
+      leds.set_color(LEDColor(0,127,193));
+    #endif
 
     lv_task_handler();
     watchdog_refresh();
 
     if (wifi_upload(0) >= 0) {
       card.removeFile((char *)ESP_FIRMWARE_FILE_RENAME);
-      SdFile file, *curDir;
-      const char * const fname = card.diveToFile(false, curDir, ESP_FIRMWARE_FILE);
-      if (file.open(curDir, fname, O_READ)) {
-        file.rename(curDir, (char *)ESP_FIRMWARE_FILE_RENAME);
-        file.close();
-      }
+    }
+    SdFile file, *curDir;
+    const char * const fname = card.diveToFile(false, curDir, ESP_FIRMWARE_FILE);
+    if (file.open(curDir, fname, O_READ)) {
+      file.rename(curDir, (char *)ESP_FIRMWARE_FILE_RENAME);
+      file.close();
     }
     clear_cur_ui();
   }

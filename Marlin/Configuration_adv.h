@@ -1254,6 +1254,7 @@
   /**
    * LED Control Menu
    * Add LED Control to the LCD menu
+   * #DZ  - to check if is possibile to move in advanced menu
    */
   //#define LED_CONTROL_MENU
   #if ENABLED(LED_CONTROL_MENU)

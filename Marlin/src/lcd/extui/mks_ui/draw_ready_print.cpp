@@ -44,6 +44,10 @@
 #include <stdio.h>
 #include "../../../gcode/queue.h"
 
+#ifdef FBGHOST_COLOR_INIT
+  #include "../../../feature/leds/leds.h"
+#endif
+
 
 #define ICON_POS_Y          260
 #define TARGET_LABEL_MOD_Y -36
@@ -179,6 +183,9 @@ void set_main_screen(void) {
 }
 
 void lv_draw_ready_print() {
+  #ifdef FBGHOST_COLOR_INIT
+    leds.set_color(LEDColor(16,32,49));
+  #endif
 
   char buf[30] = {0};
   lv_obj_t *buttonTool;

@@ -76,6 +76,10 @@ XPT2046 touch;
   void init_gb2312_font();
 #endif
 
+#ifdef FBGHOST_COLOR_INIT
+  #include "../../../feature/leds/leds.h"
+#endif
+
 static lv_disp_buf_t disp_buf;
 lv_group_t*  g;
 #if ENABLED(SDSUPPORT)
@@ -89,7 +93,7 @@ uint8_t public_buf[513];
 
 #ifdef USE_NEW_LVGL_CONF
   mks_ui_t mks_ui;
-#endif  
+#endif
 
 extern bool flash_preview_begin, default_preview_flg, gcode_preview_over;
 
@@ -124,11 +128,14 @@ void SysTick_Callback() {
 // #define USE_DMA_FSMC_TC_INT
 
 void tft_lvgl_init() {
+  #ifdef FBGHOST_COLOR_INIT
+      leds.set_color(LEDColor(212,45,48));
+    #endif
 
   W25QXX.init(SPI_FULL_SPEED);
 
   gCfgItems_init();
-  
+
   ui_cfg_init();
 
   disp_language_init();
@@ -142,6 +149,7 @@ void tft_lvgl_init() {
   // Init TFT first!
   SPI_TFT.spi_init(SPI_FULL_SPEED);
   SPI_TFT.LCD_init();
+
 
   #if ENABLED(USB_FLASH_DRIVE_SUPPORT)
     uint16_t usb_flash_loop = 1000;
@@ -159,12 +167,26 @@ void tft_lvgl_init() {
     } while((!card.media_driver_usbFlash.isInserted()) && (usb_flash_loop--));
     card.mount();
   #elif HAS_LOGO_IN_FLASH
-    delay(1000);
-    watchdog_refresh(); 
-    delay(1000);
+    #ifdef FBGHOST_COLOR_INIT
+      delay(200);
+      leds.set_white();
+      delay(900);
+    #else
+      delay(1000);
+    #endif
+
+    watchdog_refresh();
+
+    #ifdef FBGHOST_COLOR_INIT
+      leds.set_color(LEDColor(16,150,67));
+      delay(900);
+    #else
+      delay(1000);
+    #endif
   #endif
 
-  watchdog_refresh();   
+  watchdog_refresh();
+
 
   #if ENABLED(SDSUPPORT)
     UpdateAssets();
@@ -283,7 +305,7 @@ void dma_tc(struct __DMA_HandleTypeDef * hdma) {
   lv_disp_flush_ready(disp_drv_p); // Indicate you are ready with the flushing
   lcd_dma_trans_lock = false;
 #if ENABLED(USE_DMA_FSMC_TC_INT)
-  
+
 #endif
 
 #if ENABLED(USE_SPI_DMA_TC)
