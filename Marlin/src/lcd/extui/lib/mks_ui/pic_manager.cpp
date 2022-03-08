@@ -134,40 +134,35 @@ static const char assets[][LONG_FILENAME_LENGTH] = {
   "bmp_time_state.bin",
   "bmp_zpos_state.bin",
   "bmp_operate.bin",
+
+  //manual leval screen (only if disabled auto level)
   "bmp_leveling1.bin",
   "bmp_leveling2.bin",
   "bmp_leveling3.bin",
   "bmp_leveling4.bin",
   "bmp_leveling5.bin",
 
+  //lang select screen
+  "bmp_language.bin",
+  "bmp_simplified_cn.bin",
+  "bmp_simplified_cn_sel.bin",
+  "bmp_traditional_cn.bin",
+  "bmp_traditional_cn_sel.bin",
+  "bmp_english.bin",
+  "bmp_english_sel.bin",
+  "bmp_russian.bin",
+  "bmp_russian_sel.bin",
+  "bmp_spanish.bin",
+  "bmp_spanish_sel.bin",
+  "bmp_french.bin",
+  "bmp_french_sel.bin",
+  "bmp_italy.bin",
+  "bmp_italy_sel.bin",
 
-  // Language Select screen
-  #if HAS_LANG_SELECT_SCREEN
-    "bmp_language.bin",
-    "bmp_simplified_cn.bin",
-    "bmp_simplified_cn_sel.bin",
-    "bmp_traditional_cn.bin",
-    "bmp_traditional_cn_sel.bin",
-    "bmp_english.bin",
-    "bmp_english_sel.bin",
-    "bmp_russian.bin",
-    "bmp_russian_sel.bin",
-    "bmp_spanish.bin",
-    "bmp_spanish_sel.bin",
-    "bmp_french.bin",
-    "bmp_french_sel.bin",
-    "bmp_italy.bin",
-    "bmp_italy_sel.bin",
-  #endif // HAS_LANG_SELECT_SCREEN
+  // gcode preview
+  "bmp_preview.bin",
 
-  // G-code preview
-  #if HAS_GCODE_DEFAULT_VIEW_IN_FLASH
-    "bmp_preview.bin",
-  #endif
-
-  #if HAS_LOGO_IN_FLASH
-    "bmp_logo.bin",
-  #endif
+  "bmp_logo.bin",
 
   // Settings screen
   "bmp_about.bin",
@@ -189,18 +184,9 @@ static const char assets[][LONG_FILENAME_LENGTH] = {
   "bmp_enable.bin",
   "bmp_return.bin",
 
-  #if ENABLED(MKS_WIFI_MODULE)
     // Wifi screen
     "bmp_wifi.bin",
     "bmp_cloud.bin",
-  #endif
-
-  #if ENABLED(MULTI_VOLUME)
-    "bmp_usb_disk.bin",
-    // "bmp_usb_disk_sel.bin",
-    "bmp_sd.bin",
-    // "bmp_sd_sel.bin",
-  #endif
 
   // babystep screen
   "bmp_baby_move0_01.bin",
