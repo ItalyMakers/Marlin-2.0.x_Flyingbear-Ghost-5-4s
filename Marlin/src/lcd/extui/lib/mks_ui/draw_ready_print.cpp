@@ -51,10 +51,10 @@
 extern lv_group_t*  g;
 static lv_obj_t *scr;
 static lv_obj_t *buttonExt1, *labelExt1, *buttonFanstate, *labelFan;
-static lv_obj_t *label_abs;
-static lv_obj_t *label_pla;
+static lv_obj_t *buttonPresetState1, *labelPresetState1;
+static lv_obj_t *buttonPresetState2, *labelPresetState2;
 
-static lv_obj_t *label_cooldown;
+static lv_obj_t *buttonCooldown, *labelCooldown;
 // static lv_obj_t *label_emStop;
 
 #if HAS_MULTI_EXTRUDER && DISABLED(SINGLENOZZLE)
@@ -256,27 +256,40 @@ void lv_draw_ready_print(void) {
 
   }
   else {
-
+  scr = lv_screen_create(PRINT_READY_UI);
     lv_big_button_create(scr, "F:/bmp_tool.bin", main_menu.tool, 20, 60, event_handler, ID_TOOL);
     lv_big_button_create(scr, "F:/bmp_set.bin", main_menu.set, 180, 60, event_handler, ID_SET);
     lv_big_button_create(scr, "F:/bmp_printing.bin", main_menu.print, 340, 60, event_handler, ID_PRINT);
 
     // Monitoring
     #if HAS_HOTEND
-      buttonExt1 = lv_big_button_create(scr, "F:/bmp_ext1_state.bin", " ",( 20), 210, event_handler, ID_INFO_EXT);
+      buttonExt1 = lv_big_button_create(scr, "F:/bmp_ext1_state.bin", " ",20, 210, event_handler, ID_INFO_EXT);
     #endif
-    #if HAS_MULTI_HOTEND
-      buttonExt2 = lv_big_button_create(scr, "F:/bmp_ext2_state.bin", " ", 180, ICON_POS_Y, event_handler, ID_INFO_EXT);
-    #endif
+    // #if HAS_MULTI_HOTEND
+    //   buttonExt2 = lv_big_button_create(scr, "F:/bmp_ext2_state.bin", " ", 180, ICON_POS_Y, event_handler, ID_INFO_EXT);
+    // #endif
     #if HAS_HEATED_BED
-            buttonBedstate = lv_big_button_create(scr, "F:/bmp_bed_state.bin", " ", ( 20), 260, event_handler, ID_INFO_BED);
-
+      buttonBedstate = lv_big_button_create(scr, "F:/bmp_bed_state.bin", " ", 20, 260, event_handler, ID_INFO_BED);
+    #endif
+    #if HAS_FAN
+      buttonFanstate = lv_big_button_create(scr, "F:/bmp_fan_state.bin", " ", 320, 260, event_handler, ID_INFO_FAN);
     #endif
 
-    TERN_(HAS_HOTEND, labelExt1 = lv_label_create_empty(scr));
-    TERN_(HAS_MULTI_HOTEND, labelExt2 = lv_label_create_empty(scr));
-    TERN_(HAS_HEATED_BED, labelBed = lv_label_create_empty(scr));
-    TERN_(HAS_FAN, labelFan = lv_label_create_empty(scr));
+      buttonPresetState1= lv_big_button_create(scr, "F:/bmp_temp_mini.bin"," ", 180, 210, event_handler, ID_P_PLA);
+      buttonPresetState2= lv_big_button_create(scr, "F:/bmp_temp_mini.bin"," ", 180, 260, event_handler, ID_P_ABS);
+
+      buttonCooldown= lv_big_button_create(scr, "F:/bmp_mini_temp0.bin"," ", 320, 210, event_handler, ID_COOLDOWN);
+
+    // TERN_(HAS_HOTEND, labelExt1 = lv_label_create_empty(scr));
+    // TERN_(HAS_MULTI_HOTEND, labelExt2 = lv_label_create_empty(scr));
+    // TERN_(HAS_HEATED_BED, labelBed = lv_label_create_empty(scr));
+    // TERN_(HAS_FAN, labelFan = lv_label_create_empty(scr));
+    labelExt1     = lv_label_create_empty(scr);
+    labelBed      = lv_label_create_empty(scr);
+    labelFan      = lv_label_create_empty(scr);
+    // labelCooldown = lv_label_create_empty(scr);
+    // labelPresetState1 = lv_label_create_empty(scr);
+    // labelPresetState2 = lv_label_create_empty(scr);
 
     disp_ext_heart_ready_print();
     lv_temp_refr();
@@ -293,26 +306,26 @@ void lv_draw_ready_print(void) {
 
 
 
-void lv_temp_refr() {
+void lv_temp_refr(){
   #if HAS_HOTEND
-    sprintf(public_buf_l, printing_menu.temp1, thermalManager.wholeDegHotend(0), thermalManager.degTargetHotend(0));
+    sprintf_P(public_buf_l, printing_menu.temp1, thermalManager.wholeDegHotend(0), thermalManager.degTargetHotend(0));
     lv_label_set_text(labelExt1, public_buf_l);
-    lv_obj_align(labelExt1, buttonExt1, LV_ALIGN_OUT_RIGHT_MID, 0, 0);
+    lv_obj_align(labelExt1, buttonExt1, LV_ALIGN_OUT_RIGHT_MID, 10, 0);
   #endif
   #if HAS_MULTI_HOTEND
-    sprintf(public_buf_l, printing_menu.temp1, thermalManager.wholeDegHotend(1), thermalManager.degTargetHotend(1));
+    sprintf_P(public_buf_l, printing_menu.temp1, thermalManager.wholeDegHotend(1), thermalManager.degTargetHotend(1));
     lv_label_set_text(labelExt2, public_buf_l);
-    lv_obj_align(labelExt2, buttonExt2, LV_ALIGN_OUT_RIGHT_MID, 0, 0);
+    lv_obj_align(labelExt2, buttonExt2, LV_ALIGN_OUT_RIGHT_MID, 10, 0);
   #endif
   #if HAS_HEATED_BED
-    sprintf(public_buf_l, printing_menu.bed_temp, thermalManager.wholeDegBed(), thermalManager.degTargetBed());
+    sprintf_P(public_buf_l, printing_menu.bed_temp, thermalManager.wholeDegBed(), thermalManager.degTargetBed());
     lv_label_set_text(labelBed, public_buf_l);
-    lv_obj_align(labelBed, buttonBedstate, LV_ALIGN_OUT_RIGHT_MID, 0, 0);
+    lv_obj_align(labelBed, buttonBedstate, LV_ALIGN_OUT_RIGHT_MID, 10, 0);
   #endif
   #if HAS_FAN
     sprintf_P(public_buf_l, PSTR("%d%%"), (int)thermalManager.fanSpeedPercent(0));
     lv_label_set_text(labelFan, public_buf_l);
-    lv_obj_align(labelFan, buttonFanstate, LV_ALIGN_OUT_RIGHT_MID, 0, 0);
+    lv_obj_align(labelFan, buttonFanstate, LV_ALIGN_OUT_RIGHT_MID, 10, 0);
   #endif
 }
 
@@ -325,37 +338,19 @@ void lv_clear_ready_print() {
 
 void disp_ext_heart_ready_print() {
 
-    lv_big_button_create(scr, "F:/bmp_temp_mini.bin"," ", ( 180), 210, event_handler, ID_P_PLA);
-    lv_big_button_create(scr, "F:/bmp_temp_mini.bin"," ", ( 180), 260, event_handler, ID_P_ABS);
-
-    label_pla = lv_label_create(scr, (180+50), (210 + 10), PREHEAT_1_LABEL);
-    label_abs = lv_label_create(scr, (180+50), (260 + 10), PREHEAT_2_LABEL);
-
-    lv_big_button_create(scr, "F:/bmp_mini_temp0.bin"," ", ( 320), 210, event_handler, ID_COOLDOWN);
-    label_cooldown = lv_label_create(scr, (320+50), (210 + 10), "Cool Down");
-
-    // lv_big_button_create(scr, "F:/bmp_mini_emergency_stop.bin"," ", ( 320), 260, event_handler, ID_EMSTOP);
-    // label_emStop = lv_label_create(scr, (320+50), (260 + 10), "Emerg. Stop");
-
-    // label_pla = lv_btn_create(scr, ( 180+45), (210), 80, 40, event_handler, ID_P_PLA);
-    // label_abs = lv_btn_create(scr, ( 180+45), (260), 80, 40, event_handler, ID_P_ABS);
-
-    // lv_label_create(label_pla,PREHEAT_1_LABEL);
-    // lv_label_create(label_abs,PREHEAT_2_LABEL);
-
-    // lv_btn_set_style(label_pla, LV_BTN_STYLE_PR, &btn_style_pre);
-    // lv_btn_set_style(label_pla, LV_BTN_STYLE_REL, &btn_style_rel);
-    // lv_label_set_long_mode(label_pla, LV_LABEL_LONG_EXPAND);
-    // lv_label_set_align(label_pla,LV_LABEL_ALIGN_LEFT);
 
 
-    // lv_btn_set_layout(label_abs,LV_LABEL_ALIGN_LEFT);
+    labelPresetState1  = lv_label_create(scr, 230, 220, PREHEAT_1_LABEL);
+    labelPresetState2  = lv_label_create(scr, 230, 270, PREHEAT_2_LABEL);
+    labelCooldown = lv_label_create(scr, 370, 220, "Cool Down");
 
-    // lv_btn_set_style(label_abs, LV_BTN_STYLE_PR, &btn_style_pre);
-    // lv_btn_set_style(label_abs, LV_BTN_STYLE_REL, &btn_style_rel);
-    // lv_label_set_long_mode(label_abs, LV_LABEL_LONG_EXPAND);
-    // lv_label_set_align(label_abs,LV_LABEL_ALIGN_LEFT);
+    // lv_label_set_text(labelPresetState1, PREHEAT_1_LABEL);
+    // lv_obj_align(labelPresetState1, buttonPresetState1, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 0);
+    // lv_label_set_text(labelPresetState2, PREHEAT_2_LABEL);
+    // lv_obj_align(labelPresetState1, buttonPresetState2, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 0);
 
+    // lv_label_set_text(labelCooldown, "Cool Down");
+    // lv_obj_align(labelCooldown, buttonCooldown, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 0);
 
 }
 
