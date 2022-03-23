@@ -344,14 +344,6 @@ void disp_ext_heart_ready_print() {
     labelPresetState2  = lv_label_create(scr, 230, 270, PREHEAT_2_LABEL);
     labelCooldown = lv_label_create(scr, 370, 220, "Cool Down");
 
-    // lv_label_set_text(labelPresetState1, PREHEAT_1_LABEL);
-    // lv_obj_align(labelPresetState1, buttonPresetState1, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 0);
-    // lv_label_set_text(labelPresetState2, PREHEAT_2_LABEL);
-    // lv_obj_align(labelPresetState1, buttonPresetState2, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 0);
-
-    // lv_label_set_text(labelCooldown, "Cool Down");
-    // lv_obj_align(labelCooldown, buttonCooldown, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 0);
-
 }
 
 #endif // HAS_TFT_LVGL_UI
