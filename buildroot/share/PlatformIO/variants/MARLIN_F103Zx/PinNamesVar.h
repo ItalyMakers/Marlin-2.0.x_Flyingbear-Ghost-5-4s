@@ -1,6 +1,5 @@
 /* SYS_WKUP */
-#if defined(PWR_WAKEUP_PIN1) && defined(HAL_PWR_MODULE_ENABLED) && !defined(HAL_PWR_MODULE_ONLY)
-  #error "PA0 is used by thermal sensor. Disable low power wake with -DHAL_PWR_MODULE_ONLY."
+#ifdef PWR_WAKEUP_PIN1
   SYS_WKUP1 = PA_0,
 #endif
 #ifdef PWR_WAKEUP_PIN2

@@ -20,9 +20,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-#include "../platforms.h"
-
-#ifdef HAL_STM32
+#if defined(ARDUINO_ARCH_STM32) && !defined(STM32GENERIC)
 
 #include "../../inc/MarlinConfigPre.h"
 
@@ -73,8 +71,8 @@ static void TXBegin() {
       volatile uint32_t ICER[32];
     };
 
-    NVICMin *nvicBase = (NVICMin*)0xE000E100;
-    SBI32(nvicBase->ICER[nvicIndex >> 5], nvicIndex & 0x1F);
+    NVICMin * nvicBase = (NVICMin*)0xE000E100;
+    nvicBase->ICER[nvicIndex / 32] |= _BV32(nvicIndex % 32);
 
     // We NEED memory barriers to ensure Interrupts are actually disabled!
     // ( https://dzone.com/articles/nvic-disabling-interrupts-on-arm-cortex-m-and-the )
@@ -125,7 +123,7 @@ static void TX(char c) {
     }
     regs->DR = c;
   #else
-    // Let's hope a mystical guru will fix this, one day by writing interrupt-free USB CDC ACM code (or, at least, by polling the registers since interrupt will be queued but will never trigger)
+    // Let's hope a mystical guru will fix this, one day by writting interrupt-free USB CDC ACM code (or, at least, by polling the registers since interrupt will be queued but will never trigger)
     // For now, it's completely lost to oblivion.
   #endif
 }
@@ -151,4 +149,4 @@ extern "C" {
 #endif
 
 #endif // POSTMORTEM_DEBUGGING
-#endif // HAL_STM32
+#endif // ARDUINO_ARCH_STM32

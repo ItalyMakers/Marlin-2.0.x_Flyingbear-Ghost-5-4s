@@ -19,7 +19,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
 #include "../inc/MarlinConfig.h"
 
 #if ENABLED(GCODE_REPEAT_MARKERS)
@@ -44,7 +43,7 @@ void Repeat::add_marker(const uint32_t sdpos, const uint16_t count) {
     marker[index].sdpos = sdpos;
     marker[index].counter = count ?: -1;
     index++;
-    DEBUG_ECHOLNPGM("Add Marker ", index, " at ", sdpos, " (", count, ")");
+    DEBUG_ECHOLNPAIR("Add Marker ", index, " at ", sdpos, " (", count, ")");
   }
 }
 
@@ -54,14 +53,14 @@ void Repeat::loop() {
   else {
     const uint8_t ind = index - 1;      // Active marker's index
     if (!marker[ind].counter) {         // Did its counter run out?
-      DEBUG_ECHOLNPGM("Pass Marker ", index);
+      DEBUG_ECHOLNPAIR("Pass Marker ", index);
       index--;                          //  Carry on. Previous marker on the next 'M808'.
     }
     else {
       card.setIndex(marker[ind].sdpos); // Loop back to the marker.
       if (marker[ind].counter > 0)      // Ignore a negative (or zero) counter.
         --marker[ind].counter;          // Decrement the counter. If zero this 'M808' will be skipped next time.
-      DEBUG_ECHOLNPGM("Goto Marker ", index, " at ", marker[ind].sdpos, " (", marker[ind].counter, ")");
+      DEBUG_ECHOLNPAIR("Goto Marker ", index, " at ", marker[ind].sdpos, " (", marker[ind].counter, ")");
     }
   }
 }
@@ -70,7 +69,7 @@ void Repeat::cancel() { LOOP_L_N(i, index) marker[i].counter = 0; }
 
 void Repeat::early_parse_M808(char * const cmd) {
   if (is_command_M808(cmd)) {
-    DEBUG_ECHOLNPGM("Parsing \"", cmd, "\"");
+    DEBUG_ECHOLNPAIR("Parsing \"", cmd, "\"");
     parser.parse(cmd);
     if (parser.seen('L'))
       add_marker(card.getIndex(), parser.value_ushort());

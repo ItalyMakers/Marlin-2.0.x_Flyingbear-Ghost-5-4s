@@ -37,13 +37,13 @@ void GcodeSuite::M993() {
   char fname[] = "spiflash.bin";
   card.openFileWrite(fname);
   if (!card.isFileOpen()) {
-    SERIAL_ECHOLNPGM("Failed to open ", fname, " to write.");
+    SERIAL_ECHOLNPAIR("Failed to open ", fname, " to write.");
     return;
   }
 
   uint8_t buf[1024];
   uint32_t addr = 0;
-  W25QXX.init(SPI_FULL_SPEED);
+  W25QXX.init(SPI_QUARTER_SPEED);
   SERIAL_ECHOPGM("Save SPI Flash");
   while (addr < SPI_FLASH_SIZE) {
     W25QXX.SPI_FLASH_BufferRead(buf, addr, COUNT(buf));
@@ -65,13 +65,13 @@ void GcodeSuite::M994() {
   char fname[] = "spiflash.bin";
   card.openFileRead(fname);
   if (!card.isFileOpen()) {
-    SERIAL_ECHOLNPGM("Failed to open ", fname, " to read.");
+    SERIAL_ECHOLNPAIR("Failed to open ", fname, " to read.");
     return;
   }
 
   uint8_t buf[1024];
   uint32_t addr = 0;
-  W25QXX.init(SPI_FULL_SPEED);
+  W25QXX.init(SPI_QUARTER_SPEED);
   W25QXX.SPI_FLASH_BulkErase();
   SERIAL_ECHOPGM("Load SPI Flash");
   while (addr < SPI_FLASH_SIZE) {

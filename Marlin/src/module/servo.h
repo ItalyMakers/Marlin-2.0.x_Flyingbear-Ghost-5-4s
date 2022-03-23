@@ -110,7 +110,6 @@
 #endif // HAS_SERVO_ANGLES
 
 #define MOVE_SERVO(I, P) servo[I].move(P)
-#define DETACH_SERVO(I) servo[I].detach()
 
 extern HAL_SERVO_LIB servo[NUM_SERVOS];
 void servo_init();

@@ -22,10 +22,9 @@
 #pragma once
 
 /**
- * E4d@box pin assignments
- *
- * Small factor 3D printer control board based on the ESP32 microcontroller for Laser, CNC and 3D printers.
- * More info at https://atbox.tech/ and the E4d@box Facebook page.
+ * E4d@Box  pin assignments
+ * E4d@Box is a small factor 3D printer control board based on the ESP32 microcontroller for Laser, CNC and 3d printers
+ * for more info check https://atbox.tech/ and join to Facebook page E4d@box.
  */
 
 #include "env_validate.h"
@@ -36,7 +35,7 @@
   #error "E4d@box only supports one hotend / E-stepper. Comment out this line to continue."
 #endif
 
-#define BOARD_INFO_NAME       "E4d@box"
+#define BOARD_INFO_NAME       "E4D@BOX"
 #define BOARD_WEBSITE_URL     "github.com/Exilaus/E4d@box"
 #define DEFAULT_MACHINE_NAME  BOARD_INFO_NAME
 

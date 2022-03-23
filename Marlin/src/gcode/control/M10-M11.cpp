@@ -25,12 +25,14 @@
 #if ENABLED(AIR_EVACUATION)
 
 #include "../gcode.h"
+#include "../../module/planner.h"
 #include "../../feature/spindle_laser.h"
 
 /**
  * M10: Vacuum or Blower On
  */
 void GcodeSuite::M10() {
+  planner.synchronize();      // Wait for move to arrive (TODO: asynchronous)
   cutter.air_evac_enable();   // Turn on Vacuum or Blower motor
 }
 
@@ -38,6 +40,7 @@ void GcodeSuite::M10() {
  * M11: Vacuum or Blower OFF
  */
 void GcodeSuite::M11() {
+  planner.synchronize();      // Wait for move to arrive (TODO: asynchronous)
   cutter.air_evac_disable();  // Turn off Vacuum or Blower motor
 }
 
