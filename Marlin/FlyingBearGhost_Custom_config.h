@@ -56,7 +56,7 @@
  * decommentare per abilitare il BLTOUCH
  */
 
-// #define FBGHOST_BLTOUCH
+#define FBGHOST_BLTOUCH
 
 
 

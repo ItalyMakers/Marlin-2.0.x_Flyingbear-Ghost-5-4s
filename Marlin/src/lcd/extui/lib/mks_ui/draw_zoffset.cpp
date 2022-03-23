@@ -297,6 +297,7 @@ void zoffset_do_init(bool resetZoffset) {
     }
     else
     {
+      //sprintf_P(str_1, PSTR("G28\nG1 Z10 F2400\nG1 X%d Y%d\nG0 Z%d"), X_MAX_POS / 2, Y_MAX_POS / 2, probe.offset.z);
       sprintf_P(str_1, PSTR("G28\nG1 Z10 F2400\nG1 X%d Y%d\nG0 Z0"), X_MAX_POS / 2, Y_MAX_POS / 2);
     }
     queue.enqueue_now_P(str_1);

@@ -144,7 +144,7 @@ void lv_draw_more() {
   lv_big_button_create(scr, "F:/bmp_gcode.bin", more_menu.gcode, INTERVAL_V, titleHeight, event_handler, ID_GCODE);
 
   #if HAS_USER_ITEM(1)
-    lv_big_button_create(scr, "F:/bmp_custom1.bin", more_menu.custom1, BTN_X_PIXEL + INTERVAL_V * 2, titleHeight, event_handler, ID_CUSTOM_1);
+    lv_big_button_create(scr, "F:/bmp_zero_temp.bin", more_menu.custom1, BTN_X_PIXEL + INTERVAL_V * 2, titleHeight, event_handler, ID_CUSTOM_1);
   #endif
 
   #if HAS_USER_ITEM(2)
