@@ -303,10 +303,10 @@ void changeFlashMode(const bool dmaMode) {
       #endif
     }
   }
-#else 
+#else
 
   DMA_HandleTypeDef wifiUsartDMArx;
-  
+
   void changeFlashMode(const bool dmaMode) {
     if (flash_dma_mode != dmaMode) {
       flash_dma_mode = dmaMode;
@@ -362,7 +362,7 @@ void changeFlashMode(const bool dmaMode) {
           __HAL_DMA_CLEAR_FLAG(hdma, __HAL_DMA_GET_HT_FLAG_INDEX(hdma));
           WIFI_IO1_SET();
         }
-        
+
         if((__HAL_DMA_GET_FLAG(hdma, __HAL_DMA_GET_TE_FLAG_INDEX(hdma)) != RESET))
         {
           /* When a DMA transfer error occurs */
@@ -2108,7 +2108,7 @@ void mks_wifi_firmware_update() {
     lv_task_handler();
     watchdog_refresh();
 
-    if (wifi_upload(0) >= 0) {
+    //if (wifi_upload(0) >= 0) {
       card.removeFile((char *)ESP_FIRMWARE_FILE_RENAME);
       SdFile file, *curDir;
       const char * const fname = card.diveToFile(true, curDir, ESP_FIRMWARE_FILE);
@@ -2116,7 +2116,7 @@ void mks_wifi_firmware_update() {
         file.rename(curDir, (char *)ESP_FIRMWARE_FILE_RENAME);
         file.close();
       }
-    }
+    //}
     lv_clear_cur_ui();
   }
 }
