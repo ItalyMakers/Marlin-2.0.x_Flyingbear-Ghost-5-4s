@@ -65,7 +65,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
         lv_clear_cur_ui();
         #if ENABLED(MESH_BED_LEVELING)
           zoffset_do_init(true);
-        #elif
+        #else
           zoffset_do_init(false);
         #endif
         lv_draw_zoffset_settings();
