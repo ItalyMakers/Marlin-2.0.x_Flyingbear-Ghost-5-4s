@@ -265,7 +265,7 @@
 #define FBGHOST_DEFAULT_YJERK         15.0
 #define FBGHOST_DEFAULT_ZJERK          0.4
 
-#define FBGHOST_DEFAULT_EJERK         10.0  // May be used by Linear Advance
+#define FBGHOST_DEFAULT_EJERK         2.0  // May be used by Linear Advance
 
 
 
@@ -303,7 +303,7 @@
  * Override with M203
  *                                      X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
  */
-#define FBGHOST_DEFAULT_MAX_FEEDRATE  { 300, 300, 5, 70 }
+#define FBGHOST_DEFAULT_MAX_FEEDRATE  { 300, 300, 5, 100 }
 
 /**
  * Default Max Acceleration (change/s) change = mm/s
