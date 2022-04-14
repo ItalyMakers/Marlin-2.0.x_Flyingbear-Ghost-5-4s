@@ -1,6 +1,6 @@
 #pragma once
 
-#define IM_VERSION "3.3.1"
+#define IM_VERSION "3.3.2"
 
 /*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************
  *************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************
@@ -36,8 +36,8 @@
 
 
 //  Choose your printer
-// #define FBGHOST_IS_5
-#define FBGHOST_IS_4S
+#define FBGHOST_IS_5
+// #define FBGHOST_IS_4S
 
 
 /*****************************************
@@ -219,12 +219,12 @@
 // Preheat Constants
 #define FBGHOST_PREHEAT_1_LABEL         "PLA"
 #define FBGHOST_PREHEAT_1_TEMP_HOTEND   200
-#define FBGHOST_PREHEAT_1_TEMP_BED      65
+#define FBGHOST_PREHEAT_1_TEMP_BED      70
 #define FBGHOST_PREHEAT_1_FAN_SPEED     0 // Value from 0 to 255
 
 #define FBGHOST_PREHEAT_2_LABEL         "PETG"
 #define FBGHOST_PREHEAT_2_TEMP_HOTEND   235
-#define FBGHOST_PREHEAT_2_TEMP_BED      75
+#define FBGHOST_PREHEAT_2_TEMP_BED      85
 #define FBGHOST_PREHEAT_2_FAN_SPEED     0 // Value from 0 to 255
 
 
@@ -239,9 +239,9 @@
 
 //PID
 //HOTEND
-#define FBGHOST_DEFAULT_Kp 11.14
-#define FBGHOST_DEFAULT_Ki 0.72
-#define FBGHOST_DEFAULT_Kd 43.09
+#define FBGHOST_DEFAULT_Kp 32.78
+#define FBGHOST_DEFAULT_Ki 3.98
+#define FBGHOST_DEFAULT_Kd 67.53
 
 //BEDTEMP
 #define FBGHOST_DEFAULT_bedKp 52.63
@@ -283,7 +283,7 @@
  * See https://marlinfw.org/docs/features/lin_advance.html for full instructions.
  */
 
-// #define FBGHOST_LIN_ADVANCE
+#define FBGHOST_LIN_ADVANCE
 
 #ifdef FBGHOST_LIN_ADVANCE
   #define FBGHOST_LIN_ADVANCE_K 0.22
