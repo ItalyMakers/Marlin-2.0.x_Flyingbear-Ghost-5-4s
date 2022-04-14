@@ -2108,7 +2108,7 @@ void mks_wifi_firmware_update() {
     lv_task_handler();
     watchdog_refresh();
 
-    //if (wifi_upload(0) >= 0) {
+    if (wifi_upload(0) >= 0) {
       card.removeFile((char *)ESP_FIRMWARE_FILE_RENAME);
       SdFile file, *curDir;
       const char * const fname = card.diveToFile(true, curDir, ESP_FIRMWARE_FILE);
@@ -2116,7 +2116,7 @@ void mks_wifi_firmware_update() {
         file.rename(curDir, (char *)ESP_FIRMWARE_FILE_RENAME);
         file.close();
       }
-    //}
+    }
     lv_clear_cur_ui();
   }
 }
