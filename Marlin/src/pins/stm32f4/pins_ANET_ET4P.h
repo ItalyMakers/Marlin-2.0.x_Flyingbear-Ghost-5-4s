@@ -19,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
+
 #pragma once
 
 #define BOARD_INFO_NAME "Anet ET4P 1.x"

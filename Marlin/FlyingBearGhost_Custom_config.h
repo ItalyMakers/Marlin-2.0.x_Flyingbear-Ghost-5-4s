@@ -1,6 +1,6 @@
 #pragma once
 
-#define IM_VERSION "3.1.3"
+#define IM_VERSION "3.3.1"
 
 /*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************
  *************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************
@@ -16,12 +16,37 @@
  * i parametri driver e step/mm cambiano in base alla tua stampante
  */
 
-//default motherboard
-#define FBGHOST_MOTHERBOARD     BOARD_MKS_ROBIN_NANO
+
+/*****************************************
+ *     MOTHERBOARD     *******************
+ *****************************************
+ * Scegli la tua scheda madre
+ */
+//choose your motherboard
+#define MOTHERBOARD     BOARD_MKS_ROBIN_NANO
+// #define MOTHERBOARD     BOARD_MKS_ROBIN_NANO_V1_3_F4
+// #define MOTHERBOARD     BOARD_MKS_ROBIN_NANO_V2
+// #define MOTHERBOARD     BOARD_MKS_ROBIN_NANO_V3
+
+#if MOTHERBOARD == BOARD_MKS_ROBIN_NANO || MOTHERBOARD == BOARD_MKS_ROBIN_NANO_V1_3_F4
+  #define FBGHOST_MKS_ROBIN_TFT35
+#else
+  #define FBGHOST_MKS_TS35_V2_0
+#endif
+
 
 //  Choose your printer
-#define FBGHOST_IS_5
-// #define FBGHOST_IS_4S
+// #define FBGHOST_IS_5
+#define FBGHOST_IS_4S
+
+
+/*****************************************
+ *    OLD SCHOOL UI    *******************
+ *****************************************
+ * classic Vintage Marlin's COLOR_UI. no setup or UI edits here.
+ * just a raw interface.
+ */
+// #define OLD_SCHOOL_UI
 
 
 
@@ -31,7 +56,7 @@
  * decommentare per abilitare il BLTOUCH
  */
 
-// #define FBGHOST_BLTOUCH
+#define FBGHOST_BLTOUCH
 
 
 
@@ -51,10 +76,10 @@
 
 //PRESETS - usare FBGHOST_CUSTOM_CONF se si ha una configurazione particolare. A fondo documento trovi i settaggi standard.
 // #define FBGHOST_DRIVER_CUSTOM_CONF
-// #define FBGHOST_DRIVER_ALL_A4988
+#define FBGHOST_DRIVER_ALL_A4988
 // #define FBGHOST_DRIVER_ALL_TMC2208
 // #define FBGHOST_DRIVER_ALL_TMC2209
-#define FBGHOST_DRIVER_XY_TMC2208_ZE_A4988
+// #define FBGHOST_DRIVER_XY_TMC2208_ZE_A4988
 
 #ifdef FBGHOST_DRIVER_CUSTOM_CONF
   #define FBGHOST_X_DRIVER_TYPE   TMC2208_STANDALONE
@@ -71,7 +96,9 @@
   #define FBGHOST_INVERT_E0_DIR   true
 #endif
 
-/**
+/*****************************************
+ *       STEP/MM       *******************
+ *****************************************
  * Default Axis Steps Per Unit (steps/mm)
  * Override with M92
  *                                               X,  Y,  Z[, I [, J [, K]]], E0 [, E1[, E2...]]
@@ -87,11 +114,9 @@
   #define FBGHOST_Z_SAFE_HOMING_X_POINT           X_CENTER  // X point for Z homing
   #define FBGHOST_Z_SAFE_HOMING_Y_POINT           Y_CENTER  // Y point for Z homing
 
-  // #define FBGHOST_PREHEAT_BEFORE_LEVELING
-  #ifdef FBGHOST_PREHEAT_BEFORE_LEVELING
-    #define FBGHOST_LEVELING_NOZZLE_TEMP  120   // (°C) Only applies to E0 at this time
-    #define FBGHOST_LEVELING_BED_TEMP      50
-  #endif
+  // permette la calibrazione manuale oltre che tramite BLTOUCH
+  #define FBGHOST_ADD_5_POINTS
+
 #else
   #define FBGHOST_MESH_BED_LEVELING
 
@@ -204,6 +229,14 @@
 
 
 
+#define FBGHOST_PREHEAT_BEFORE_LEVELING
+#ifdef FBGHOST_PREHEAT_BEFORE_LEVELING
+  #define FBGHOST_LEVELING_NOZZLE_TEMP  FBGHOST_PREHEAT_1_TEMP_HOTEND   // (°C) Only applies to E0 at this time
+  #define FBGHOST_LEVELING_BED_TEMP     FBGHOST_PREHEAT_1_TEMP_BED
+#endif
+
+
+
 //PID
 //HOTEND
 #define FBGHOST_DEFAULT_Kp 11.14
@@ -232,7 +265,7 @@
 #define FBGHOST_DEFAULT_YJERK         15.0
 #define FBGHOST_DEFAULT_ZJERK          0.4
 
-#define FBGHOST_DEFAULT_EJERK         10.0  // May be used by Linear Advance
+#define FBGHOST_DEFAULT_EJERK         2.0  // May be used by Linear Advance
 
 
 
@@ -270,7 +303,7 @@
  * Override with M203
  *                                      X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
  */
-#define FBGHOST_DEFAULT_MAX_FEEDRATE  { 300, 300, 5, 70 }
+#define FBGHOST_DEFAULT_MAX_FEEDRATE  { 300, 300, 5, 100 }
 
 /**
  * Default Max Acceleration (change/s) change = mm/s
@@ -428,3 +461,8 @@
 
 
 
+#ifdef OLD_SCHOOL_UI
+  #define FBGHOST_TFT_COLOR_UI
+#else
+  #define FBGHOST_TFT_LVGL_UI
+#endif

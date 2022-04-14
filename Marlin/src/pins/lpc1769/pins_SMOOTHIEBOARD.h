@@ -22,7 +22,7 @@
 #pragma once
 
 /**
- * Smoothieware Smoothieboard pin assignments
+ * Smoothieboard pin assignments
  */
 
 #include "env_validate.h"
