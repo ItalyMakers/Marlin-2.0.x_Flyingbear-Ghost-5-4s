@@ -45,8 +45,8 @@ void esp_port_begin(uint8_t interrupt);
 void printer_state_polling() {
   char str_1[16];
   if (uiCfg.print_state == PAUSING) {
-    lv_clear_cur_ui();
-    lv_draw_dialog(DIALOG_TYPE_MACHINE_PAUSING_TIPS);
+    // lv_clear_cur_ui();
+    // lv_draw_dialog(DIALOG_TYPE_MACHINE_PAUSING_TIPS);
     #if ENABLED(SDSUPPORT)
       while(queue.ring_buffer.length) {
         queue.advance();
@@ -153,7 +153,7 @@ void printer_state_polling() {
   if (uiCfg.print_state == WORKING) {
     filament_check(); // filament_check();
   }
-    
+
   TERN_(MKS_WIFI_MODULE, wifi_looping());
 
   #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
@@ -302,17 +302,17 @@ void filament_check_2() {
 
       if(get_filemant_pins() == false) {
         filament_c.status = F_STATUS_WAIT;
-        filament_c.tick_start = millis(); 
+        filament_c.tick_start = millis();
       }
 
     break;
 
     case F_STATUS_WAIT:
-      filament_c.tick_end = millis(); 
+      filament_c.tick_end = millis();
 
       if(get_filemant_pins() == false) {
 
-          if(filament_c.tick_end - filament_c.tick_start > filament_c.tick_delay) {  
+          if(filament_c.tick_end - filament_c.tick_start > filament_c.tick_delay) {
               filament_c.status = F_STATUS_RUN;
           }
       }else {
