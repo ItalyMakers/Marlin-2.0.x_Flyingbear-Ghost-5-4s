@@ -1,6 +1,10 @@
 _Branch: test_
-_*Attenzione! La modifica del firmware è una modifica avanzata, va fatta con attenzione. 
-si declina ogni responsabilità nei danni che si potrebbero arrecare a scheda madre o ad altre parti della stampante*_
+
+### ***Attenzione!*** 
+***La modifica del firmware è una modifica avanzata, va fatta con attenzione. 
+si declina ogni responsabilità nei danni che si potrebbero arrecare a scheda madre o ad altre parti della stampante.***
+
+
 # Adattamento marlin 2.0.x Flyingbear Ghost 4s e 5 by Italy Makers
 
 Adattamento a cura di Italy Makers del firmware Mks-Robin-Nano-Marlin2.0-Firmware per le stampanti Flying Bear Ghost 4s e 5
