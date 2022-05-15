@@ -9,16 +9,34 @@ si declina ogni responsabilità nei danni che si potrebbero arrecare a scheda ma
 
 Adattamento a cura di Italy Makers del firmware Mks-Robin-Nano-Marlin2.0-Firmware per le stampanti Flying Bear Ghost 4s e 5
 
-***La scheda madre Robin Nano v1.3-S potrebbe riscontrare problemi sul bootloader***
+***La scheda madre Robin Nano-s v1.3 potrebbe riscontrare problemi sul bootloader***
 
 ## _*firmware in fase di test*_
 
 ![Italy Makers Firmware](docs/bmp_logo.png)
 
 
+##### **Versione** 3.3.3
+###### Feature
+- revert a versione Marlin 2.0.8 causa bug di layer-shifting
+- rimozione tooltip di pausa
+- modificati i parametri di configurazione
+- adattamento schermate di livellamento mesh bed leveling
+- adattamento schermate BLtouch
+- gestione di calibrazione manuale aggiuntiva con BLtouch
+
+###### Bugfix
+- fix immagine di preview
+- fix buffering sizes
+
+
+
+
+---
+
 ###### **Versione** 3.1.2
 ###### Feature
-- versione Marlin 2.0.9.2
+- versione Marlin 2.0.8
 - adattamento MKS Robin Nano Marlin 2.0
 - iconografia ristrutturata sulla base delle icone di [majurca/MKS-TFT28-NEW-PICTURES](https://github.com/majurca/MKS-TFT28-NEW-PICTURES)
 - modifica di colori e font sulla base della grafica
