@@ -30,11 +30,11 @@
 
 typedef enum {
 
-  F_STATUS_CHECK,       // 轮询检测断料
-  F_STATUS_WAIT,        // 触发断料，等待延时
-  F_STATUS_RUN,         // 执行断料该有的动作
-  F_STATUS_WAIT_UP,     // 等待重新上料
-  F_STATUS_END,         // 结束，重置
+  F_STATUS_CHECK,       // ??????
+  F_STATUS_WAIT,        // ????,????
+  F_STATUS_RUN,         // ?????????
+  F_STATUS_WAIT_UP,     // ??????
+  F_STATUS_END,         // ??,??
 }filament_status_t;
 
 typedef struct {

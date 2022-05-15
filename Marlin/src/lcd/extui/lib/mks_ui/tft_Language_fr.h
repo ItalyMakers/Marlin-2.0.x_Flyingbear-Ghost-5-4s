@@ -22,7 +22,7 @@
 #pragma once
 
 //*************法文****************************//
-#define TOOL_TEXT_FR                  "prêt"
+#define TOOL_TEXT_FR                  "Prêt"
 #define PREHEAT_TEXT_FR               "Préchauffe"
 #define MOVE_TEXT_FR                  "Déplace"
 #define TEXT_ZOFFSET_FR               "Z Offset"
@@ -40,7 +40,7 @@
 #define DEC_TEXT_FR                   "Réduire"
 #define EXTRUDER_1_TEXT_FR            "Extr1"
 #define EXTRUDER_2_TEXT_FR            "Extr2"
-#define HEATBED_TEXT_FR               "Plateau"
+#define HEATBED_TEXT_FR               "Hotlit"
 #define TEXT_1C_FR                    "1℃"
 #define TEXT_5C_FR                    "5℃"
 #define TEXT_10C_FR                   "10℃"
@@ -69,6 +69,7 @@
 
 #define HOME_X_TEXT_FR                "X"
 #define HOME_Y_TEXT_FR                "Y"
+#define HOME_XY_TEXT_FR          "X-Y"
 #define HOME_Z_TEXT_FR                "Z"
 #define HOME_ALL_TEXT_FR              "ALL"
 #define HOME_STOPMOVE_FR              "Quickstop"

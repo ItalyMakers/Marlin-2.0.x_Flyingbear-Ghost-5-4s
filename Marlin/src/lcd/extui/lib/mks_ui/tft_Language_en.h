@@ -117,9 +117,16 @@
 #define BLTOUCH_SAVE_EN                 "Save"
 #define BLTOUCH_TEST_EN                 "Test"
 
+#define ZOFFSET_SETTING_TITTLE_EN      "Machine Settings>Z Offset settings"
+#define MESHBED_LEVELING_TITTLE_EN      "Machine Settings>Mesh Bed Leveling"
+#define ZOFFSET_SETTING_TITTLE_EN      "Machine Settings>Z Offset settings"
+#define ZOFFSET_SETTING_SAVED_EN       "Zoffset Saved"
+#define MESH_LEVELING_EN               "Mesh Leveling"
+#define ZOFFSET_SETTING_NEXT_EN        "Next Pos."
+
 #define LEVELING_PARA_CONF_TITLE_EN     "leveling setting"
 #define AUTO_LEVELING_ENABLE_EN         "Enable auto leveling"
-#define BLTOUCH_LEVELING_ENABLE_EN      "Enable BLtouch"
+#define BLTOUCH_LEVELING_ENABLE_EN      "Enable BLTouch"
 #define PROBE_PORT_EN                   "Probe connector"
 #define PROBE_X_OFFSET_EN               "Probe X-axis offset"
 #define PROBE_Y_OFFSET_EN               "Probe Y-axis offset"
@@ -343,6 +350,7 @@
 
 #define HOME_X_TEXT_EN          "X"
 #define HOME_Y_TEXT_EN          "Y"
+#define HOME_XY_TEXT_EN          "X-Y"
 #define HOME_Z_TEXT_EN          "Z"
 #define HOME_ALL_TEXT_EN        "Home"
 #define HOME_STOPMOVE_EN        "Quickstop"

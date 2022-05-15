@@ -303,10 +303,10 @@ void changeFlashMode(const bool dmaMode) {
       #endif
     }
   }
-#else 
+#else
 
   DMA_HandleTypeDef wifiUsartDMArx;
-  
+
   void changeFlashMode(const bool dmaMode) {
     if (flash_dma_mode != dmaMode) {
       flash_dma_mode = dmaMode;
@@ -362,7 +362,7 @@ void changeFlashMode(const bool dmaMode) {
           __HAL_DMA_CLEAR_FLAG(hdma, __HAL_DMA_GET_HT_FLAG_INDEX(hdma));
           WIFI_IO1_SET();
         }
-        
+
         if((__HAL_DMA_GET_FLAG(hdma, __HAL_DMA_GET_TE_FLAG_INDEX(hdma)) != RESET))
         {
           /* When a DMA transfer error occurs */

@@ -40,6 +40,8 @@ enum {
   ID_M_POINT3,
   ID_M_POINT4,
   ID_M_POINT5,
+  ID_M_ZOFFSET,
+  ID_M_BLTOUCH,
   ID_MANUAL_RETURN
 };
 
@@ -58,6 +60,24 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
         queue.inject(public_buf_l);
       }
       break;
+    #if EITHER(MESH_BED_LEVELING, FBGHOST_ADD_5_POINTS)
+      case ID_M_ZOFFSET:
+        lv_clear_cur_ui();
+        #if ENABLED(MESH_BED_LEVELING)
+          zoffset_do_init(true);
+        #else
+          zoffset_do_init(false);
+        #endif
+        lv_draw_zoffset_settings();
+      break;
+    #endif
+    #if ENABLED(FBGHOST_ADD_5_POINTS)
+      case ID_M_BLTOUCH:
+        lv_clear_cur_ui();
+        lv_draw_dialog(DIALOG_TYPE_AUTO_LEVELING_TIPS);
+        uiCfg.autoLeveling = true;
+      break;
+    #endif
     case ID_MANUAL_RETURN:
       lv_clear_manualLevel();
       lv_draw_tool();
@@ -74,6 +94,13 @@ void lv_draw_manualLevel(void) {
   lv_big_button_create(scr, "F:/bmp_leveling3.bin", leveling_menu.position3, BTN_X_PIXEL * 2 + INTERVAL_V * 3, titleHeight, event_handler, ID_M_POINT3);
   lv_big_button_create(scr, "F:/bmp_leveling4.bin", leveling_menu.position4, BTN_X_PIXEL * 3 + INTERVAL_V * 4, titleHeight, event_handler, ID_M_POINT4);
   lv_big_button_create(scr, "F:/bmp_leveling5.bin", leveling_menu.position5, INTERVAL_V, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_POINT5);
+  #if ENABLED(MESH_BED_LEVELING)
+    lv_big_button_create(scr, "F:/bmp_test.bin", machine_menu.MeshBLSettings, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_ZOFFSET);
+  #elif ENABLED(FBGHOST_ADD_5_POINTS)
+    lv_big_button_create(scr, "F:/bmp_test.bin", move_menu.zoffset, BTN_X_PIXEL  + INTERVAL_V * 2, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_ZOFFSET);
+    lv_big_button_create(scr, "F:/bmp_autoleveling.bin", tool_menu.autoleveling, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_BLTOUCH);
+  #endif
+
   lv_big_button_create(scr, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_MANUAL_RETURN);
 }
 
