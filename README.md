@@ -1,5 +1,3 @@
-_Branch: test_
-
 ### ***Attenzione!*** 
 ***La modifica del firmware è una modifica avanzata, va fatta con attenzione. 
 si declina ogni responsabilità nei danni che si potrebbero arrecare a scheda madre o ad altre parti della stampante.***
@@ -104,6 +102,3 @@ Tutte le altre configurazioni sono settabili dai file `Marlin/Configuration.h` e
 Credits:
 fork from [Makerbase Robin Nano firmware](https://github.com/makerbase-mks/Mks-Robin-Nano-Marlin2.0-Firmware)
 Italy Makers Flyingbear Ghost Group: [Italy Makers - Flying Bear Ghost](https://www.facebook.com/groups/907067056500590)
-
-
-
