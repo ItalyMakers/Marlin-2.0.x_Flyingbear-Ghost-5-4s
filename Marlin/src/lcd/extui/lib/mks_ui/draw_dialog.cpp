@@ -346,9 +346,9 @@ void lv_draw_dialog(uint8_t type) {
     lv_bar_set_anim_time(filament_bar, 1000);
     lv_bar_set_value(filament_bar, 0, LV_ANIM_ON);
   }
-  else if (DIALOG_IS(TYPE_MACHINE_PAUSING_TIPS)) {
-    //nothing to do
-  }
+  // else if (DIALOG_IS(TYPE_MACHINE_PAUSING_TIPS)) {
+  //   //nothing to do
+  // }
   #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
     else if (DIALOG_IS(TYPE_AUTO_LEVELING_TIPS)) {
       // #if ENABLED(PREHEAT_BEFORE_LEVELING)
@@ -555,10 +555,10 @@ void lv_draw_dialog(uint8_t type) {
       lv_obj_align(labelDialog, NULL, LV_ALIGN_CENTER, 0, -70);
     }
   #endif
-  else if (DIALOG_IS(TYPE_MACHINE_PAUSING_TIPS)) {
-    lv_label_set_text(labelDialog, print_file_dialog_menu.machinePausingTips);
-    lv_obj_align(labelDialog, NULL, LV_ALIGN_CENTER, 0, 0);
-  }
+  // else if (DIALOG_IS(TYPE_MACHINE_PAUSING_TIPS)) {
+  //   lv_label_set_text(labelDialog, print_file_dialog_menu.machinePausingTips);
+  //   lv_obj_align(labelDialog, NULL, LV_ALIGN_CENTER, 0, 0);
+  // }
   #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
     else if (DIALOG_IS(TYPE_AUTO_LEVELING_TIPS)) {
       lv_label_set_text(labelDialog, print_file_dialog_menu.autolevelingTips);
