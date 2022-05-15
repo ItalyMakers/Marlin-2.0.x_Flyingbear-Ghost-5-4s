@@ -1,0 +1,136 @@
+name: Segnalazione Bug
+description: Crea una segnalazione per il bug da te riscrontrato e aiutaci a migliorare
+title: "[BUG] (riassunto del bug)"
+body:
+  - type: markdown
+    attributes:
+      value: >
+        Vuoi farci delle domande? Iscriviti al [nostro gruppo facebook](https://www.facebook.com/groups/flyingbearghost) e chiedi tutto quello che ti interessa.
+
+  - type: markdown
+    attributes:
+      value: |
+        **Grazie per la segnalazione del bug!**
+
+        ## Istruzioni
+        Segui questi semplici passi per rendere più chiara la tua segnalazione
+
+        1. Fornisci un titolo chiaro sull'errore e nel titolo inizia con: [BUG].
+        2. Compila tutte le sezioni, più sarai espicativo più semplice sarà comprendere il bug.
+        3. Allega il file `FlyingBearGhost_Custom_config.h` e, se modificati, i file di configurazione `configuration.h` e `configuration_adv.h`.
+
+  - type: dropdown
+    attributes:
+      label: Hai testato con la nostra ultima versione in master?
+      description: >-
+        Fai sempre una prova con l'ultima versione potrebbe essere che qualcuno abbia già risolto il bug :) 
+      options:
+        - Si e il problema è presente.
+        - Si e prima il bug non c'era.
+        - No, adesso ci provo.
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        # Dettagli del bug
+
+  - type: textarea
+    attributes:
+      label: Descrizione BUg
+      description: >-
+        Descrivi il bug, cosa volevi fare e quale è stato il risultato ottenuto.  
+        Cerca di dare una descrizione coincisa ed esaustiva includendo più dettagli possibili.
+      placeholder: |
+        La stampante non si accende.
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: storico del Bug
+      description: é un bug nuovo o vecchio? L'hai riscontrato in vecchie versioni o anche in altre varianti del firmware modificate da altri?
+
+  - type: textarea
+    attributes:
+      label: Comportamento atteso
+      description: >-
+        Cosa ti saresti aspettato che sarebbe successo?
+      placeholder: Mi aspettavo che si muovesse a sinistra.
+
+  - type: textarea
+    attributes:
+      label: Comportamento attuale
+      description: Cosa è successo realmente
+      placeholder: "Si è mosso a destra anzichè a sinistra"
+
+  - type: textarea
+    attributes:
+      label: Come riprodurre il bug
+      description: >-
+        Derscrivi tutti gli step per ricreare il bug.
+      placeholder: |
+        1. Vai su '...'
+        2. clicca su '....'
+        3. premi '....'
+        4. visualizza l'errore
+
+  - type: markdown
+    attributes:
+      value: |
+        # Il tuo setup
+
+  - type: input
+    attributes:
+      label: Versione del firmware (la trovi in about)
+      description: "dicci quale versione hai del firmware"
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Stampante
+      description: Flyingbear Ghost5
+
+  - type: input
+    attributes:
+      label: Scheda madre
+      description: Robin Nano 1.2, Robin Nano-s 1.3 ecc.
+
+  - type: input
+    attributes:
+      label: Add-ons
+      description: Descrivi la tua configurazione: BlTouch, Direct Print, cambi di motori ecc.
+
+
+  - type: dropdown
+    attributes:
+      label: Software di stampa
+      description: Il bug si riproduce in quale metodo di stampa? OctoPrint, Repetier Host, Pronterface...
+      options:
+        - SD Card (headless)
+        - Repetier Host
+        - OctoPrint
+        - Altro (descrivi qui sotto)
+
+  - type: markdown
+    attributes:
+      value: >-
+        ## Altre cose da dire.
+
+        Aggiungi informazioni che potrebbero aiutarci.
+
+          * il file `FlyingBearGhost_Custom_config.h` e se li hai modificati `Configuration.h` and `Configuration_adv.h`.
+            (Inserisci i file, non incollare il loro contenuto qui)
+          * **Log di output** se ne hai la possibilità.
+          * **Video e Immagini** che mostrino il problema e che aiutino a far capire meglio cosa stia succedendo.
+          * **un file GCODE** che mostra il problema, sempre che il problema non si verifichi con un qualsiasi gcode.
+
+        Se hai fatto qualsiasi altra modifica al firmware, diccelo qui.
+
+        Quando incolli il code non dimenticarti di formattarlo usando ` ``` ` mettendolo prima dell'inizio del codice e subito dopo la fine di esso.
+
+  - type: textarea
+    attributes:
+      label: Informazioni aggiuntive e upload
