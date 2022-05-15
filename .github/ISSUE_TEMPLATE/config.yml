@@ -2,14 +2,20 @@ blank_issues_enabled: false
 contact_links:
   - name: 📖 Guida di Installazione ed utilizzo firmware
     url: https://github.com/ItalyMakers/Marlin-2.0.x_Flyingbear-Ghost-5-4s/wiki
+    about: la guida su come installare e buildare il firmware
   - name: 📖 Guide di Italy Makers
     url: https://github.com/ItalyMakers/Sezione-Guide
+    about: tutte le nostre guide.
   - name: 📖 Marlin Documentation
     url: http://marlinfw.org/
     about: La documentazione di Marlin
   - name: 👤 Italy Makers Facebook group
     url: https://www.facebook.com/groups/flyingbearghost
     about: Tutte le domande potente farle qui.
+  - name: Slack
+    url: https://join.slack.com/t/italymakers/shared_invite/zt-18z21iiph-gE4PSoXpp_rGVW0xL5V67g
+    about: Per parlare del firmware e avere un contatto diretto per domande riguardo il firmare
+    
   - name: 💸 Want to donate?
     url: https://www.paypal.com/paypalme/italymakers
     about: se ci offri una birra sviluppiamo più felicemente :)
