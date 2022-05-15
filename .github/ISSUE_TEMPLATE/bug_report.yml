@@ -96,12 +96,12 @@ body:
   - type: input
     attributes:
       label: Scheda madre
-      description: Robin Nano 1.2, Robin Nano-s 1.3 ecc.
+      description: "Robin Nano 1.2, Robin Nano-s 1.3 ecc."
 
   - type: input
     attributes:
       label: Add-ons
-      description: Descrivi la tua configurazione: BlTouch, Direct Print, cambi di motori ecc.
+      description: "Descrivi la tua configurazione: BlTouch, Direct Print, cambi di motori ecc."
 
 
   - type: dropdown
