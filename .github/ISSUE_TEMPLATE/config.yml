@@ -1,5 +1,9 @@
 blank_issues_enabled: false
 contact_links:
+  - name: 📖 Guida di Installazione ed utilizzo firmware
+    url: https://github.com/ItalyMakers/Marlin-2.0.x_Flyingbear-Ghost-5-4s/wiki
+  - name: 📖 Guide di Italy Makers
+    url: https://github.com/ItalyMakers/Sezione-Guide
   - name: 📖 Marlin Documentation
     url: http://marlinfw.org/
     about: La documentazione di Marlin
