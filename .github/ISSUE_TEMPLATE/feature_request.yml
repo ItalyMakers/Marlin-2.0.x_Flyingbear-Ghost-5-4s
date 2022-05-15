@@ -22,13 +22,13 @@ body:
 
   - type: textarea
     attributes:
-      label: La tua richiesta è collegata a un problema o ad una tua esigenza? Descrivila.
-      description: Una chiara descrizione del tuo problema: (ad esempio: Mi servirebbe X, ma posso fare solo Y).
+      label: "La tua richiesta è collegata a un problema o ad una tua esigenza? Descrivila."
+      description: "Una chiara descrizione del tuo problema: (ad esempio: Mi servirebbe X, ma posso fare solo Y)."
 
   - type: textarea
     attributes:
-      label: Hai bisogno di supporto nell'installare il firmware?
-      description: Dicci la tua scheda madre, la stampante e le tue esigenze e proveremo darti aiuto, altrimenti scrivi nel nostro gruppo Facebook.
+      label: "Hai bisogno di supporto nell'installare il firmware?"
+      description: "Dicci quale sia la tua scheda madre, la stampante e le tue esigenze e proveremo darti aiuto, altrimenti scrivi nel nostro gruppo Facebook."
 
   - type: textarea
     attributes:
