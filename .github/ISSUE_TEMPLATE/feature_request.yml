@@ -1,11 +1,12 @@
-name: ✨ Request a feature
-description: Richiedi una nuova feature
+name: ✨ Richiedi una feature
+description: "Vorresti una implementazione al firmware? chiedicela qui."
 title: "[FR] (feature summary)"
 labels: 'T: Feature Request'
 body:
   - type: markdown
     attributes:
       value: >
+        Scrivici le tue richieste e faremo il possibile per cercare di aggiungerle. 
         Vuoi farci delle domande? Iscriviti al [nostro gruppo facebook](https://www.facebook.com/groups/flyingbearghost) e chiedi tutto quello che ti interessa.
 
   - type: markdown
