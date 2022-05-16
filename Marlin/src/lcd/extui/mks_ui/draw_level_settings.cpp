@@ -37,7 +37,8 @@ enum {
   ID_LEVEL_POSITION,
   ID_LEVEL_COMMAND,
   ID_LEVEL_ZOFFSET,
-  ID_LEVEL_BLTOUCH
+  ID_LEVEL_BLTOUCH,
+  ID_LEVEL_TOUCHMI,
 };
 
 static void event_handler(lv_obj_t *obj, lv_event_t event) {

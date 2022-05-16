@@ -41,6 +41,13 @@
 
 #include "../../../module/motion.h"
 
+#if ENABLED(AUTO_BED_LEVELING_BILINEAR)
+  #include "../../../feature/bedlevel/bedlevel.h"
+#endif
+
+#if ENABLED(AUTO_BED_LEVELING_BILINEAR)
+  extern bed_mesh_t z_values;
+#endif
 
 extern lv_group_t *g;
 static lv_obj_t *scr;

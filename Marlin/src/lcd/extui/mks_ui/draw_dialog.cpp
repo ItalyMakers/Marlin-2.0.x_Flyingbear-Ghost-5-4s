@@ -55,6 +55,19 @@
   #include "draw_touch_calibration.h"
 #endif
 
+#if ENABLED(AUTO_BED_LEVELING_BILINEAR)
+  // #include "../../../../feature/bedlevel/bedlevel.h"
+  #include "../../../../src/feature/bedlevel/bedlevel.h"
+
+#endif
+
+#if ENABLED(AUTO_BED_LEVELING_BILINEAR)
+  extern bed_mesh_t z_values;
+#endif
+
+
+
+
 extern lv_group_t *g;
 static lv_obj_t *scr, *tempText1, *filament_bar;
 
@@ -127,10 +140,35 @@ static void btn_ok_event_cb(lv_obj_t *btn, lv_event_t event) {
       uiCfg.print_state = IDLE;
       card.abortFilePrintSoon();
     #endif
+
+    #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
+      if (uiCfg.adjustZoffset) {
+        #if DISABLED(Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN)
+          for (uint8_t x = 0; x < GRID_MAX_POINTS_X; x++)
+            for (uint8_t y = 0; y < GRID_MAX_POINTS_Y; y++)
+              z_values[x][y] = z_values[x][y] + uiCfg.babyStepZoffsetDiff;
+        #endif
+        TERN_(EEPROM_SETTINGS, (void)settings.save());
+        uiCfg.babyStepZoffsetDiff = 0;
+        uiCfg.adjustZoffset       = 0;
+      }
+    #endif
   }
   else if (DIALOG_IS(TYPE_FINISH_PRINT)) {
     clear_cur_ui();
     lv_draw_ready_print();
+    #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
+      if (uiCfg.adjustZoffset) {
+        #if DISABLED(Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN)
+          for (uint8_t x = 0; x < GRID_MAX_POINTS_X; x++)
+            for (uint8_t y = 0; y < GRID_MAX_POINTS_Y; y++)
+              z_values[x][y] = z_values[x][y] + uiCfg.babyStepZoffsetDiff;
+        #endif
+        TERN_(EEPROM_SETTINGS, (void)settings.save());
+        uiCfg.babyStepZoffsetDiff = 0;
+        uiCfg.adjustZoffset       = 0;
+      }
+    #endif
   }
   #if ENABLED(ADVANCED_PAUSE_FEATURE)
     else if (DIALOG_IS(PAUSE_MESSAGE_WAITING, PAUSE_MESSAGE_INSERT, PAUSE_MESSAGE_HEAT))
@@ -354,6 +392,10 @@ void lv_draw_dialog(uint8_t type) {
   else if (DIALOG_IS(TYPE_FINISH_PRINT)) {
     lv_label_set_text(labelDialog, print_file_dialog_menu.print_finish);
     lv_obj_align(labelDialog, nullptr, LV_ALIGN_CENTER, 0, -20);
+
+    sprintf_P(public_buf_l, PSTR("%s: %d%d:%d%d:%d%d"), print_file_dialog_menu.print_time, print_time.hours / 10, print_time.hours % 10, print_time.minutes / 10, print_time.minutes % 10, print_time.seconds / 10, print_time.seconds % 10);
+    lv_obj_t *labelPrintTime = lv_label_create(scr, public_buf_l);
+    lv_obj_align(labelPrintTime, nullptr, LV_ALIGN_CENTER, 0, -60);
   }
   else if (DIALOG_IS(PAUSE_MESSAGE_PARKING)) {
     lv_label_set_text(labelDialog, pause_msg_menu.pausing);

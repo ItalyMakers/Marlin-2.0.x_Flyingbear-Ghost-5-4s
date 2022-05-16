@@ -586,6 +586,10 @@
   #include "stm32f4/pins_BLACK_STM32F407VE.h"   // STM32F4                                env:STM32F407VE_black
 #elif MB(STEVAL_3DP001V1)
   #include "stm32f4/pins_STEVAL_3DP001V1.h"     // STM32F4                                env:STM32F401VE_STEVAL
+#elif MB(MKS_E3_V2)
+  #include "stm32f4/pins_MKS_E3_V2.h"           // STM32F4                                env:MKS_E3_V2
+#elif MB(MKS_E3D_V2)
+  #include "stm32f4/pins_MKS_E3D_V2.h"          // STM32F4                                env:MKS_E3D_V2
 #elif MB(BTT_SKR_PRO_V1_1)
   #include "stm32f4/pins_BTT_SKR_PRO_V1_1.h"    // STM32F4                                env:BIGTREE_SKR_PRO env:BIGTREE_SKR_PRO_usb_flash_drive
 #elif MB(BTT_SKR_PRO_V1_2)
@@ -626,6 +630,20 @@
   #include "stm32f4/pins_ANET_ET4P.h"           // STM32F4                                env:Anet_ET4_OpenBLT
 #elif MB(FYSETC_CHEETAH_V20)
   #include "stm32f4/pins_FYSETC_CHEETAH_V20.h"  // STM32F4                                env:FYSETC_CHEETAH_V20
+#elif MB(MKS_MONSTER8)
+  #include "stm32f4/pins_MKS_MONSTER8.h"        // STM32F4                                env:mks_monster8 env:mks_monster8_usb_flash_drive env:mks_monster8_usb_flash_drive_msc
+#elif MB(TH3D_EZBOARD_LITE_V2)
+  #include "stm32f4/pins_TH3D_EZBOARD_LITE_V2.h" // STM32F4                               env:TH3D_EZBoard_Lite_V2
+#elif MB(INDEX_REV03)
+  #include "stm32f4/pins_INDEX_REV03.h"         // STM32F4                                env:Index_Mobo_Rev03
+#elif MB(MKS_ROBIN_NANO_V1_3_F4)
+  #include "stm32f4/pins_MKS_ROBIN_NANO_V1_3_F4.h" // STM32F4                             env:mks_robin_nano_v1_3_f4
+#elif MB(MKS_EAGLE)
+  #include "stm32f4/pins_MKS_EAGLE.h"           // STM32F4                                env:mks_eagle
+#elif MB(MKS_NANO6)
+  #include "stm32f4/pins_MKS_ROBIN_NANO6.h"           // STM32F4                          env:mks_robin_nano6
+#elif MB(MKS_NANO4)
+  #include "stm32f4/pins_MKS_ROBIN_NANO4.h"           // STM32F4                          env:mks_robin_nano4
 
 //
 // ARM Cortex M7

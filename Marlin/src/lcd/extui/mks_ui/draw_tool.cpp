@@ -72,6 +72,9 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
           uiCfg.leveling_first_time = true;
           lv_draw_manualLevel();
         #else
+          queue.inject_P(PSTR("G91"));
+          queue.inject_P(PSTR("G1 Z5 F1000"));
+          queue.inject_P(PSTR("G90"));
           lv_draw_dialog(DIALOG_TYPE_AUTO_LEVELING_TIPS);
           uiCfg.autoLeveling = true;
         #endif

@@ -168,6 +168,10 @@
   #define PARA_UI_BACK_BTN_X_SIZE   70
   #define PARA_UI_BACK_BTN_Y_SIZE   40
 
+  #define PARA_UI_ARROW_V           12
+  #define PARA_UI_ITEM_TEXT_V       10
+  #define PARA_UI_ITEM_TEXT_H       10
+
   #define QRCODE_X                  20
   #define QRCODE_Y                  40
   #define QRCODE_WIDTH              160
@@ -187,7 +191,7 @@
 #endif
 
 extern char public_buf_m[100];
-extern char public_buf_l[30];
+extern char public_buf_l[50];
 
 typedef struct {
   uint32_t  spi_flash_flag;
@@ -229,11 +233,12 @@ typedef struct UI_Config_Struct {
           filament_loading_completed:1,
           filament_unloading_completed:1,
           filament_loading_time_flg:1,
-          autoLeveling:1,
-          filament_unloading_time_flg:1;
+          filament_unloading_time_flg:1,
+          adjustZoffset:1;
   uint8_t wifi_name[32];
   uint8_t wifi_key[64];
   uint8_t cloud_hostUrl[96];
+  uint8_t autoLeveling;
   // Extruder Steps distances (mm)
   uint8_t extruStep;
   static constexpr uint8_t eStepMin =  1,
@@ -263,7 +268,8 @@ typedef struct UI_Config_Struct {
   float current_x_position_bak,
         current_y_position_bak,
         current_z_position_bak,
-        current_e_position_bak;
+        current_e_position_bak,
+        babyStepZoffsetDiff;
 } UI_CFG;
 
 typedef enum {
