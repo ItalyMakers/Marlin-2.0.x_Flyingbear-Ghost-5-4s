@@ -45,9 +45,9 @@
 #include "../../../gcode/queue.h"
 
 
-#define ICON_POS_Y          260
-#define TARGET_LABEL_MOD_Y -36
-#define LABEL_MOD_Y         30
+#define ICON_POS_Y            260
+#define TARGET_LABEL_MOD_Y    -36
+#define LABEL_MOD_Y           30
 
 extern lv_group_t*  g;
 #ifndef USE_NEW_LVGL_CONF

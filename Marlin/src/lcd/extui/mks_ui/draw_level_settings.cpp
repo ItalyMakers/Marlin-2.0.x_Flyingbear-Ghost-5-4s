@@ -60,7 +60,8 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
         lv_draw_auto_level_offset_settings();
         break;
     #endif
-    #if ENABLED(BLTOUCH)
+    // #if ENABLED(BLTOUCH)
+    #if ANY(BLTOUCH, FIX_MOUNTED_PROBE)
       case ID_LEVEL_BLTOUCH:
         last_disp_state = LEVELING_PARA_UI;
         lv_clear_level_settings();
@@ -78,8 +79,18 @@ void lv_draw_level_settings() {
   #if HAS_BED_PROBE
     lv_screen_menu_item(scr, machine_menu.LevelingAutoZoffsetConf, PARA_UI_POS_X, PARA_UI_POS_Y * 3, event_handler, ID_LEVEL_ZOFFSET, 2);
   #endif
+
+  #if ANY(BLTOUCH, FIX_MOUNTED_PROBE)
+    lv_screen_menu_item(scr, machine_menu.BLTouchLevelingConf, PARA_UI_POS_X, PARA_UI_POS_Y * 4, event_handler, ID_LEVEL_BLTOUCH, 3);
+  #endif
+
+  #if ENABLED(TOUCH_MI_PROBE)
+    lv_screen_menu_item(scr, machine_menu.LevelingTouchmiConf, PARA_UI_POS_X, PARA_UI_POS_Y * 4, event_handler, ID_LEVEL_TOUCHMI, 3);
+  #endif
+
   // lv_big_button_create(scr, "F:/bmp_back70x40.bin", common_menu.text_back, PARA_UI_BACL_POS_X + 10, PARA_UI_BACL_POS_Y, event_handler, ID_LEVEL_RETURN, true);
-    lv_screen_menu_item_return(scr, event_handler, ID_LEVEL_RETURN);
+  lv_screen_menu_item_return(scr, event_handler, ID_LEVEL_RETURN);
+
 
 }
 
