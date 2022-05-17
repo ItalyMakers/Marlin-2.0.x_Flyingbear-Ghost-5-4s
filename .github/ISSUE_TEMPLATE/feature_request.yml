@@ -33,12 +33,5 @@ body:
 
   - type: textarea
     attributes:
-      label: Descrivi la tua richiesta
-      description: Una descrizione chiara della feature che vorresti e il comportamento che vorresti.
-    validations:
-      required: true
-
-  - type: textarea
-    attributes:
       label: Informazioni aggiuntive
       description: Aggiungi qualsiasi informazione aggiuntiva, foto o screenshot che potrebbe aiutarci a sviluppare al meglio la tua richiesta.
