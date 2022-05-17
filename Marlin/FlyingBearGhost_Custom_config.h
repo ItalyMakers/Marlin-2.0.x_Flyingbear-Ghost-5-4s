@@ -1,6 +1,6 @@
 #pragma once
 
-#define IM_VERSION "3.1.3"
+#define IM_VERSION "3.3.3"
 
 /*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************
  *************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************
@@ -223,15 +223,15 @@
 #define FBGHOST_PREHEAT_1_FAN_SPEED     0 // Value from 0 to 255
 
 #define FBGHOST_PREHEAT_2_LABEL         "PETG"
-#define FBGHOST_PREHEAT_2_TEMP_HOTEND   235
-#define FBGHOST_PREHEAT_2_TEMP_BED      75
+#define FBGHOST_PREHEAT_2_TEMP_HOTEND   220
+#define FBGHOST_PREHEAT_2_TEMP_BED      70
 #define FBGHOST_PREHEAT_2_FAN_SPEED     0 // Value from 0 to 255
 
 
 
 #define FBGHOST_PREHEAT_BEFORE_LEVELING
 #ifdef FBGHOST_PREHEAT_BEFORE_LEVELING
-  #define FBGHOST_LEVELING_NOZZLE_TEMP  FBGHOST_PREHEAT_1_TEMP_HOTEND   // (°C) Only applies to E0 at this time
+  // #define FBGHOST_LEVELING_NOZZLE_TEMP  FBGHOST_PREHEAT_1_TEMP_HOTEND   // (°C) Only applies to E0 at this time
   #define FBGHOST_LEVELING_BED_TEMP     FBGHOST_PREHEAT_1_TEMP_BED
 #endif
 
@@ -261,9 +261,9 @@
 
 #define FBGHOST_CLASSIC_JERK
 
-#define FBGHOST_DEFAULT_XJERK         15.0
-#define FBGHOST_DEFAULT_YJERK         15.0
-#define FBGHOST_DEFAULT_ZJERK          0.4
+#define FBGHOST_DEFAULT_XJERK         10.0
+#define FBGHOST_DEFAULT_YJERK         10.0
+#define FBGHOST_DEFAULT_ZJERK          0.5
 
 #define FBGHOST_DEFAULT_EJERK         10.0  // May be used by Linear Advance
 
@@ -283,7 +283,7 @@
  * See https://marlinfw.org/docs/features/lin_advance.html for full instructions.
  */
 
-// #define FBGHOST_LIN_ADVANCE
+#define FBGHOST_LIN_ADVANCE
 
 #ifdef FBGHOST_LIN_ADVANCE
   #define FBGHOST_LIN_ADVANCE_K 0.22
@@ -303,7 +303,7 @@
  * Override with M203
  *                                      X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
  */
-#define FBGHOST_DEFAULT_MAX_FEEDRATE  { 300, 300, 5, 70 }
+#define FBGHOST_DEFAULT_MAX_FEEDRATE  { 200, 200, 4, 50 }
 
 /**
  * Default Max Acceleration (change/s) change = mm/s
@@ -311,7 +311,7 @@
  * Override with M201
  *                                      X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
  */
-#define FBGHOST_DEFAULT_MAX_ACCELERATION {1000,1000,200,80000}   //      { 3000, 3000, 100, 10000 }
+#define FBGHOST_DEFAULT_MAX_ACCELERATION {3000,3000,100,3000}   //      { 3000, 3000, 100, 10000 }
 
 
 
@@ -320,8 +320,8 @@
  * Default Acceleration (change/s) change = mm/s
  * Override with M204
  */
-#define FBGHOST_DEFAULT_ACCELERATION          1000
-#define FBGHOST_DEFAULT_RETRACT_ACCELERATION  3000
+#define FBGHOST_DEFAULT_ACCELERATION          1500
+#define FBGHOST_DEFAULT_RETRACT_ACCELERATION  2000
 #define FBGHOST_DEFAULT_TRAVEL_ACCELERATION   1000
 
 
