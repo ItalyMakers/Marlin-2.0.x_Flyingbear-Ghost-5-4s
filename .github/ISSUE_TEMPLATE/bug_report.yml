@@ -38,7 +38,7 @@ body:
 
   - type: textarea
     attributes:
-      label: Descrizione BUg
+      label: Descrizione Bug
       description: >-
         Descrivi il bug, cosa volevi fare e quale è stato il risultato ottenuto.  
         Cerca di dare una descrizione coincisa ed esaustiva includendo più dettagli possibili.
