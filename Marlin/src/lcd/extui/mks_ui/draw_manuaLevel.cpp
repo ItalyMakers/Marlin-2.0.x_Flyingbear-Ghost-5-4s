@@ -64,7 +64,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
     #if ENABLED(MESH_BED_LEVELING)
       case ID_M_ZOFFSET:
         clear_cur_ui();
-        zoffset_do_init(true);
+        zoffset_do_init(false);
         lv_draw_zoffset_settings();
       break;
     #endif

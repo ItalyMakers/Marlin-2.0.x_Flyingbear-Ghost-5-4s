@@ -64,25 +64,27 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
     case ID_P_ADD: {
       if (uiCfg.curTempType == 0) {
 
-        #if ANY(WATCH_TEMP_INCREASE, WATCH_BED_TEMP_INCREASE)
-        int16_t max_target;
-        #endif
-        
+        // #ifdef WATCH_TEMP_INCREASE OR WATCH_BED_TEMP_INCREASE
+        // #endif
+
         thermalManager.temp_hotend[uiCfg.extruderIndex].target += uiCfg.stepHeat;
-#ifdef WATCH_TEMP_INCREASE
+        #ifdef WATCH_TEMP_INCREASE
+        int16_t max_target;
+
         if (uiCfg.extruderIndex == 0){
-            max_target = HEATER_0_MAXTEMP - (WATCH_TEMP_INCREASE + TEMP_HYSTERESIS + 1);
-          
+          max_target = HEATER_0_MAXTEMP - (WATCH_TEMP_INCREASE + TEMP_HYSTERESIS + 1);
+
         }
         else {
           #if HAS_MULTI_HOTEND
             max_target = HEATER_1_MAXTEMP - (WATCH_TEMP_INCREASE + TEMP_HYSTERESIS + 1);
           #endif
         }
-        if (thermalManager.degTargetHotend(uiCfg.extruderIndex) > max_target)
+        if (thermalManager.degTargetHotend(uiCfg.extruderIndex) > max_target){
           thermalManager.setTargetHotend(max_target, uiCfg.extruderIndex);
+        }
         thermalManager.start_watching_hotend(uiCfg.extruderIndex);
-#endif
+        #endif
       }
       else {
         #if HAS_HEATED_BED
