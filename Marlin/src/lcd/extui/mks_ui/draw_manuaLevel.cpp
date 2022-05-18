@@ -61,10 +61,14 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
         queue.inject(public_buf_l);
       }
       break;
-    #if ENABLED(MESH_BED_LEVELING)
+    #if EITHER(MESH_BED_LEVELING, FBGHOST_ADD_5_POINTS)
       case ID_M_ZOFFSET:
         clear_cur_ui();
+        #if ENABLED(MESH_BED_LEVELING)
+          zoffset_do_init(true);
+        #else
         zoffset_do_init(false);
+        #endif
         lv_draw_zoffset_settings();
       break;
     #endif
@@ -94,6 +98,7 @@ void lv_draw_manualLevel() {
   #if ENABLED(MESH_BED_LEVELING)
     lv_big_button_create(scr, "F:/bmp_test.bin", machine_menu.MeshBLSettings, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_ZOFFSET);
   #elif ENABLED(FBGHOST_ADD_5_POINTS)
+    lv_big_button_create(scr, "F:/bmp_test.bin", move_menu.zoffset, BTN_X_PIXEL  + INTERVAL_V * 2, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_ZOFFSET);
     lv_big_button_create(scr, "F:/bmp_autoleveling.bin", tool_menu.autoleveling, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_M_BLTOUCH);
   #endif
 
