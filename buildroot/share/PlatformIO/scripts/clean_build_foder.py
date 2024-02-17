@@ -5,7 +5,7 @@ import time
 import configparser
 
 def getList():
-    list= ["assets", "MksWifi.bin"]
+    list= ["assets", "MksWifi.bin", "Robin_nano_v3.bin"]
     
     parser= configparser.ConfigParser()
     parser.read('platformio.ini')

@@ -28,11 +28,12 @@
 // #define MOTHERBOARD     BOARD_MKS_ROBIN_NANO_V2
    #define MOTHERBOARD     BOARD_MKS_ROBIN_NANO_V3
 
-#if MOTHERBOARD == BOARD_MKS_ROBIN_NANO || MOTHERBOARD == BOARD_MKS_ROBIN_NANO_V1_3_F4
-  #define FBGHOST_MKS_ROBIN_TFT35
-#else
+#if MOTHERBOARD == BOARD_MKS_ROBIN_NANO_V2 || MOTHERBOARD == BOARD_MKS_ROBIN_NANO_V3
   #define FBGHOST_MKS_TS35_V2_0
+#else
+  #define FBGHOST_MKS_ROBIN_TFT35
 #endif
+
 
 
 //  Choose your printer
@@ -75,10 +76,10 @@
  */
 
 //PRESETS - usare FBGHOST_CUSTOM_CONF se si ha una configurazione particolare. A fondo documento trovi i settaggi standard.
-   #define FBGHOST_DRIVER_CUSTOM_CONF
+// #define FBGHOST_DRIVER_CUSTOM_CONF
 // #define FBGHOST_DRIVER_ALL_A4988
 // #define FBGHOST_DRIVER_ALL_TMC2208
-// #define FBGHOST_DRIVER_ALL_TMC2209
+#define FBGHOST_DRIVER_ALL_TMC2209
 // #define FBGHOST_DRIVER_XY_TMC2208_ZE_A4988
 
 #ifdef FBGHOST_DRIVER_CUSTOM_CONF
@@ -86,13 +87,14 @@
   #define FBGHOST_Y_DRIVER_TYPE    TMC2209
   #define FBGHOST_Z_DRIVER_TYPE    TMC2209
   #define FBGHOST_E0_DRIVER_TYPE   TMC2209
+  #define FBGHOST_E0_DRIVER_TYPE  TMC2209_STANDALONE
 
 
   // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
   // TMC2208, TMC2209, TMC2208_STANDALONE, TMC2209_STANDALONE, TMC2225 TMC2226 needs inverted values
   #define FBGHOST_INVERT_X_DIR    false
   #define FBGHOST_INVERT_Y_DIR    false
-  #define FBGHOST_INVERT_Z_DIR    true
+  #define FBGHOST_INVERT_Z_DIR    false
   #define FBGHOST_INVERT_E0_DIR   true
 #endif
 
@@ -103,19 +105,19 @@
  * Override with M92
  *                                               X,  Y,  Z[, I [, J [, K]]], E0 [, E1[, E2...]]
  *
- *///                                            X,   Y,   Z,  E0
-#define FBGHOST_DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 410}
+ *///                                            X,  Y,   Z,  E0
+#define FBGHOST_DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80.05, 402, 1363.87}
 
 
 
-#if ENABLED(FBGHOST_BLTOUCH)
+#ifdef FBGHOST_BLTOUCH
   #define FBGHOST_GRID_MAX_POINTS_X               5
   #define FBGHOST_GRID_MAX_POINTS_Y               FBGHOST_GRID_MAX_POINTS_X
   #define FBGHOST_Z_SAFE_HOMING_X_POINT           X_CENTER  // X point for Z homing
   #define FBGHOST_Z_SAFE_HOMING_Y_POINT           Y_CENTER  // Y point for Z homing
 
   // permette la calibrazione manuale oltre che tramite BLTOUCH
-  //#define FBGHOST_ADD_5_POINTS
+  #define FBGHOST_ADD_5_POINTS
 
 #else
   #define FBGHOST_MESH_BED_LEVELING
@@ -172,7 +174,7 @@
  */
 
 // Italy Makers Print Head Position (https://www.thingiverse.com/thing:4848085)
-#define  FBGHOST_NOZZLE_TO_PROBE_OFFSET {0,31.13,0}   // { 10, 10, 0 }
+#define  FBGHOST_NOZZLE_TO_PROBE_OFFSET {42.10,-10.5,-2.95}   // { 10, 10, 0 }
 
 
 
@@ -219,12 +221,12 @@
 // Preheat Constants
 #define FBGHOST_PREHEAT_1_LABEL         "PLA"
 #define FBGHOST_PREHEAT_1_TEMP_HOTEND   200
-#define FBGHOST_PREHEAT_1_TEMP_BED      70
+#define FBGHOST_PREHEAT_1_TEMP_BED      65
 #define FBGHOST_PREHEAT_1_FAN_SPEED     0 // Value from 0 to 255
 
 #define FBGHOST_PREHEAT_2_LABEL         "PETG"
-#define FBGHOST_PREHEAT_2_TEMP_HOTEND   225
-#define FBGHOST_PREHEAT_2_TEMP_BED      70
+#define FBGHOST_PREHEAT_2_TEMP_HOTEND   220
+#define FBGHOST_PREHEAT_2_TEMP_BED      80
 #define FBGHOST_PREHEAT_2_FAN_SPEED     0 // Value from 0 to 255
 
 
@@ -239,9 +241,9 @@
 
 //PID
 //HOTEND
-#define FBGHOST_DEFAULT_Kp 12.09
-#define FBGHOST_DEFAULT_Ki 0.84
-#define FBGHOST_DEFAULT_Kd 43.77
+#define FBGHOST_DEFAULT_Kp 24.2
+#define FBGHOST_DEFAULT_Ki 2.2
+#define FBGHOST_DEFAULT_Kd 66.46
 
 //BEDTEMP
 #define FBGHOST_DEFAULT_bedKp 52.63
@@ -263,9 +265,9 @@
 
 #define FBGHOST_DEFAULT_XJERK         15.0
 #define FBGHOST_DEFAULT_YJERK         15.0
-#define FBGHOST_DEFAULT_ZJERK          0.4
+#define FBGHOST_DEFAULT_ZJERK          2.0
 
-#define FBGHOST_DEFAULT_EJERK          10.0  // May be used by Linear Advance
+#define FBGHOST_DEFAULT_EJERK         10.0  // May be used by Linear Advance
 
 
 
@@ -303,7 +305,7 @@
  * Override with M203
  *                                      X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
  */
-#define FBGHOST_DEFAULT_MAX_FEEDRATE  { 300, 300, 5, 70 }
+#define FBGHOST_DEFAULT_MAX_FEEDRATE  { 300, 300, 5, 100 }
 
 /**
  * Default Max Acceleration (change/s) change = mm/s
@@ -311,7 +313,7 @@
  * Override with M201
  *                                      X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
  */
-#define FBGHOST_DEFAULT_MAX_ACCELERATION {3000,3000,100,3000}   //      { 3000, 3000, 100, 10000 }
+#define FBGHOST_DEFAULT_MAX_ACCELERATION {4000,4000,200,8000}   //      { 3000, 3000, 100, 10000 }
 
 
 
@@ -321,7 +323,7 @@
  * Override with M204
  */
 #define FBGHOST_DEFAULT_ACCELERATION          1500
-#define FBGHOST_DEFAULT_RETRACT_ACCELERATION  2000
+#define FBGHOST_DEFAULT_RETRACT_ACCELERATION  4000
 #define FBGHOST_DEFAULT_TRAVEL_ACCELERATION   1000
 
 
@@ -379,7 +381,7 @@
 */
 
 #if (COUNT_ENABLED(FBGHOST_IS_5, FBGHOST_IS_4S) == 1)
-  #if ENABLED(FBGHOST_IS_5)
+  #ifdef FBGHOST_IS_5
     #define FBGHOST_MACHINE_NAME    "Flying Bear Ghost 5"
     #define FBGHOST_FIL_RUNOUT_STATE  LOW
   #else
@@ -394,7 +396,7 @@
   #error "Select only one between FBGHOST_DRIVER_ALL_A4988, FBGHOST_DRIVER_ALL_TMC2208, FBGHOST_DRIVER_ALL_TMC2209 or FBGHOST_DRIVER_CUSTOM_CONF"
 #endif
 
-#if ENABLED(FBGHOST_DRIVER_ALL_A4988)
+#if (ENABLED(FBGHOST_DRIVER_ALL_A4988))
   #define FBGHOST_X_DRIVER_TYPE   A4988
   #define FBGHOST_Y_DRIVER_TYPE   A4988
   #define FBGHOST_Z_DRIVER_TYPE   A4988
@@ -405,7 +407,7 @@
   #define FBGHOST_INVERT_Z_DIR    false
   #define FBGHOST_INVERT_E0_DIR   false
 
-#elif ENABLED(FBGHOST_DRIVER_ALL_TMC2208)
+#elif (ENABLED(FBGHOST_DRIVER_ALL_TMC2208))
   #define FBGHOST_X_DRIVER_TYPE   TMC2208_STANDALONE
   #define FBGHOST_Y_DRIVER_TYPE   TMC2208_STANDALONE
   #define FBGHOST_Z_DRIVER_TYPE   TMC2208_STANDALONE
@@ -416,18 +418,18 @@
   #define FBGHOST_INVERT_Z_DIR    true
   #define FBGHOST_INVERT_E0_DIR   true
 
-#elif ENABLED(FBGHOST_DRIVER_ALL_TMC2209)
-  #define FBGHOST_X_DRIVER_TYPE   TMC2209_STANDALONE
-  #define FBGHOST_Y_DRIVER_TYPE   TMC2209_STANDALONE
-  #define FBGHOST_Z_DRIVER_TYPE   TMC2209_STANDALONE
-  #define FBGHOST_E0_DRIVER_TYPE  TMC2209_STANDALONE
+#elif (ENABLED(FBGHOST_DRIVER_ALL_TMC2209))
+  #define FBGHOST_X_DRIVER_TYPE   TMC2209
+  #define FBGHOST_Y_DRIVER_TYPE   TMC2209
+  #define FBGHOST_Z_DRIVER_TYPE   TMC2209
+  #define FBGHOST_E0_DRIVER_TYPE  TMC2209
 
   #define FBGHOST_INVERT_X_DIR    false
   #define FBGHOST_INVERT_Y_DIR    false
   #define FBGHOST_INVERT_Z_DIR    true
   #define FBGHOST_INVERT_E0_DIR   true
 
-#elif ENABLED(FBGHOST_DRIVER_XY_TMC2208_ZE_A4988)
+#elif (ENABLED(FBGHOST_DRIVER_XY_TMC2208_ZE_A4988))
   #define FBGHOST_X_DRIVER_TYPE   TMC2208_STANDALONE
   #define FBGHOST_Y_DRIVER_TYPE   TMC2208_STANDALONE
   #define FBGHOST_Z_DRIVER_TYPE   A4988
@@ -440,7 +442,7 @@
 #endif
 
 
-#if ENABLED(FBGHOST_BLTOUCH)
+#ifdef FBGHOST_BLTOUCH
   #define FBGHOST_Z_MIN_PROBE_REPEATABILITY_TEST
   #define FBGHOST_AUTO_BED_LEVELING_BILINEAR
   #define FBGHOST_G29_RETRY_AND_RECOVER
