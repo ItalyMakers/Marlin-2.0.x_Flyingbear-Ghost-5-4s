@@ -272,7 +272,16 @@ void lv_draw_ready_print() {
     lv_big_button_create(scr, "F:/bmp_tool.bin", main_menu.tool, 20, 60, event_handler, ID_TOOL);
     lv_big_button_create(scr, "F:/bmp_set.bin", main_menu.set, 180, 60, event_handler, ID_SET);
     lv_big_button_create(scr, "F:/bmp_printing.bin", main_menu.print, 340, 60, event_handler, ID_PRINT);
+    lv_big_button_create(scr, "F:/bmp_temp_mini.bin"," ",  (180), 210, event_handler, ID_P_PLA);
+    lv_big_button_create(scr, "F:/bmp_temp_mini.bin"," ",  (180), 260, event_handler, ID_P_ABS);
+    lv_big_button_create(scr, "F:/bmp_mini_temp0.bin"," ", ( 320), 210, event_handler, ID_COOLDOWN);
+
+    label_pla = lv_label_create(scr, (180+50), (210 + 10), PREHEAT_1_LABEL);
+    label_abs = lv_label_create(scr, (180+50), (260 + 10), PREHEAT_2_LABEL);
+    label_cooldown = lv_label_create(scr, (320+50), (210 + 10), "Cool Down");
+
 #endif
+
     // Monitoring
     #if HAS_HOTEND
 #ifdef USE_NEW_LVGL_CONF
@@ -303,7 +312,7 @@ void lv_draw_ready_print() {
     TERN_(HAS_HEATED_BED, labelBed = lv_label_create_empty(scr));
     TERN_(HAS_FAN, labelFan = lv_label_create_empty(scr));
 #endif
-    disp_ext_heart_ready_print();
+    //disp_ext_heart_ready_print();
     lv_temp_refr();
   }
 
@@ -349,56 +358,7 @@ void lv_clear_ready_print() {
   lv_obj_clean(mks_ui.src_main);
 #else
   lv_obj_del(scr);
-#endif
-}
-
-void disp_ext_heart_ready_print() {
-  #ifdef USE_NEW_LVGL_CONF
-    lv_big_button_create(mks_ui.src_main, "F:/bmp_temp_mini.bin"," ", ( 180), 210, event_handler, ID_P_PLA);
-    lv_big_button_create(mks_ui.src_main, "F:/bmp_temp_mini.bin"," ", ( 180), 260, event_handler, ID_P_ABS);
-
-    label_pla = lv_label_create(mks_ui.src_main, (180+50), (210 + 10), PREHEAT_1_LABEL);
-    label_abs = lv_label_create(mks_ui.src_main, (180+50), (260 + 10), PREHEAT_2_LABEL);
-
-    lv_big_button_create(mks_ui.src_main, "F:/bmp_mini_temp0.bin"," ", ( 320), 210, event_handler, ID_EMSTOP);
-    // lv_big_button_create(mks_ui.src_main, "F:/bmp_mini_emergency_stop.bin"," ", ( 320), 260, event_handler, ID_COOLDOWN);
-
-    label_cooldown = lv_label_create(mks_ui.src_main, (320+50), (210 + 10), "Cool Down");
-    // label_emStop = lv_label_create(mks_ui.src_main, (320+50), (260 + 10), "Emergency Stop");
-  #else
-    lv_big_button_create(scr, "F:/bmp_temp_mini.bin"," ", ( 180), 210, event_handler, ID_P_PLA);
-    lv_big_button_create(scr, "F:/bmp_temp_mini.bin"," ", ( 180), 260, event_handler, ID_P_ABS);
-
-    label_pla = lv_label_create(scr, (180+50), (210 + 10), PREHEAT_1_LABEL);
-    label_abs = lv_label_create(scr, (180+50), (260 + 10), PREHEAT_2_LABEL);
-
-    lv_big_button_create(scr, "F:/bmp_mini_temp0.bin"," ", ( 320), 210, event_handler, ID_COOLDOWN);
-    label_cooldown = lv_label_create(scr, (320+50), (210 + 10), "Cool Down");
-
-    // lv_big_button_create(scr, "F:/bmp_mini_emergency_stop.bin"," ", ( 320), 260, event_handler, ID_EMSTOP);
-    // label_emStop = lv_label_create(scr, (320+50), (260 + 10), "Emerg. Stop");
-
   #endif
-    // label_pla = lv_btn_create(scr, ( 180+45), (210), 80, 40, event_handler, ID_P_PLA);
-    // label_abs = lv_btn_create(scr, ( 180+45), (260), 80, 40, event_handler, ID_P_ABS);
-
-    // lv_label_create(label_pla,PREHEAT_1_LABEL);
-    // lv_label_create(label_abs,PREHEAT_2_LABEL);
-
-    // lv_btn_set_style(label_pla, LV_BTN_STYLE_PR, &btn_style_pre);
-    // lv_btn_set_style(label_pla, LV_BTN_STYLE_REL, &btn_style_rel);
-    // lv_label_set_long_mode(label_pla, LV_LABEL_LONG_EXPAND);
-    // lv_label_set_align(label_pla,LV_LABEL_ALIGN_LEFT);
-
-
-    // lv_btn_set_layout(label_abs,LV_LABEL_ALIGN_LEFT);
-
-    // lv_btn_set_style(label_abs, LV_BTN_STYLE_PR, &btn_style_pre);
-    // lv_btn_set_style(label_abs, LV_BTN_STYLE_REL, &btn_style_rel);
-    // lv_label_set_long_mode(label_abs, LV_LABEL_LONG_EXPAND);
-    // lv_label_set_align(label_abs,LV_LABEL_ALIGN_LEFT);
-
-
 }
 
 #endif // HAS_TFT_LVGL_UI

@@ -58,7 +58,7 @@ extern char public_buf_m[100];
 uint8_t sel_id = 0;
 
 // fix wang
-uint16_t lv_longFilename[FILENAME_LENGTH * MAX_VFAT_ENTRIES + 1];
+uint16_t lv_longFilename[FILENAME_LENGTH * MAX_VFAT_ENTRIES + 1]; 
 /*
 Unicode      		|        UTF-8
 Hexadecimal      	|        Binary
@@ -75,27 +75,27 @@ void unicode_2_utf8(char *des, uint16_t *source, uint8_t Len) {
 		if(0 <= source[i] && source[i] <= 0x7F) {
 			// 0xxxxxxx
 			*des = (source[i] & 0x7F);
-			des++;
+			des++;  
 		}
 		else if(0X80 <= source[i] && source[i] <= 0x7FF) {
 			// 110xxxxx 10xxxxxx
-			*(des+1) = (source[i] & 0x3F) | 0x80;
+			*(des+1) = (source[i] & 0x3F) | 0x80;  
         	*des     = ((source[i] >> 6) & 0x1F) | 0xC0;
 			des 	 += 2;
 		}
 		else if(0X800 <= source[i] && source[i] <= 0xFFFF) {
 			// 1110xxxx 10xxxxxx 10xxxxxx
-			*(des+2) = (source[i] & 0x3F) | 0x80;
-        	*(des+1) = ((source[i] >>  6) & 0x3F) | 0x80;
+			*(des+2) = (source[i] & 0x3F) | 0x80;  
+        	*(des+1) = ((source[i] >>  6) & 0x3F) | 0x80;  
         	*des     = ((source[i] >> 12) & 0x0F) | 0xE0;
 			des 	 += 3;
 		}
 		else if(0X10000 <= source[i] && source[i] <= 0x10FFFF) {
 			// 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
-			*(des+3) = (source[i] & 0x3F) | 0x80;
-			*(des+2) = ((source[i] >>  6) & 0x3F) | 0x80;
-			*(des+1) = ((source[i] >> 12) & 0x3F) | 0x80;
-			*des     = ((source[i] >> 18) & 0x07) | 0xF0;
+			*(des+3) = (source[i] & 0x3F) | 0x80;  
+			*(des+2) = ((source[i] >>  6) & 0x3F) | 0x80;  
+			*(des+1) = ((source[i] >> 12) & 0x3F) | 0x80;  
+			*des     = ((source[i] >> 18) & 0x07) | 0xF0; 
       		des 	 += 4;
 		}
 		else {
@@ -128,18 +128,12 @@ void unicode_2_utf8(char *des, uint16_t *source, uint8_t Len) {
 
     for (uint16_t i = 0; i < fileCnt; i++) {
       if (list_file.Sd_file_cnt == list_file.Sd_file_offset) {
-
         card.getfilename_sorted(SD_ORDER(i, fileCnt));
 
         list_file.IsFolder[valid_name_cnt] = card.flag.filenameIsDir;
-        // if()
-
         strcpy(list_file.file_name[valid_name_cnt], list_file.curDirPath);
-
         strcat_P(list_file.file_name[valid_name_cnt], PSTR("/"));
-
         strcat(list_file.file_name[valid_name_cnt], card.filename);
-
         // strcpy(list_file.long_name[valid_name_cnt], card.longest_filename());
 
         ZERO(list_file.long_name[valid_name_cnt]);
@@ -267,11 +261,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
           else {
             sel_id = i;
             lv_clear_print_file();
-            if(get_filemant_pins()) {
-              lv_draw_dialog(DIALOG_TYPE_PRINT_FILE);
-            }else {
-              lv_draw_dialog(DIALOG_TYPE_FILAMENT_NO_PRESS);
-            }
+            lv_draw_dialog(DIALOG_TYPE_PRINT_FILE);
           }
           break;
         }
@@ -310,7 +300,7 @@ void disp_gcode_icon(uint8_t file_num) {
   // TODO: set current media title?!
 #ifndef USE_NEW_LVGL_CONF
   scr = lv_screen_create(PRINT_FILE_UI, "");
-#else
+#else 
   mks_ui.src_main = lv_set_scr_id_title(mks_ui.src_main, PRINT_FILE_UI, "");
 #endif
 
@@ -319,7 +309,7 @@ void disp_gcode_icon(uint8_t file_num) {
   buttonPageUp   = lv_imgbtn_create(scr, "F:/bmp_pageUp.bin", OTHER_BTN_XPIEL * 3 + INTERVAL_V * 4, titleHeight, event_handler, ID_P_UP);
   buttonPageDown = lv_imgbtn_create(scr, "F:/bmp_pageDown.bin", OTHER_BTN_XPIEL * 3 + INTERVAL_V * 4, titleHeight + OTHER_BTN_YPIEL + INTERVAL_H, event_handler, ID_P_DOWN);
   buttonBack     = lv_imgbtn_create(scr, "F:/bmp_back.bin", OTHER_BTN_XPIEL * 3 + INTERVAL_V * 4, titleHeight + OTHER_BTN_YPIEL * 2 + INTERVAL_H * 2, event_handler, ID_P_RETURN);
-#else
+#else 
   buttonPageUp   = lv_imgbtn_create(mks_ui.src_main, "F:/bmp_pageUp.bin", OTHER_BTN_XPIEL * 3 + INTERVAL_V * 4, titleHeight, event_handler, ID_P_UP);
   buttonPageDown = lv_imgbtn_create(mks_ui.src_main, "F:/bmp_pageDown.bin", OTHER_BTN_XPIEL * 3 + INTERVAL_V * 4, titleHeight + OTHER_BTN_YPIEL + INTERVAL_H, event_handler, ID_P_DOWN);
   buttonBack     = lv_imgbtn_create(mks_ui.src_main, "F:/bmp_back.bin", OTHER_BTN_XPIEL * 3 + INTERVAL_V * 4, titleHeight + OTHER_BTN_YPIEL * 2 + INTERVAL_H * 2, event_handler, ID_P_RETURN);
@@ -366,25 +356,17 @@ void disp_gcode_icon(uint8_t file_num) {
       }
       else {
         if (have_pre_pic((char *)list_file.file_name[i])) {
+
           //lv_obj_set_event_cb_mks(buttonGcode[i], event_handler, (i + 1), list_file.file_name[i], 1);
           memset(test_public_buf_l, 0, sizeof(test_public_buf_l));
           memset(buttonGcode[i]->mks_pic_name, 0, sizeof(buttonGcode[i]->mks_pic_name));
 
-          memset(test_public_buf_l, 0, sizeof(test_public_buf_l));
-          memset(buttonGcode[i]->mks_pic_name, 0, sizeof(buttonGcode[i]->mks_pic_name));
-
           strcpy(test_public_buf_l, "S:");
-
           strcat(test_public_buf_l, list_file.file_name[i]);
-
           char *temp = strstr(test_public_buf_l, ".GCO");
-
           if (temp) strcpy(temp, ".bin");
-
           lv_obj_set_event_cb_mks(buttonGcode[i], event_handler, (i + 1), test_public_buf_l, 0);
-
           lv_imgbtn_set_src_both(buttonGcode[i], buttonGcode[i]->mks_pic_name);
-
           if (i < 3) {
             lv_obj_set_pos(buttonGcode[i], BTN_X_PIXEL * i + INTERVAL_V * (i + 1) + FILE_PRE_PIC_X_OFFSET, titleHeight + FILE_PRE_PIC_Y_OFFSET);
 #ifndef USE_NEW_LVGL_CONF
@@ -417,10 +399,8 @@ void disp_gcode_icon(uint8_t file_num) {
             lv_obj_set_pos(buttonText[i], BTN_X_PIXEL * (i - 3) + INTERVAL_V * ((i - 3) + 1) + FILE_PRE_PIC_X_OFFSET, BTN_Y_PIXEL + INTERVAL_H + titleHeight + FILE_PRE_PIC_Y_OFFSET + 100);
             lv_obj_set_size(buttonText[i], 100, 40);
           }
-
           labelPageUp[i] = lv_label_create(buttonText[i], public_buf_m);
           lv_obj_align(labelPageUp[i], buttonText[i], LV_ALIGN_IN_BOTTOM_MID, 0, 0);
-          // lv_refr_now(lv_refr_get_disp_refreshing());
         }
         else {
           lv_obj_set_event_cb_mks(buttonGcode[i], event_handler, (i + 1), "", 0);
@@ -432,7 +412,6 @@ void disp_gcode_icon(uint8_t file_num) {
 
           labelPageUp[i] = lv_label_create(buttonGcode[i], public_buf_m);
           lv_obj_align(labelPageUp[i], buttonGcode[i], LV_ALIGN_IN_BOTTOM_MID, 0, -5);
-          // lv_refr_now(lv_refr_get_disp_refreshing());
         }
       }
       #if HAS_ROTARY_ENCODER
@@ -445,16 +424,10 @@ void disp_gcode_icon(uint8_t file_num) {
 
   if(file_num != 0) {
     if (have_pre_pic((char *)list_file.file_name[0])) {
-        // memset(test_public_buf_l, 0, sizeof(test_public_buf_l));
-        // memset(buttonGcode[0]->mks_pic_name, 0, sizeof(buttonGcode[0]->mks_pic_name));
         strcpy(test_public_buf_l, "S:");
-
         strcat(test_public_buf_l, list_file.file_name[0]);
-
         char *temp = strstr(test_public_buf_l, ".GCO");
-
         if (temp) strcpy(temp, ".bin");
-
         lv_imgbtn_set_src_both(buttonGcode[0], buttonGcode[0]->mks_pic_name);
     }
   }
@@ -662,7 +635,7 @@ void lv_clear_print_file() {
 
 #ifndef USE_NEW_LVGL_CONF
   lv_obj_del(scr);
-#else
+#else 
   lv_obj_clean(mks_ui.src_main);
 #endif
 }

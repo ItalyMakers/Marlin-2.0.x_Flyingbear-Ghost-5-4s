@@ -151,7 +151,7 @@ uint32_t TFT_SPI::ReadID(uint16_t Reg) {
     uint32_t BaudRatePrescaler = SPIx.Init.BaudRatePrescaler;
     uint32_t i;
 
-    SPIx.Init.BaudRatePrescaler = SPIx.Instance == SPI1 ? SPI_BAUDRATEPRESCALER_8 : SPI_BAUDRATEPRESCALER_4;
+    SPIx.Init.BaudRatePrescaler = SPIx.Instance == SPI1 ? SPI_BAUDRATEPRESCALER_4 : SPI_BAUDRATEPRESCALER_2;
     DataTransferBegin(DATASIZE_8BIT);
     WriteReg(Reg);
 

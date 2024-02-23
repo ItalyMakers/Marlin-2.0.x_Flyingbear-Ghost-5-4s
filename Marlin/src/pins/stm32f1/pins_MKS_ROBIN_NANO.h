@@ -42,9 +42,6 @@
 //#define TEMP_0_CS_PIN                     PE5   // TC1 - CS1
 //#define TEMP_0_CS_PIN                     PE6   // TC2 - CS2
 
-#define FIL_RUNOUT_PIN                      PA4
-#define MT_TIME_DELAY                       3000  // Default 3s
-
 //#define LED_PIN                           PB2
 
 #include "pins_MKS_ROBIN_NANO_common.h"

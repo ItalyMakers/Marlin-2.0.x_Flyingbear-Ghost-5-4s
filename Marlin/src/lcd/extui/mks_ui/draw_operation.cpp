@@ -44,25 +44,29 @@ enum {
   ID_O_RETURN,
   ID_O_FAN,
   ID_O_POWER_OFF,
-  ID_O_BABY_STEP
+  ID_O_BABY_STEP,
 };
 
 static lv_obj_t *label_PowerOff;
 static lv_obj_t *buttonPowerOff;
 uint8_t op_count = 0;
 
-lv_obj_t *buttonExtrusion = nullptr, *buttonSpeed = nullptr,
+lv_obj_t *buttonExtrusion = nullptr, 
+          *buttonSpeed = nullptr,
           *buttonBack = nullptr,
           *buttonMove = nullptr, 
           *buttonBabyStep = nullptr,
-          *labelPreHeat = nullptr, *labelExtrusion = nullptr,
-          *label_Back = nullptr, *label_Speed = nullptr, *label_Fan = nullptr,
+          *labelPreHeat = nullptr, 
+          *labelExtrusion = nullptr,
+          *label_Back = nullptr, 
+          *label_Speed = nullptr, 
+          *label_Fan = nullptr,
           *label_Move = nullptr,
-          *label_BabyStep = nullptr,
-          *label_Filament = nullptr;
+          *label_BabyStep = nullptr;
+          //*label_Filament = nullptr;
 
 lv_obj_t *buttonPreHeat;
-lv_obj_t *buttonFilament;
+//lv_obj_t *buttonFilament;
 lv_obj_t *buttonFan;
 
 static void event_handler(lv_obj_t *obj, lv_event_t event) {
@@ -134,14 +138,14 @@ void lv_draw_operation() {
   scr = lv_screen_create(OPERATE_UI);
   // Create image buttons
   lv_obj_t *buttonPreHeat  = lv_imgbtn_create(scr, "F:/bmp_temp.bin", INTERVAL_V, titleHeight, event_handler, ID_O_PRE_HEAT);
-  lv_obj_t *buttonFilament = lv_imgbtn_create(scr, "F:/bmp_filamentchange.bin", BTN_X_PIXEL + INTERVAL_V * 2, titleHeight, event_handler, ID_O_FILAMENT);
+  //lv_obj_t *buttonFilament = lv_imgbtn_create(scr, "F:/bmp_filamentchange.bin", BTN_X_PIXEL + INTERVAL_V * 2, titleHeight, event_handler, ID_O_FILAMENT);
   lv_obj_t *buttonFan      = lv_imgbtn_create(scr, "F:/bmp_fan.bin", BTN_X_PIXEL * 2 + INTERVAL_V * 3, titleHeight, event_handler, ID_O_FAN);
   buttonPowerOff = lv_imgbtn_create(scr, gCfgItems.finish_power_off ? "F:/bmp_auto_off.bin" : "F:/bmp_manual_off.bin", BTN_X_PIXEL * 3 + INTERVAL_V * 4, titleHeight, event_handler, ID_O_POWER_OFF);
 
   #if HAS_ROTARY_ENCODER
     if (gCfgItems.encoder_enable) {
       lv_group_add_obj(g, buttonPreHeat);
-      lv_group_add_obj(g, buttonFilament);
+      //lv_group_add_obj(g, buttonFilament);
       lv_group_add_obj(g, buttonFan);
       lv_group_add_obj(g, buttonPowerOff);
     }
@@ -149,7 +153,7 @@ void lv_draw_operation() {
 
   if (uiCfg.print_state != WORKING) {
     buttonExtrusion = lv_imgbtn_create(scr, "F:/bmp_extrude_opr.bin", INTERVAL_V, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_O_EXTRUCT);
-    buttonMove      = lv_imgbtn_create(scr, "F:/bmp_move_opr.bin", BTN_X_PIXEL + INTERVAL_V * 2, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_O_MOV);
+    buttonMove      = lv_imgbtn_create(scr, "F:/bmp_move_opr.bin", BTN_X_PIXEL + INTERVAL_V * 2, titleHeight, event_handler, ID_O_MOV);
     #if HAS_ROTARY_ENCODER
       if (gCfgItems.encoder_enable) {
         lv_group_add_obj(g, buttonExtrusion);
@@ -159,7 +163,7 @@ void lv_draw_operation() {
   }
   else {
     buttonSpeed    = lv_imgbtn_create(scr, "F:/bmp_speed.bin", INTERVAL_V, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_O_SPEED);
-    buttonBabyStep = lv_imgbtn_create(scr, "F:/bmp_mov.bin", BTN_X_PIXEL + INTERVAL_V * 2, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_O_BABY_STEP);
+    buttonBabyStep = lv_imgbtn_create(scr, "F:/bmp_mov.bin", BTN_X_PIXEL + INTERVAL_V * 2, titleHeight, event_handler, ID_O_BABY_STEP);
     #if HAS_ROTARY_ENCODER
       if (gCfgItems.encoder_enable) {
         lv_group_add_obj(g, buttonSpeed);
@@ -176,7 +180,7 @@ void lv_draw_operation() {
 
   // Create labels on the image buttons
   labelPreHeat   = lv_label_create_empty(buttonPreHeat);
-  label_Filament = lv_label_create_empty(buttonFilament);
+  //label_Filament = lv_label_create_empty(buttonFilament);
   label_Fan      = lv_label_create_empty(buttonFan);
   label_PowerOff = lv_label_create_empty(buttonPowerOff);
 
@@ -194,8 +198,8 @@ void lv_draw_operation() {
     lv_label_set_text(labelPreHeat, operation_menu.temp);
     lv_obj_align(labelPreHeat, buttonPreHeat, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
 
-    lv_label_set_text(label_Filament, operation_menu.filament);
-    lv_obj_align(label_Filament, buttonFilament, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
+    //lv_label_set_text(label_Filament, operation_menu.filament);
+    //lv_obj_align(label_Filament, buttonFilament, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
 
     lv_label_set_text(label_Fan, operation_menu.fan);
     lv_obj_align(label_Fan, buttonFan, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);

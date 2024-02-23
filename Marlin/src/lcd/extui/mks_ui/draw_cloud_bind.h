@@ -25,29 +25,13 @@
   extern "C" { /* C-declarations for C++ */
 #endif
 
-enum {
-  IDLE,
-  WORKING,
-  PAUSING,
-  PAUSED,
-  REPRINTING,
-  REPRINTED,
-  RESUMING,
-  STOP,
-};
-
-void lv_draw_printing();
-void lv_clear_printing();
-void disp_ext_temp();
-void disp_bed_temp();
-void disp_fan_speed();
-void disp_print_time();
-void disp_fan_Zpos();
-void reset_print_time();
-void start_print_time();
-void stop_print_time();
-void setProBarRate();
+void lv_draw_cloud_bind();
+void lv_clear_cloud_bind();
+void disp_bind_state();
+void refresh_bind_ui();
+void display_qrcode(uint8_t *qrcode_data);
+void cloud_unbind();
 
 #ifdef __cplusplus
-  } /* C-declarations for C++ */
+} /* C-declarations for C++ */
 #endif

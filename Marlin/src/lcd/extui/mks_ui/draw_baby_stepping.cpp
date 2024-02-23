@@ -39,8 +39,6 @@
   #include "../../../module/probe.h"
 #endif
 
-#include "../../../module/motion.h"
-
 #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
   #include "../../../feature/bedlevel/bedlevel.h"
 #endif
@@ -175,11 +173,11 @@ void disp_baby_step_dist() {
 
 void disp_z_offset_value() {
   char buf[20];
-    char str_1[16];
   #if HAS_BED_PROBE
+    char str_1[16];
     sprintf_P(buf, PSTR("Offset Z: %s mm"), dtostrf(probe.offset.z, 1, 3, str_1));
   #else
-    sprintf_P(buf, PSTR("Offset Z: %s mm"), dtostrf(current_position.z, 1, 2, str_1));
+    strcpy_P(buf, PSTR("Offset Z: 0 mm"));
   #endif
   lv_label_set_text(zOffsetText, buf);
 }

@@ -32,14 +32,13 @@
 
 extern lv_group_t *g;
 static lv_obj_t *scr;
-static lv_obj_t *labelStep, *buttonStep, *buttonMov, *buttonExt;
-static lv_obj_t *labelMov, *labelExt;
+static lv_obj_t *labelStep, *buttonStep;
 static lv_obj_t *printSpeedText;
 
 enum {
   ID_C_ADD = 1,
   ID_C_DEC,
-  ID_C_MOVE,
+  //ID_C_MOVE,
   ID_C_EXT,
   ID_C_STEP,
   ID_C_RETURN
@@ -90,11 +89,11 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
       }
       disp_print_speed();
       break;
-    case ID_C_MOVE:
-      editingFlowrate = false;
-      disp_speed_type();
-      disp_print_speed();
-      break;
+      //case ID_C_MOVE:
+      //editingFlowrate = false;
+      //disp_speed_type();
+      //disp_print_speed();
+      //break;
     case ID_C_EXT:
       editingFlowrate = true;
       disp_speed_type();
@@ -121,27 +120,28 @@ void lv_draw_change_speed() {
   // Create an Image button
   lv_big_button_create(scr, "F:/bmp_Add.bin", speed_menu.add, INTERVAL_V, titleHeight, event_handler, ID_C_ADD);
   lv_big_button_create(scr, "F:/bmp_Dec.bin", speed_menu.dec, BTN_X_PIXEL * 3 + INTERVAL_V * 4, titleHeight, event_handler, ID_C_DEC);
-  buttonMov  = lv_imgbtn_create(scr, nullptr, INTERVAL_V, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_C_MOVE);
-  buttonExt  = lv_imgbtn_create(scr, nullptr, BTN_X_PIXEL + INTERVAL_V * 2, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_C_EXT);
-  buttonStep = lv_imgbtn_create(scr, nullptr, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_C_STEP);
+//buttonMov  = lv_imgbtn_create(scr, nullptr, INTERVAL_V, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_C_MOVE);
+  buttonStep = lv_imgbtn_create(scr, nullptr, INTERVAL_V, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_C_STEP);
+//buttonExt  = lv_imgbtn_create(scr, nullptr, BTN_X_PIXEL + INTERVAL_V * 2, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_C_EXT);
+  
   #if HAS_ROTARY_ENCODER
     if (gCfgItems.encoder_enable) {
-      lv_group_add_obj(g, buttonMov);
-      lv_group_add_obj(g, buttonExt);
+      //lv_group_add_obj(g, buttonMov);
+      //lv_group_add_obj(g, buttonExt);
       lv_group_add_obj(g, buttonStep);
     }
   #endif
   lv_big_button_create(scr, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_C_RETURN);
 
   // Create labels on the image buttons
-  labelMov  = lv_label_create_empty(buttonMov);
-  labelExt  = lv_label_create_empty(buttonExt);
+  //labelMov  = lv_label_create_empty(buttonMov);
+  //labelExt  = lv_label_create_empty(buttonExt);
   labelStep = lv_label_create_empty(buttonStep);
 
   #if HAS_ROTARY_ENCODER
     if (gCfgItems.encoder_enable) {
-      lv_group_add_obj(g, buttonMov);
-      lv_group_add_obj(g, buttonExt);
+      //lv_group_add_obj(g, buttonMov);
+      //lv_group_add_obj(g, buttonExt);
       lv_group_add_obj(g, buttonStep);
     }
   #endif
@@ -202,17 +202,17 @@ void disp_print_speed() {
 }
 
 void disp_speed_type() {
-  lv_imgbtn_set_src_both(buttonMov, editingFlowrate ? "F:/bmp_mov_changeSpeed.bin" : "F:/bmp_mov_sel.bin");
-  lv_imgbtn_set_src_both(buttonExt, editingFlowrate ? "F:/bmp_extruct_sel.bin" : "F:/bmp_speed_extruct.bin");
-  lv_obj_refresh_ext_draw_pad(buttonExt);
-  lv_obj_refresh_ext_draw_pad(buttonMov);
+  //lv_imgbtn_set_src_both(buttonMov, editingFlowrate ? "F:/bmp_mov_changeSpeed.bin" : "F:/bmp_mov_sel.bin");
+  //lv_imgbtn_set_src_both(buttonExt, editingFlowrate ? "F:/bmp_extruct_sel.bin" : "F:/bmp_speed_extruct.bin");
+  //lv_obj_refresh_ext_draw_pad(buttonExt);
+  //lv_obj_refresh_ext_draw_pad(buttonMov);
 
   if (gCfgItems.multiple_language) {
-    lv_label_set_text(labelMov, speed_menu.move);
-    lv_obj_align(labelMov, buttonMov, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
+    //lv_label_set_text(labelMov, speed_menu.move);
+    //lv_obj_align(labelMov, buttonMov, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
 
-    lv_label_set_text(labelExt, speed_menu.extrude);
-    lv_obj_align(labelExt, buttonExt, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
+    //lv_label_set_text(labelExt, speed_menu.extrude);
+    //lv_obj_align(labelExt, buttonExt, LV_ALIGN_IN_BOTTOM_MID, 0, BUTTON_TEXT_Y_OFFSET);
   }
 }
 

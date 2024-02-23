@@ -23,10 +23,10 @@
  * Scegli la tua scheda madre
  */
 //choose your motherboard
-#define MOTHERBOARD     BOARD_MKS_ROBIN_NANO
+// #define MOTHERBOARD     BOARD_MKS_ROBIN_NANO
 // #define MOTHERBOARD     BOARD_MKS_ROBIN_NANO_V1_3_F4
 // #define MOTHERBOARD     BOARD_MKS_ROBIN_NANO_V2
-// #define MOTHERBOARD     BOARD_MKS_ROBIN_NANO_V3
+   #define MOTHERBOARD     BOARD_MKS_ROBIN_NANO_V3
 
 #if MOTHERBOARD == BOARD_MKS_ROBIN_NANO || MOTHERBOARD == BOARD_MKS_ROBIN_NANO_V1_3_F4
   #define FBGHOST_MKS_ROBIN_TFT35
@@ -56,7 +56,7 @@
  * decommentare per abilitare il BLTOUCH
  */
 
-// #define FBGHOST_BLTOUCH
+#define FBGHOST_BLTOUCH
 
 
 
@@ -75,24 +75,24 @@
  */
 
 //PRESETS - usare FBGHOST_CUSTOM_CONF se si ha una configurazione particolare. A fondo documento trovi i settaggi standard.
-// #define FBGHOST_DRIVER_CUSTOM_CONF
+   #define FBGHOST_DRIVER_CUSTOM_CONF
 // #define FBGHOST_DRIVER_ALL_A4988
 // #define FBGHOST_DRIVER_ALL_TMC2208
 // #define FBGHOST_DRIVER_ALL_TMC2209
-#define FBGHOST_DRIVER_XY_TMC2208_ZE_A4988
+// #define FBGHOST_DRIVER_XY_TMC2208_ZE_A4988
 
 #ifdef FBGHOST_DRIVER_CUSTOM_CONF
-  #define FBGHOST_X_DRIVER_TYPE   TMC2208_STANDALONE
-  #define FBGHOST_Y_DRIVER_TYPE   TMC2208_STANDALONE
-  #define FBGHOST_Z_DRIVER_TYPE   A4988
-  #define FBGHOST_E0_DRIVER_TYPE  TMC2209_STANDALONE
+  #define FBGHOST_X_DRIVER_TYPE    TMC2209
+  #define FBGHOST_Y_DRIVER_TYPE    TMC2209
+  #define FBGHOST_Z_DRIVER_TYPE    TMC2209
+  #define FBGHOST_E0_DRIVER_TYPE   TMC2209
 
 
   // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
   // TMC2208, TMC2209, TMC2208_STANDALONE, TMC2209_STANDALONE, TMC2225 TMC2226 needs inverted values
   #define FBGHOST_INVERT_X_DIR    false
   #define FBGHOST_INVERT_Y_DIR    false
-  #define FBGHOST_INVERT_Z_DIR    false
+  #define FBGHOST_INVERT_Z_DIR    true
   #define FBGHOST_INVERT_E0_DIR   true
 #endif
 
@@ -103,8 +103,8 @@
  * Override with M92
  *                                               X,  Y,  Z[, I [, J [, K]]], E0 [, E1[, E2...]]
  *
- *///                                            X,  Y,   Z,  E0
-#define FBGHOST_DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 409}
+ *///                                            X,   Y,   Z,  E0
+#define FBGHOST_DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 410}
 
 
 
@@ -115,7 +115,7 @@
   #define FBGHOST_Z_SAFE_HOMING_Y_POINT           Y_CENTER  // Y point for Z homing
 
   // permette la calibrazione manuale oltre che tramite BLTOUCH
-  #define FBGHOST_ADD_5_POINTS
+  //#define FBGHOST_ADD_5_POINTS
 
 #else
   #define FBGHOST_MESH_BED_LEVELING
@@ -172,7 +172,7 @@
  */
 
 // Italy Makers Print Head Position (https://www.thingiverse.com/thing:4848085)
-#define  FBGHOST_NOZZLE_TO_PROBE_OFFSET {42.10,-15.5,0}   // { 10, 10, 0 }
+#define  FBGHOST_NOZZLE_TO_PROBE_OFFSET {0,31.13,0}   // { 10, 10, 0 }
 
 
 
@@ -196,7 +196,7 @@
  * the probe to be unable to reach any points.
  */
 
-#define FBGHOST_PROBING_MARGIN        20
+#define FBGHOST_PROBING_MARGIN        24
 #define FBGHOST_PROBING_MARGIN_LEFT   FBGHOST_PROBING_MARGIN
 #define FBGHOST_PROBING_MARGIN_RIGHT  FBGHOST_PROBING_MARGIN
 #define FBGHOST_PROBING_MARGIN_FRONT  FBGHOST_PROBING_MARGIN
@@ -219,11 +219,11 @@
 // Preheat Constants
 #define FBGHOST_PREHEAT_1_LABEL         "PLA"
 #define FBGHOST_PREHEAT_1_TEMP_HOTEND   200
-#define FBGHOST_PREHEAT_1_TEMP_BED      65
+#define FBGHOST_PREHEAT_1_TEMP_BED      70
 #define FBGHOST_PREHEAT_1_FAN_SPEED     0 // Value from 0 to 255
 
 #define FBGHOST_PREHEAT_2_LABEL         "PETG"
-#define FBGHOST_PREHEAT_2_TEMP_HOTEND   220
+#define FBGHOST_PREHEAT_2_TEMP_HOTEND   225
 #define FBGHOST_PREHEAT_2_TEMP_BED      70
 #define FBGHOST_PREHEAT_2_FAN_SPEED     0 // Value from 0 to 255
 
@@ -239,9 +239,9 @@
 
 //PID
 //HOTEND
-#define FBGHOST_DEFAULT_Kp 11.14
-#define FBGHOST_DEFAULT_Ki 0.72
-#define FBGHOST_DEFAULT_Kd 43.09
+#define FBGHOST_DEFAULT_Kp 12.09
+#define FBGHOST_DEFAULT_Ki 0.84
+#define FBGHOST_DEFAULT_Kd 43.77
 
 //BEDTEMP
 #define FBGHOST_DEFAULT_bedKp 52.63
@@ -261,11 +261,11 @@
 
 #define FBGHOST_CLASSIC_JERK
 
-#define FBGHOST_DEFAULT_XJERK         10.0
-#define FBGHOST_DEFAULT_YJERK         10.0
-#define FBGHOST_DEFAULT_ZJERK          0.5
+#define FBGHOST_DEFAULT_XJERK         15.0
+#define FBGHOST_DEFAULT_YJERK         15.0
+#define FBGHOST_DEFAULT_ZJERK          0.4
 
-#define FBGHOST_DEFAULT_EJERK         10.0  // May be used by Linear Advance
+#define FBGHOST_DEFAULT_EJERK          10.0  // May be used by Linear Advance
 
 
 
@@ -286,7 +286,7 @@
 #define FBGHOST_LIN_ADVANCE
 
 #ifdef FBGHOST_LIN_ADVANCE
-  #define FBGHOST_LIN_ADVANCE_K 0.22
+  #define FBGHOST_LIN_ADVANCE_K 0.022
 #endif
 
 
@@ -296,14 +296,14 @@
  * Prevent a single extrusion longer than EXTRUDE_MAXLENGTH.
  * Note: For Bowden Extruders make this large enough to allow load/unload.
  */
-#define FBGHOST_EXTRUDE_MAXLENGTH     1200
+#define FBGHOST_EXTRUDE_MAXLENGTH     600
 
 /**
  * Default Max Feed Rate (mm/s)
  * Override with M203
  *                                      X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
  */
-#define FBGHOST_DEFAULT_MAX_FEEDRATE  { 200, 200, 4, 50 }
+#define FBGHOST_DEFAULT_MAX_FEEDRATE  { 300, 300, 5, 70 }
 
 /**
  * Default Max Acceleration (change/s) change = mm/s

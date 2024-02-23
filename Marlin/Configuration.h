@@ -104,7 +104,7 @@
  *
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-#define SERIAL_PORT 3
+#define SERIAL_PORT -1
 
 /**
  * Serial Port Baud Rate
@@ -141,7 +141,7 @@
 
 // Choose the name from boards.h that matches your setup
 #ifndef MOTHERBOARD
-#define  MOTHERBOARD BOARD_MKS_ROBIN_NANO   // BOARD_MKS_ROBIN_NANO_V2
+  #define MOTHERBOARD BOARD_MKS_ROBIN_NANO_V3
 #endif
 
 // Name displayed in the LCD "Ready" message and Info menu
@@ -200,13 +200,13 @@
 #define DEFAULT_NOMINAL_FILAMENT_DIA 1.75
 
 // For Cyclops or any "multi-extruder" that shares a single nozzle.
-// #define SINGLENOZZLE
+//#define SINGLENOZZLE
 
 // Save and restore temperature and fan speed on tool-change.
 // Set standby for the unselected tool with M104/106/109 T...
 #if ENABLED(SINGLENOZZLE)
-  #define SINGLENOZZLE_STANDBY_TEMP
-  #define SINGLENOZZLE_STANDBY_FAN
+  //#define SINGLENOZZLE_STANDBY_TEMP
+  //#define SINGLENOZZLE_STANDBY_FAN
 #endif
 
 /**
@@ -514,6 +514,11 @@
 //#define MAX31865_SENSOR_OHMS_1      100
 //#define MAX31865_CALIBRATION_OHMS_1 430
 
+// Use temp sensor 1 as a redundant sensor with sensor 0. If the readings
+// from the two sensors differ too much the print will be aborted.
+//#define TEMP_SENSOR_1_AS_REDUNDANT
+#define TEMP_SENSOR_REDUNDANT_MAX_DIFF 10
+
 #define TEMP_RESIDENCY_TIME         10  // (seconds) Time to wait for hotend to "settle" in M109
 #define TEMP_WINDOW                  1  // (°C) Temperature proximity for the "temperature reached" timer
 #define TEMP_HYSTERESIS              3  // (°C) Temperature proximity considered "close enough" to the target
@@ -586,9 +591,9 @@
 
 // Comment the following line to disable PID and enable bang-bang.
 #define PIDTEMP
-#define BANG_MAX  255// Limits current to nozzle while in bang-bang mode; 255=full current
-#define PID_MAX   BANG_MAX// Limits current to nozzle while PID is active (see PID_FUNCTIONAL_RANGE below); 255=full current
-#define PID_K1    0.95// Smoothing factor within any PID loop
+#define BANG_MAX 255     // Limits current to nozzle while in bang-bang mode; 255=full current
+#define PID_MAX BANG_MAX // Limits current to nozzle while PID is active (see PID_FUNCTIONAL_RANGE below); 255=full current
+#define PID_K1 0.95      // Smoothing factor within any PID loop
 
 #if ENABLED(PIDTEMP)
   #define PID_EDIT_MENU         // Add PID editing to the "Advanced Settings" menu. (~700 bytes of PROGMEM)
@@ -628,7 +633,7 @@
  */
 #define PIDTEMPBED
 
-//#define BED_LIMIT_SWITCHING
+//#define BED_LIMIT_SWITCHING 
 
 /**
  * Max Bed Power
@@ -639,7 +644,7 @@
 #define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
 
 #if ENABLED(PIDTEMPBED)
-  //#define  MIN_BED_POWER 0   // 0
+  //#define MIN_BED_POWER 0
   //#define PID_BED_DEBUG // Sends debug data to the serial port.
 
   // 120V 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
@@ -938,7 +943,7 @@
  */
 #define DEFAULT_MAX_FEEDRATE          FBGHOST_DEFAULT_MAX_FEEDRATE
 
-#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
+//#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
   #define MAX_FEEDRATE_EDIT_VALUES    FBGHOST_DEFAULT_MAX_FEEDRATE // ...or, set your own edit limits
 #endif
@@ -951,7 +956,7 @@
  */
 #define  DEFAULT_MAX_ACCELERATION FBGHOST_DEFAULT_MAX_ACCELERATION   //      { 3000, 3000, 100, 10000 }
 
-#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
+//#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
   #define MAX_ACCEL_EDIT_VALUES       FBGHOST_DEFAULT_MAX_ACCELERATION // ...or, set your own edit limits
 #endif
@@ -1038,7 +1043,7 @@
 #define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
 
 // Force the use of the probe for Z-axis homing
-//#define USE_PROBE_FOR_Z_HOMING
+   #define USE_PROBE_FOR_Z_HOMING
 
 /**
  * Z_MIN_PROBE_PIN
@@ -1055,7 +1060,7 @@
  *      - normally-closed switches to GND and D32.
  *      - normally-open switches to 5V and D32.
  */
-//#define Z_MIN_PROBE_PIN 32 // Pin 32 is the RAMPS default
+#define Z_MIN_PROBE_PIN PC4 // Pin 32 is the RAMPS default
 
 /**
  * Probe Type
@@ -1077,7 +1082,7 @@
  * A Fix-Mounted Probe either doesn't deploy or needs manual deployment.
  *   (e.g., an inductive probe or a nozzle-based probe-switch.)
  */
-//#define FIX_MOUNTED_PROBE
+// #define FIX_MOUNTED_PROBE
 
 /**
  * Use the nozzle as the probe, as with a conductive
@@ -1239,7 +1244,7 @@
  * A total of 2 does fast/slow probes with a weighted average.
  * A total of 3 or more adds more slow probes, taking the average.
  */
-//#define MULTIPLE_PROBING 2
+#define MULTIPLE_PROBING 3
 //#define EXTRA_PROBING    1
 
 /**
@@ -1259,7 +1264,7 @@
 #define Z_CLEARANCE_DEPLOY_PROBE   10 // Z Clearance for Deploy/Stow
 #define Z_CLEARANCE_BETWEEN_PROBES  5 // Z Clearance between probe points
 #define Z_CLEARANCE_MULTI_PROBE     5 // Z Clearance between multiple probes
-//#define Z_AFTER_PROBING           5 // Z position after probing is done
+#define Z_AFTER_PROBING             5 // Z position after probing is done
 
 #define Z_PROBE_LOW_POINT          -2 // Farthest distance below the trigger-point to go before stopping
 
@@ -1356,10 +1361,17 @@
 // #define NO_MOTION_BEFORE_HOMING // Inhibit movement until all axes have been homed. Also enable HOME_AFTER_DEACTIVATE for extra safety.
 #define HOME_AFTER_DEACTIVATE   // Require rehoming after steppers are deactivated. Also enable NO_MOTION_BEFORE_HOMING for extra safety.
 
-#define Z_HOMING_HEIGHT  2      // (mm) Minimal Z height before homing (G28) for Z clearance above the bed, clamps, ...
+/**
+ * Set Z_IDLE_HEIGHT if the Z-Axis moves on its own when steppers are disabled.
+ *  - Use a low value (i.e., Z_MIN_POS) if the nozzle falls down to the bed.
+ *  - Use a large value (i.e., Z_MAX_POS) if the bed falls down, away from the nozzle.
+ */
+//#define Z_IDLE_HEIGHT Z_HOME_POS
+
+  #define Z_HOMING_HEIGHT  2      // (mm) Minimal Z height before homing (G28) for Z clearance above the bed, clamps, ...
                                   // Be sure to have this much clearance over your Z_MAX_POS to prevent grinding.
 
-#define Z_AFTER_HOMING  5      // (mm) Height to move to after homing Z
+  #define Z_AFTER_HOMING  5      // (mm) Height to move to after homing Z
 
 // Direction of endstops when homing; 1=MAX, -1=MIN
 // :[-1,1]
@@ -1373,7 +1385,7 @@
 // @section machine
 
 // The size of the print bed
-#define  X_BED_SIZE 250   // 200
+#define  X_BED_SIZE 255   // 200
 #define  Y_BED_SIZE 210   // 200
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
@@ -1410,14 +1422,12 @@
   #define MIN_SOFTWARE_ENDSTOP_X
   #define MIN_SOFTWARE_ENDSTOP_Y
   #ifdef FBGHOST_MIN_SOFTWARE_ENDSTOP_Z
-    #define MIN_SOFTWARE_ENDSTOP_Z
+  #define MIN_SOFTWARE_ENDSTOP_Z
   #endif
   #define MIN_SOFTWARE_ENDSTOP_I
   #define MIN_SOFTWARE_ENDSTOP_J
   #define MIN_SOFTWARE_ENDSTOP_K
 #endif
-
-
 
 // Max software endstops constrain movement within maximum coordinate bounds
 #define MAX_SOFTWARE_ENDSTOPS
@@ -1491,8 +1501,9 @@
   //#define FIL_RUNOUT8_PULLUP
   //#define FIL_RUNOUT8_PULLDOWN
 
-  // Set one or more commands to execute on filament runout.
-  // (After 'M412 H' Marlin will ask the host to handle the process.)
+  // Commands to execute on filament runout.
+  // With multiple runout sensors use the %c placeholder for the current tool in commands (e.g., "M600 T%c")
+  // NOTE: After 'M412 H1' the host handles filament runout and this script does not apply.
   #define FILAMENT_RUNOUT_SCRIPT "M25"
 
   // After a runout is detected, continue printing this length of filament
@@ -1687,7 +1698,7 @@
  * Add a bed leveling sub-menu for ABL or MBL.
  * Include a guided procedure if manual probing is enabled.
  */
-// #define LCD_BED_LEVELING
+//#define LCD_BED_LEVELING
 
 #if ENABLED(LCD_BED_LEVELING)
   #define MESH_EDIT_Z_STEP  0.025 // (mm) Step size while manually probing Z axis.
@@ -1743,20 +1754,19 @@
 
 // Manually set the home position. Leave these undefined for automatic settings.
 // For DELTA this is the top-center of the Cartesian print volume.
-//#define MANUAL_X_HOME_POS 0
-//#define MANUAL_Y_HOME_POS 0
-//#define MANUAL_Z_HOME_POS 0
-//#define MANUAL_I_HOME_POS 0
-//#define MANUAL_J_HOME_POS 0
-//#define MANUAL_K_HOME_POS 0
+#define  MANUAL_X_HOME_POS 0   // 0
+#define  MANUAL_Y_HOME_POS 0   // 0
+#define  MANUAL_Z_HOME_POS 0   // 0
 
-/**
- * Use "Z Safe Homing" to avoid homing with a Z probe outside the bed area.
- *
- * - Moves the Z probe (or nozzle) to a defined XY point before Z homing.
- * - Allows Z homing only when XY positions are known and trusted.
- * - If stepper drivers sleep, XY homing may be required again before Z homing.
- */
+// Use "Z Safe Homing" to avoid homing with a Z probe outside the bed area.
+//
+// With this feature enabled:
+//
+// - Allow Z homing only after X and Y homing AND stepper drivers still enabled.
+// - If stepper drivers time out, it will need X and Y homing again before Z homing.
+// - Move the Z probe (or nozzle) to a defined XY point before Z Homing.
+// - Prevent Z homing when the Z probe is outside bed area.
+//
 #define Z_SAFE_HOMING
 
 #if ENABLED(Z_SAFE_HOMING)
@@ -1765,7 +1775,7 @@
 #endif
 
 // Homing speeds (mm/min)
-#define HOMING_FEEDRATE_MM_M {(3000), (3000), (800)}//{ (50*60*2), (50*60), (4*60) }
+#define HOMING_FEEDRATE_MM_M { (50*60), (50*60), (4*60) }
 
 // Validate that endstops are triggered on homing moves
 #define VALIDATE_HOMING_ENDSTOPS
@@ -1843,11 +1853,11 @@
  *   M502 - Revert settings to "factory" defaults. (Follow with M500 to init the EEPROM.)
  */
 #define EEPROM_SETTINGS     // Persistent storage with M500 and M501
-// #define DISABLE_M503        // Saves ~2700 bytes of PROGMEM. Disable for release!
+#define DISABLE_M503        // Saves ~2700 bytes of PROGMEM. Disable for release!
 #define EEPROM_CHITCHAT       // Give feedback on EEPROM commands. Disable to save PROGMEM.
 #define EEPROM_BOOT_SILENT    // Keep M503 quiet and only give errors during first load
 #if ENABLED(EEPROM_SETTINGS)
-  // #define EEPROM_AUTO_INIT  // Init EEPROM automatically on any errors.
+  //#define EEPROM_AUTO_INIT  // Init EEPROM automatically on any errors.
 #endif
 
 //
@@ -1943,7 +1953,7 @@
  *   Caveats: The ending Z should be the same as starting Z.
  * Attention: EXPERIMENTAL. G-code arguments may change.
  */
-// #define NOZZLE_CLEAN_FEATURE
+//#define NOZZLE_CLEAN_FEATURE
 
 #if ENABLED(NOZZLE_CLEAN_FEATURE)
   // Default number of pattern repetitions
@@ -2135,13 +2145,13 @@
 // This option overrides the default number of encoder pulses needed to
 // produce one step. Should be increased for high-resolution encoders.
 //
-//#define ENCODER_PULSES_PER_STEP 4
+#define ENCODER_PULSES_PER_STEP 4
 
 //
 // Use this option to override the number of step signals required to
 // move between next/prev menu items.
 //
-//#define ENCODER_STEPS_PER_MENU_ITEM 1
+#define ENCODER_STEPS_PER_MENU_ITEM 1
 
 /**
  * Encoder Direction Options
@@ -2682,7 +2692,7 @@
 // 480x320, 3.5", FSMC Display From MKS
 // Normally used in MKS Robin Nano V1.2
 //
-#define MKS_ROBIN_TFT35
+//#define MKS_ROBIN_TFT35
 #ifdef FBGHOST_MKS_ROBIN_TFT35
   #define MKS_ROBIN_TFT35
 #endif
@@ -2778,7 +2788,7 @@
  *   TFT_ROTATE_270, TFT_ROTATE_270_MIRROR_X, TFT_ROTATE_270_MIRROR_Y,
  *   TFT_MIRROR_X, TFT_MIRROR_Y, TFT_NO_ROTATION
  */
-//#define TFT_ROTATION TFT_NO_ROTATION
+   #define TFT_ROTATION TFT_ROTATE_180
 
 //=============================================================================
 //============================  Other Controllers  ============================
@@ -2810,17 +2820,17 @@
 //
 #define TOUCH_SCREEN
 #if ENABLED(TOUCH_SCREEN)
-  #define BUTTON_DELAY_EDIT  50 // (ms) Button repeat delay for edit screens
-  #define BUTTON_DELAY_MENU 250 // (ms) Button repeat delay for menus
+  #define BUTTON_DELAY_EDIT  25 // (ms) Button repeat delay for edit screens
+  #define BUTTON_DELAY_MENU 125 // (ms) Button repeat delay for menus
 
   //#define TOUCH_IDLE_SLEEP 300 // (secs) Turn off the TFT backlight if set (5mn)
 
-  #define TOUCH_SCREEN_CALIBRATION
+  //#define TOUCH_SCREEN_CALIBRATION
 
-  //#define TOUCH_CALIBRATION_X 12316
-  //#define TOUCH_CALIBRATION_Y -8981
-  //#define TOUCH_OFFSET_X        -43
-  //#define TOUCH_OFFSET_Y        257
+  //#define TOUCH_CALIBRATION_X 17880
+  //#define TOUCH_CALIBRATION_Y -12234
+  //#define TOUCH_OFFSET_X        -45
+  //#define TOUCH_OFFSET_Y        349
   //#define TOUCH_ORIENTATION TOUCH_LANDSCAPE
 
   #if BOTH(TOUCH_SCREEN_CALIBRATION, EEPROM_SETTINGS)
@@ -2828,7 +2838,7 @@
   #endif
 
   #if ENABLED(TFT_COLOR_UI)
-    //#define SINGLE_TOUCH_NAVIGATION
+    #define SINGLE_TOUCH_NAVIGATION
   #endif
 #endif
 
@@ -2862,13 +2872,13 @@
 // However, control resolution will be halved for each increment;
 // at zero value, there are 128 effective control positions.
 // :[0,1,2,3,4,5,6,7]
-#define SOFT_PWM_SCALE 0
+#define SOFT_PWM_SCALE 2
 
 // If SOFT_PWM_SCALE is set to a value higher than 0, dithering can
 // be used to mitigate the associated resolution loss. If enabled,
 // some of the PWM cycles are stretched so on average the desired
 // duty cycle is attained.
-//#define SOFT_PWM_DITHER
+#define SOFT_PWM_DITHER
 
 // Temperature status LEDs that display the hotend and bed temperature.
 // If all hotends, bed temperature, and target temperature are under 54C
@@ -2973,7 +2983,7 @@
  * Set this manually if there are extra servos needing manual control.
  * Set to 0 to turn off servo support.
  */
-#define NUM_SERVOS 1 // Servo index starts with 0 for M280 command
+#define NUM_SERVOS 1 // Note: Servo index starts with 0 for M280-M282 commands
 
 // (ms) Delay before the next move will start, to give the servo time to reach its target angle.
 // 300ms is a good value but you can try less delay.

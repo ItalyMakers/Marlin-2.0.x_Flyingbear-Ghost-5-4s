@@ -83,9 +83,9 @@
 #define E0_STEP_PIN                         PD6
 #define E0_DIR_PIN                          PD3
 
-#define E1_ENABLE_PIN                       -1 //PA3
-#define E1_STEP_PIN                         -1 //PA6
-#define E1_DIR_PIN                          -1 //PA1
+#define E1_ENABLE_PIN                       PA3
+#define E1_STEP_PIN                         PA6
+#define E1_DIR_PIN                          PA1
 
 //
 // Temperature Sensors
@@ -137,8 +137,8 @@
 //
 #if HAS_TFT_LVGL_UI
   #define MT_DET_1_PIN                      PA4
-  // #define MT_DET_2_PIN                      PE6
   #define MT_DET_PIN_STATE                  FBGHOST_FIL_RUNOUT_STATE //TERN(FBGHOST_FIL_RUNOUT_STATE == HIGH, LOW, HIGH)
+  #define MT_DET_2_PIN                      PE6
 
   #define WIFI_IO0_PIN                      PC13
   #define WIFI_IO1_PIN                      PC7

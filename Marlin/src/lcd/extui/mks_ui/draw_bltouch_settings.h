@@ -22,32 +22,16 @@
 #pragma once
 
 #ifdef __cplusplus
-  extern "C" { /* C-declarations for C++ */
+extern "C" { /* C-declarations for C++ */
 #endif
 
-enum {
-  IDLE,
-  WORKING,
-  PAUSING,
-  PAUSED,
-  REPRINTING,
-  REPRINTED,
-  RESUMING,
-  STOP,
-};
+extern void lv_draw_bltouch_settings(void);
+extern void lv_clear_bltouch_settings();
+extern void disp_step_dist();
+extern void bltouch_do_init(bool resetZoffset);
+extern void disp_bltouch_z_offset_value();
 
-void lv_draw_printing();
-void lv_clear_printing();
-void disp_ext_temp();
-void disp_bed_temp();
-void disp_fan_speed();
-void disp_print_time();
-void disp_fan_Zpos();
-void reset_print_time();
-void start_print_time();
-void stop_print_time();
-void setProBarRate();
-
+//extern void disp_temp_ready_print();
 #ifdef __cplusplus
-  } /* C-declarations for C++ */
+} /* C-declarations for C++ */
 #endif

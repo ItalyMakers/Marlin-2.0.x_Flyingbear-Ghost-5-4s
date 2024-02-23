@@ -61,29 +61,29 @@ enum {
 static void event_handler(lv_obj_t *obj, lv_event_t event) {
   if (event != LV_EVENT_RELEASED) return;
   switch (obj->mks_obj_id) {
-    case ID_P_ADD:
+    case ID_P_ADD: {
       if (uiCfg.curTempType == 0) {
 
         // #if ANY(WATCH_TEMP_INCREASE, WATCH_BED_TEMP_INCREASE)
         int16_t max_target;
         // #endif
-
+        
         thermalManager.temp_hotend[uiCfg.extruderIndex].target += uiCfg.stepHeat;
-        #ifdef WATCH_TEMP_INCREASE
-
-          if (uiCfg.extruderIndex == 0){
+#ifdef WATCH_TEMP_INCREASE
+        if (uiCfg.extruderIndex == 0){
             max_target = HEATER_0_MAXTEMP - (WATCH_TEMP_INCREASE + TEMP_HYSTERESIS + 1);
-
-          }
-          else {
-            #if HAS_MULTI_HOTEND
-              max_target = HEATER_1_MAXTEMP - (WATCH_TEMP_INCREASE + TEMP_HYSTERESIS + 1);
-            #endif
-          }
-        #endif
+          
+        }
+        else {
+          #if HAS_MULTI_HOTEND
+            max_target = HEATER_1_MAXTEMP - (WATCH_TEMP_INCREASE + TEMP_HYSTERESIS + 1);
+          #endif
+        }
+#endif
         if (thermalManager.degTargetHotend(uiCfg.extruderIndex) > max_target)
           thermalManager.setTargetHotend(max_target, uiCfg.extruderIndex);
         thermalManager.start_watching_hotend(uiCfg.extruderIndex);
+
       }
       else {
         #if HAS_HEATED_BED
@@ -97,7 +97,7 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
         #endif
       }
       disp_desire_temp();
-    break;
+    } break;
 
     case ID_P_DEC:
       if (uiCfg.curTempType == 0) {
@@ -204,7 +204,7 @@ void disp_add_dec() {
 void lv_draw_preHeat() {
 #ifndef USE_NEW_LVGL_CONF
   scr = lv_screen_create(PRE_HEAT_UI);
-#else
+#else 
   mks_ui.src_main = lv_set_scr_id_title(mks_ui.src_main, PRE_HEAT_UI, "");
 #endif
   // Create image buttons
@@ -228,10 +228,10 @@ void lv_draw_preHeat() {
     }
   #endif
 #ifndef USE_NEW_LVGL_CONF
-  lv_big_button_create(scr, "F:/bmp_zero_temp.bin", preheat_menu.off, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_P_OFF);
+  lv_big_button_create(scr, "F:/bmp_speed0.bin", preheat_menu.off, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_P_OFF);
   lv_big_button_create(scr, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_P_RETURN);
 #else
-  lv_big_button_create(mks_ui.src_main, "F:/bmp_zero_temp.bin", preheat_menu.off, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_P_OFF);
+  lv_big_button_create(mks_ui.src_main, "F:/bmp_speed0.bin", preheat_menu.off, BTN_X_PIXEL * 2 + INTERVAL_V * 3, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_P_OFF);
   lv_big_button_create(mks_ui.src_main, "F:/bmp_return.bin", common_menu.text_back, BTN_X_PIXEL * 3 + INTERVAL_V * 4, BTN_Y_PIXEL + INTERVAL_H + titleHeight, event_handler, ID_P_RETURN);
 #endif
   // Create labels on the image buttons
@@ -246,7 +246,7 @@ void lv_draw_preHeat() {
 #else
   tempText1 = lv_label_create_empty(mks_ui.src_main);
 #endif
-
+  
   lv_obj_set_style(tempText1, &tft_style_label_rel);
   disp_desire_temp();
 }

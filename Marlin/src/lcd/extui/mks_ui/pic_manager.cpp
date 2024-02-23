@@ -48,6 +48,7 @@ static const char assets[][LONG_FILENAME_LENGTH] = {
   "bmp_zeroY.bin",
   "bmp_zeroZ.bin",
   "bmp_manual_off.bin",
+  "bmp_leveling1.bin",
 
   // Tool screen
   "bmp_preHeat.bin",
@@ -108,6 +109,8 @@ static const char assets[][LONG_FILENAME_LENGTH] = {
   "bmp_speed.bin",
   "bmp_fan.bin",
   "bmp_temp.bin",
+  "bmp_temp_mini.bin",
+  "bmp_mini_temp0.bin",
   "bmp_extrude_opr.bin",
   "bmp_move_opr.bin",
 
@@ -133,11 +136,11 @@ static const char assets[][LONG_FILENAME_LENGTH] = {
   "bmp_time_state.bin",
   "bmp_zpos_state.bin",
   "bmp_operate.bin",
-  "bmp_leveling1.bin",
-  "bmp_leveling2.bin",
-  "bmp_leveling3.bin",
-  "bmp_leveling4.bin",
-  "bmp_leveling5.bin",
+    "bmp_leveling1.bin",
+    "bmp_leveling2.bin",
+    "bmp_leveling3.bin",
+    "bmp_leveling4.bin",
+    "bmp_leveling5.bin",
 
 
   // Language Select screen
@@ -192,21 +195,22 @@ static const char assets[][LONG_FILENAME_LENGTH] = {
     // Wifi screen
     "bmp_wifi.bin",
     "bmp_cloud.bin",
+    "bmp_reconnect.bin",
   #endif
 
   #if ENABLED(MULTI_VOLUME)
     "bmp_usb_disk.bin",
-    // "bmp_usb_disk_sel.bin",
+    "bmp_usb_disk_sel.bin",
     "bmp_sd.bin",
-    // "bmp_sd_sel.bin",
+    "bmp_sd_sel.bin",
   #endif
 
-  // babystep screen
+  // Babystep screen
   "bmp_baby_move0_01.bin",
   "bmp_baby_move0_05.bin",
   "bmp_baby_move0_1.bin",
 
-  // more screen
+  // More screen
   "bmp_custom1.bin",
   "bmp_custom2.bin",
   "bmp_custom3.bin",
@@ -518,7 +522,7 @@ uint32_t Pic_Info_Write(uint8_t *P_name, uint32_t P_size) {
       disp_assets_update_progress("Reading files...");
       dir_t d;
       while (dir.readDir(&d, card.longFilename) > 0) {
-
+        
         // If we don't get a long name, but gets a short one, try it
         if (card.longFilename[0] == 0 && d.name[0] != 0)
           dosName2LongName((const char*)d.name, card.longFilename);
